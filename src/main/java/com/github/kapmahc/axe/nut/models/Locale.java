@@ -6,9 +6,9 @@ import java.util.Date;
 
 @Entity
 @Table(name = "locales", indexes = {
-        @Index(columnList = "lang,code", unique = true),
-        @Index(columnList = "lang"),
-        @Index(columnList = "code")
+        @Index(columnList = "lang,code", unique = true, name = "idx_locales_lang_code"),
+        @Index(columnList = "lang", name = "idx_locales_lang"),
+        @Index(columnList = "code", name = "idx_locales_code")
 })
 public class Locale implements Serializable {
     @Id
