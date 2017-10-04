@@ -20,8 +20,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
-                        "/home",
-                        "/install").permitAll()
+                        "/install",
+                        "/assets/**").permitAll()
                 .antMatchers(
                         HttpMethod.POST,
                         "/install").permitAll()
