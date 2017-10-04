@@ -23,3 +23,13 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+# nodejs
+/node_modules/
+
+# editor
+.*.swp
+.*.un~
+
+# test
+/tmp/
