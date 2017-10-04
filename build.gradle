@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.0.0.M3'
+		springBootVersion = '2.0.0.M4'
 	}
 	repositories {
 		mavenCentral()
@@ -52,10 +52,13 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-validation')
 	compile('org.springframework.boot:spring-boot-starter-web')
 
+	compile('org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE')
+	compile('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.2.2')
+
 	compile('org.flywaydb:flyway-core')
 //    https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter
-    compile 'com.alibaba:druid-spring-boot-starter:1.1.4'
-    compile 'net.bull.javamelody:javamelody-spring-boot-starter:1.69.0'
+//    compile 'com.alibaba:druid-spring-boot-starter:1.1.4'
+//    compile 'net.bull.javamelody:javamelody-spring-boot-starter:1.69.0'
 	runtime('mysql:mysql-connector-java')
 	runtime('org.postgresql:postgresql')
 
