@@ -10,12 +10,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name="SurveyForm")
+@Entity(name = "SurveyForm")
 @Table(name = "survey_forms")
 @DynamicUpdate
 public class Form implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String title;

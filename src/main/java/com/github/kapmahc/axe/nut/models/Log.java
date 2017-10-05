@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(name = "logs")
 public class Log implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 45, updatable = false, nullable = false)
     private String ip;

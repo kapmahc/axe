@@ -10,12 +10,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name="ReadingNote")
+@Entity(name = "ReadingNote")
 @Table(name = "reading_notes")
 @DynamicUpdate
 public class Note implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     @Lob

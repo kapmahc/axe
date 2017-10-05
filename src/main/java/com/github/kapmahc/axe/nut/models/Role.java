@@ -24,7 +24,7 @@ public class Role implements Serializable {
     public final static String MANAGER = "manager";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;

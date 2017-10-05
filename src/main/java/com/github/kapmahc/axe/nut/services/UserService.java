@@ -36,7 +36,8 @@ public class UserService {
         log(user, ip, messageSource.getMessage("nut.logs.confirm", null, locale));
         for (String n : new String[]{Role.ADMIN, Role.ROOT}) {
             allow(user, n, 20);
-            log(user, ip, messageSource.getMessage("nut.logs.allow", new Object[]{n, null, null}, locale));
+            // FIXME new Object[]{n, null, null}
+            log(user, ip, messageSource.getMessage("nut.logs.allow", null, locale));
         }
     }
 

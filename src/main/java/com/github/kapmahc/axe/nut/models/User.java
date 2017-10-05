@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity(name="User")
+@Entity(name = "User")
 @Table(name = "users", indexes = {
         @Index(columnList = "name", name = "idx_users_name"),
         @Index(columnList = "email", unique = true, name = "idx_users_email"),
@@ -36,7 +36,7 @@ public class User implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, length = 64)
     private String name;

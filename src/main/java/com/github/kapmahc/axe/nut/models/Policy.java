@@ -15,7 +15,7 @@ import java.util.Date;
 @DynamicUpdate
 public class Policy implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn(nullable = false, updatable = false)

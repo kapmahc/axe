@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity(name="ReadingBook")
+@Entity(name = "ReadingBook")
 @Table(name = "reading_books", indexes = {
         @Index(columnList = "file", unique = true, name = "idx_reading_books_file"),
         @Index(columnList = "uid", unique = true, name = "idx_reading_books_uid")
@@ -18,7 +18,7 @@ import java.util.List;
 @DynamicUpdate
 public class Book implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String uid;

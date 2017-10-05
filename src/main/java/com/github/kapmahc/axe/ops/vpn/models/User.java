@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity(name="VpnUser")
+@Entity(name = "VpnUser")
 @Table(name = "vpn_users", indexes = {
         @Index(columnList = "email", unique = true, name = "idx_vpn_users_email"),
         @Index(columnList = "name", name = "idx_vpn_users_name")
@@ -17,7 +17,7 @@ import java.util.List;
 @DynamicUpdate
 public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String email;

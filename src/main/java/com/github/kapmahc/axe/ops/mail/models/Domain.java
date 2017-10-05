@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity(name="MailDomain")
+@Entity(name = "MailDomain")
 @Table(name = "mail_domains", indexes = {
         @Index(columnList = "name", unique = true, name = "idx_mail_domains_name")
 })
 @DynamicUpdate
 public class Domain implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;

@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity(name="ForumArticle")
+@Entity(name = "ForumArticle")
 @Table(name = "forum_articles")
 @DynamicUpdate
 public class Article implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String title;

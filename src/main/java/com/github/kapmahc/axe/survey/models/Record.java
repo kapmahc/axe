@@ -8,12 +8,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name="SurveyRecord")
+@Entity(name = "SurveyRecord")
 @Table(name = "survey_records")
 @DynamicUpdate
 public class Record implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     @Lob

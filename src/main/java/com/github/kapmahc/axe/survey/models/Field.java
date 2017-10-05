@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name="SurveyField")
+@Entity(name = "SurveyField")
 @Table(name = "survey_fields")
 @DynamicUpdate
 public class Field implements Serializable {
@@ -17,7 +17,7 @@ public class Field implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String label;

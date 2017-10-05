@@ -10,12 +10,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name="ForumComment")
+@Entity(name = "ForumComment")
 @Table(name = "forum_comments")
 @DynamicUpdate
 public class Comment implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     @Lob

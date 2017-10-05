@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity(name="MailAlias")
+@Entity(name = "MailAlias")
 @Table(name = "mail_aliases", indexes = {
         @Index(columnList = "source", unique = true, name = "idx_mail_aliases_source"),
         @Index(columnList = "destination", name = "idx_mail_aliases_destination")
@@ -16,7 +16,7 @@ import java.util.Date;
 @DynamicUpdate
 public class Alias implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String source;
