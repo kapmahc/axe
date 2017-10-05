@@ -27,7 +27,7 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource implement
     @Override
     protected MessageFormat resolveCode(String code, Locale locale) {
         String msg = tr(code, locale);
-        return createMessageFormat(msg, locale);
+        return msg == null ? null : createMessageFormat(msg, locale);
     }
 
     @Nullable
@@ -35,6 +35,7 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource implement
     protected String resolveCodeWithoutArguments(String code, Locale locale) {
         return tr(code, locale);
     }
+
 
     @PostConstruct
     void init() {
@@ -61,6 +62,7 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource implement
 
     @Resource
     LocaleService localeService;
+
 
     private final static Logger logger = LoggerFactory.getLogger(DatabaseDrivenMessageSource.class);
 }
