@@ -17,7 +17,6 @@ import java.util.Map;
 @Controller
 public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
 
-
     public ErrorController(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes;
     }
