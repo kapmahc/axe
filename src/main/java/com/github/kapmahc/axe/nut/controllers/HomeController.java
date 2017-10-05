@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @PreAuthorize("permitAll")
 public class HomeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @PreAuthorize("permitAll")
     public String getInstall(Model model) {
         return "nut/home";
     }

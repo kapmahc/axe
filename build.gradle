@@ -29,6 +29,12 @@ bootJar {
     }
 }
 
+dependencyManagement {
+	imports {
+		mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.207'
+	}
+}
+
 repositories {
 	mavenCentral()
 	maven { url "https://repo.spring.io/snapshot" }
@@ -52,8 +58,10 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-validation')
 	compile('org.springframework.boot:spring-boot-starter-web')
 
-	compile('org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE')
+	compile('org.thymeleaf.extras:thymeleaf-extras-springsecurity4:3.0.2.RELEASE')
 	compile('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.2.2')
+
+	compile 'com.amazonaws:aws-java-sdk-s3'
 
 	compile('org.flywaydb:flyway-core')
 //    https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter

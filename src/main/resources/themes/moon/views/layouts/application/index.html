@@ -2,9 +2,8 @@
 <html th:lang="${#locale}" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <meta charset="utf-8">
+    <meta th:replace="layouts/meta :: main"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title layout:title-pattern="$LAYOUT_TITLE | $CONTENT_TITLE">title</title>
     <link rel="stylesheet" th:href="@{/assets/bootstrap/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/application.css}">
     <script th:src="@{/assets/jquery/dist/jquery.min.js}"></script>
@@ -13,10 +12,10 @@
     <script th:src="@{/assets/main.js}"></script>
 </head>
 <body>
-<div th:replace="layouts/application/header :: main"> header</div>
+<div th:replace="layouts/application/header :: main"> header </div>
 <div class="container">
-    <div layout:fragment="content"> content</div>
-    <div th:replace="layouts/application/footer :: main"> footer</div>
+    <div layout:fragment="content"> content </div>
+    <div th:replace="layouts/application/footer :: main"> footer </div>
 </div>
 </body>
 </html>

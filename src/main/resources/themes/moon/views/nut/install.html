@@ -10,8 +10,21 @@
 <div layout:fragment="content">
     <div class="row justify-content-md-center">
         <div class="col-md-6">
+            <div th:replace="layouts/application/flash :: main"> flash </div>
             <h2 th:text="#{nut.install.title}">title</h2>
             <hr/>
+            <form method="post">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+                <div th:replace="layouts/application/form :: buttons"> buttons </div>
+            </form>
         </div>
     </div>
 </div>

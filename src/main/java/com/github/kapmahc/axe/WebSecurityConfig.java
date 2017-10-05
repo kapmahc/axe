@@ -18,13 +18,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers(
+                        HttpMethod.POST,
+                        "/install").permitAll()
+                .antMatchers(
                         HttpMethod.GET,
                         "/",
                         "/install",
                         "/assets/**").permitAll()
-                .antMatchers(
-                        HttpMethod.POST,
-                        "/install").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
