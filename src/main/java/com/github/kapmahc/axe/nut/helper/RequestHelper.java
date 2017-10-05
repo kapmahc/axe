@@ -1,19 +1,26 @@
 package com.github.kapmahc.axe.nut.helper;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.kapmahc.axe.Flash.ERROR;
 
-@Component
-public class FormHelper {
+@Component("nut.requestHelper")
+public class RequestHelper {
+    public String clientIp(HttpServletRequest request) {
+        String addr = request.getHeader("X-FORWARDED-FOR");
+        return Strings.isNullOrEmpty(addr) ? request.getRemoteAddr() : addr;
+    }
+
     public boolean check(BindingResult result, final RedirectAttributes attributes) {
         if (!result.hasErrors()) {
             return true;

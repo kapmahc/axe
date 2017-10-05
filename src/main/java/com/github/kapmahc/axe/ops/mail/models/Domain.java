@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "mail_domains", indexes = {
-        @Index(columnList = "name", unique = true)
+        @Index(columnList = "name", unique = true, name = "idx_mail_domains_name")
 })
 public class Domain implements Serializable {
     @Id

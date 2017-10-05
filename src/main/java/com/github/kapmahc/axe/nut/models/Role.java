@@ -11,11 +11,16 @@ import java.util.List;
 
 @Entity
 @Table(name = "roles", indexes = {
-        @Index(columnList = "name,resourceType,resourceId", unique = true),
-        @Index(columnList = "name"),
-        @Index(columnList = "resourceType")
+        @Index(columnList = "name,resourceType,resourceId", unique = true, name = "idx_roles_name_resource"),
+        @Index(columnList = "name", name = "idx_roles_name"),
+        @Index(columnList = "resourceType", name = "idx_roles_resource_type")
 })
 public class Role implements Serializable {
+    public final static String ADMIN = "admin";
+    public final static String ROOT = "root";
+    public final static String MEMBER = "member";
+    public final static String MANAGER = "manager";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

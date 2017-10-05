@@ -9,8 +9,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "mail_users", indexes = {
-        @Index(columnList = "email", unique = true),
-        @Index(columnList = "name")
+        @Index(columnList = "email", unique = true, name = "idx_mail_users_email"),
+        @Index(columnList = "name", name = "idx_mail_users_name")
 })
 public class User implements Serializable {
     @Id

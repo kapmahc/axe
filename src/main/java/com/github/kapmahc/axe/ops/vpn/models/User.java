@@ -10,8 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "vpn_users", indexes = {
-        @Index(columnList = "email", unique = true),
-        @Index(columnList = "name")
+        @Index(columnList = "email", unique = true, name = "idx_vpn_users_email"),
+        @Index(columnList = "name", name = "idx_vpn_users_name")
 })
 public class User implements Serializable {
     @Id

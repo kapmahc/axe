@@ -1,8 +1,11 @@
 package com.github.kapmahc.axe.nut.controllers;
 
-import com.github.kapmahc.axe.nut.helper.FormHelper;
+import com.github.kapmahc.axe.nut.helper.RequestHelper;
+import com.github.kapmahc.axe.nut.repositories.UserRepository;
+import com.github.kapmahc.axe.nut.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,19 +14,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
+
+import static com.github.kapmahc.axe.Flash.ERROR;
 
 @Controller
 @RequestMapping(value = "/install")
 public class InstallController {
     @GetMapping
-    public String getInstall(InstallForm installForm) {
+    public String getInstall(InstallForm installForm, Locale locale) {
+        if (userRepository.count() > 0) {
+            throw new IllegalArgumentException();
+        }
         return "nut/install";
     }
 
     @PostMapping
-    public String postInstall(@Valid InstallForm installForm, BindingResult result, final RedirectAttributes attributes) {
-        if (formHelper.check(result, attributes)) {
+    public String postInstall(@Valid InstallForm installForm, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        if (userRepository.count() > 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (requestHelper.check(result, attributes)) {
+            if (installForm.getPassword().equals(installForm.getPasswordConfirmation())) {
+                String ip = requestHelper.clientIp(request);
+                try {
+                    userService.install(locale, ip, installForm);
+                } catch (Exception e) {
+                    attributes.addFlashAttribute(ERROR, e.getMessage());
+                }
+            } else {
+                attributes.addFlashAttribute(ERROR, messageSource.getMessage("validators.passwords-not-match", null, locale));
+            }
 
         }
 
@@ -32,7 +58,13 @@ public class InstallController {
     }
 
     @Resource
-    FormHelper formHelper;
+    RequestHelper requestHelper;
+    @Resource
+    UserService userService;
+    @Resource
+    MessageSource messageSource;
+    @Resource
+    UserRepository userRepository;
 
     private final static Logger logger = LoggerFactory.getLogger(InstallController.class);
 }

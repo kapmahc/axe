@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "cards", indexes = {
-        @Index(columnList = "location")
+        @Index(columnList = "location", name = "idx_cards_location")
 })
 public class Card implements Serializable {
     @Id

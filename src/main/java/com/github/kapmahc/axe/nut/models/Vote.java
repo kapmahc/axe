@@ -9,8 +9,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "votes", indexes = {
-        @Index(columnList = "resourceType,resourceId", unique = true),
-        @Index(columnList = "resourceType")
+        @Index(columnList = "resourceType,resourceId", unique = true, name = "idx_votes_resource"),
+        @Index(columnList = "resourceType", name = "idx_votes_resource_type")
 })
 public class Vote implements Serializable {
     @Id

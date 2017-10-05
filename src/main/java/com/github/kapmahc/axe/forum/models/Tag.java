@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "forum_tags", indexes = {
-        @Index(columnList = "name", unique = true)
+        @Index(columnList = "name", unique = true, name = "idx_forum_tags_name")
 })
 public class Tag implements Serializable {
     @Id

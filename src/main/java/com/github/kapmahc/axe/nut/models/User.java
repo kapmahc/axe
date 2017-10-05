@@ -1,25 +1,36 @@
 package com.github.kapmahc.axe.nut.models;
 
+import com.google.common.io.BaseEncoding;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "users", indexes = {
-        @Index(columnList = "name"),
-        @Index(columnList = "email", unique = true),
-        @Index(columnList = "uid", unique = true),
-        @Index(columnList = "providerType"),
-        @Index(columnList = "providerType,providerId", unique = true),
+        @Index(columnList = "name", name = "idx_users_name"),
+        @Index(columnList = "email", unique = true, name = "idx_users_email"),
+        @Index(columnList = "uid", unique = true, name = "idx_users_uid"),
+        @Index(columnList = "providerType", name = "idx_users_provider_type"),
+        @Index(columnList = "providerType,providerId", unique = true, name = "idx_users_provider"),
 })
 public class User implements Serializable {
     public enum Type {
         EMAIL, GOOGLE, FACEBOOK, WECHAT
+    }
+
+    // https://en.gravatar.com/site/implement/images/java/
+    public void setGravatarLogo() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] buf = md.digest(email.trim().toLowerCase().getBytes("CP1252"));
+        logo = BaseEncoding.base16().lowerCase().encode(buf);
     }
 
     @Id

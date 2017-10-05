@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "links", indexes = {
-        @Index(columnList = "location")
+        @Index(columnList = "location", name = "idx_links_location")
 })
 public class Link implements Serializable {
     @Id

@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "policies", indexes = {
-        @Index(columnList = "user_id,role_id", unique = true)
+        @Index(columnList = "user_id,role_id", unique = true, name = "idx_policies_user_role")
 })
 public class Policy implements Serializable {
     @Id

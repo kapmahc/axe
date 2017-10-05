@@ -1,6 +1,8 @@
 package com.github.kapmahc.axe.nut.controllers;
 
 
+import org.hibernate.validator.constraints.Email;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -10,16 +12,15 @@ public class InstallForm implements Serializable {
     private String subhead;
     @Size(min = 2, max = 255)
     private String title;
-    @NotNull
     @Size(min = 2, max = 32)
     private String name;
+    @Email
     @NotNull
-    @Size(min = 2, max = 32)
     private String email;
-    @NotNull
     @Size(min = 6, max = 32)
     private String password;
     private String passwordConfirmation;
+
 
     public String getName() {
         return name;

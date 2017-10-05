@@ -11,8 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "reading_books", indexes = {
-        @Index(columnList = "file", unique = true),
-        @Index(columnList = "uid", unique = true)
+        @Index(columnList = "file", unique = true, name = "idx_reading_books_file"),
+        @Index(columnList = "uid", unique = true, name = "idx_reading_books_uid")
 })
 public class Book implements Serializable {
     @Id

@@ -47,7 +47,7 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource implement
     }
 
     private String tr(String code, Locale locale) {
-        return localeService.get(locale.toLanguageTag(), code);
+        return localeService.get(locale, code);
     }
 
     @Value("${spring.messages.basename}")

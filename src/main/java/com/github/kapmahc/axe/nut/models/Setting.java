@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "settings", indexes = {
-        @Index(columnList = "_key", unique = true)
+        @Index(columnList = "_key", unique = true, name = "idx_settings_key")
 })
 public class Setting implements Serializable {
     @Id

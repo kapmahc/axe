@@ -9,4 +9,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     User findByProviderTypeAndProviderId(User.Type type, String pid);
 
     User findByUid(String uid);
+
+    User findById(long id);
 }

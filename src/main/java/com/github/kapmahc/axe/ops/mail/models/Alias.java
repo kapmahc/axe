@@ -9,8 +9,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "mail_aliases", indexes = {
-        @Index(columnList = "source", unique = true),
-        @Index(columnList = "destination")
+        @Index(columnList = "source", unique = true, name = "idx_mail_aliases_source"),
+        @Index(columnList = "destination", name = "idx_mail_aliases_destination")
 })
 public class Alias implements Serializable {
     @Id
