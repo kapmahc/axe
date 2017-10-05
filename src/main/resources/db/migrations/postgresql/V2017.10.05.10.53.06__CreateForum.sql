@@ -22,12 +22,12 @@ CREATE UNIQUE INDEX idx_forum_tags_name
   ON forum_tags (name);
 
 CREATE TABLE forum_articles_tags (
-  id                BIGSERIAL PRIMARY KEY,
-  forum_articles_id BIGINT NOT NULL REFERENCES forum_articles ON DELETE CASCADE,
-  forum_tags_id     BIGINT NOT NULL REFERENCES forum_tags ON DELETE CASCADE
+  id          BIGSERIAL PRIMARY KEY,
+  articles_id BIGINT NOT NULL REFERENCES forum_articles ON DELETE CASCADE,
+  tags_id     BIGINT NOT NULL REFERENCES forum_tags ON DELETE CASCADE
 );
 CREATE UNIQUE INDEX idx_forum_articles_tags_ids
-  ON forum_articles_tags (forum_articles_id, forum_tags_id);
+  ON forum_articles_tags (articles_id, tags_id);
 
 CREATE TABLE forum_comments (
   id         BIGSERIAL PRIMARY KEY,

@@ -20,7 +20,7 @@ public class FriendLink implements Serializable {
     @Column(nullable = false)
     private String logo;
     @Column(nullable = false, unique = true)
-    private String url;
+    private String home;
     @Column(nullable = false, name = "_order")
     private int order;
     @Column(nullable = false)
@@ -54,12 +54,12 @@ public class FriendLink implements Serializable {
         this.logo = logo;
     }
 
-    public String getUrl() {
-        return url;
+    public String getHome() {
+        return home;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setHome(String home) {
+        this.home = home;
     }
 
     public int getOrder() {

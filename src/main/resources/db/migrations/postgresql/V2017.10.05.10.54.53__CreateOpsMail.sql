@@ -11,16 +11,18 @@ CREATE TABLE mail_users (
   id         BIGSERIAL PRIMARY KEY,
   domain_id  BIGINT                      NOT NULL REFERENCES mail_domains,
   email      VARCHAR(255)                NOT NULL,
-  full_name  VARCHAR(128)                NOT NULL,
+  name       VARCHAR(128)                NOT NULL,
   password   VARCHAR(255)                NOT NULL,
   enable     BOOLEAN                     NOT NULL,
+  _begin     DATE                        NOT NULL DEFAULT current_date,
+  _end       DATE                        NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 CREATE UNIQUE INDEX idx_mail_users_email
   ON mail_users (email);
-CREATE INDEX idx_mail_users_full_name
-  ON mail_users (full_name);
+CREATE INDEX idx_mail_users_name
+  ON mail_users (name);
 
 CREATE TABLE mail_aliases (
   id          BIGSERIAL PRIMARY KEY,

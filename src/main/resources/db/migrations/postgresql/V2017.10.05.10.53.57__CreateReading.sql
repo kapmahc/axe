@@ -3,9 +3,10 @@ CREATE TABLE reading_books (
   author       VARCHAR(255)                NOT NULL,
   publisher    VARCHAR(255)                NOT NULL,
   title        VARCHAR(255)                NOT NULL,
-  type         VARCHAR(36)                 NOT NULL DEFAULT 'epub3',
-  lang         VARCHAR(32)                 NOT NULL DEFAULT 'en-US',
+  type         VARCHAR(36)                 NOT NULL,
+  lang         VARCHAR(32)                 NOT NULL,
   file         VARCHAR(255)                NOT NULL,
+  uid          VARCHAR(36)                 NOT NULL,
   subject      VARCHAR(255),
   description  TEXT,
   published_at DATE                        NOT NULL DEFAULT current_date,
@@ -15,6 +16,8 @@ CREATE TABLE reading_books (
 );
 CREATE UNIQUE INDEX idx_reading_books_file
   ON reading_books (file);
+CREATE UNIQUE INDEX idx_reading_books_uid
+  ON reading_books (uid);
 CREATE INDEX idx_reading_books_author
   ON reading_books (author);
 CREATE INDEX idx_reading_books_publisher

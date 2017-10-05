@@ -25,7 +25,7 @@ CREATE TABLE survey_fields (
   type       VARCHAR(16)                 NOT NULL DEFAULT 'text',
   required   BOOLEAN                     NOT NULL DEFAULT TRUE,
   form_id    BIGINT                      NOT NULL REFERENCES survey_forms,
-  sort_order INT                         NOT NULL DEFAULT 0,
+  _order     INT                         NOT NULL DEFAULT 0,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

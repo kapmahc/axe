@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "links", indexes = {
-        @Index(columnList = "location", name = "idx_links_location")
+        @Index(columnList = "location,lang", name = "idx_links_location_lang")
 })
 @DynamicUpdate
 public class Link implements Serializable {
@@ -19,6 +19,8 @@ public class Link implements Serializable {
     private Long id;
     @Column(nullable = false)
     private String url;
+    @Column(nullable = false)
+    private String lang;
     @Column(nullable = false)
     private String title;
     @Column(nullable = false, length = 32)
@@ -31,6 +33,14 @@ public class Link implements Serializable {
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Date createdAt;
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
     public Long getId() {
         return id;

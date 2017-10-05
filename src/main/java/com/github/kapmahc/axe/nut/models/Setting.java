@@ -20,7 +20,8 @@ public class Setting implements Serializable {
     @Column(nullable = false, name = "_key")
     private String key;
     @Column(nullable = false)
-    private byte[] value;
+    @Lob
+    private String value;
     @Column(nullable = false)
     private boolean encode;
     @Column(nullable = false)
@@ -46,11 +47,11 @@ public class Setting implements Serializable {
         this.key = key;
     }
 
-    public byte[] getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(byte[] value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

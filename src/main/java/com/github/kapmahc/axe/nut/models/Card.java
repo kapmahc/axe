@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "cards", indexes = {
-        @Index(columnList = "location", name = "idx_cards_location")
+        @Index(columnList = "location,lang", name = "idx_cards_location_lang")
 })
 @DynamicUpdate
 public class Card implements Serializable {
@@ -32,6 +32,8 @@ public class Card implements Serializable {
     private String logo;
     @Column(nullable = false, length = 32)
     private String location;
+    @Column(nullable = false)
+    private String lang;
     @Column(nullable = false, name = "_order")
     private int order;
     @Column(nullable = false)
@@ -40,6 +42,14 @@ public class Card implements Serializable {
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Date createdAt;
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
 
     public int getOrder() {
         return order;

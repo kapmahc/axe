@@ -1,7 +1,7 @@
 CREATE TABLE locales (
   id         BIGSERIAL PRIMARY KEY,
   code       VARCHAR(255)                NOT NULL,
-  lang       VARCHAR(8)                  NOT NULL DEFAULT 'en-US',
+  lang       VARCHAR(8)                  NOT NULL,
   message    TEXT                        NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
@@ -15,14 +15,14 @@ CREATE INDEX idx_locales_lang
 
 CREATE TABLE settings (
   id         BIGSERIAL PRIMARY KEY,
-  key        VARCHAR(255)                NOT NULL,
-  value      BYTEA                       NOT NULL,
+  _key       VARCHAR(255)                NOT NULL,
+  value      TEXT                        NOT NULL,
   encode     BOOLEAN                     NOT NULL DEFAULT FALSE,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 CREATE UNIQUE INDEX idx_settings_key
-  ON settings (key);
+  ON settings (_key);
 
 
 CREATE TABLE users (
@@ -30,15 +30,15 @@ CREATE TABLE users (
   name               VARCHAR(32)                 NOT NULL,
   email              VARCHAR(255)                NOT NULL,
   uid                VARCHAR(36)                 NOT NULL,
-  password           BYTEA,
+  password           VARCHAR(255),
   provider_id        VARCHAR(255)                NOT NULL,
   provider_type      VARCHAR(32)                 NOT NULL,
   logo               VARCHAR(255),
-  sign_in_count      INT                         NOT NULL DEFAULT 0,
+  sign_in_count      BIGINT                      NOT NULL DEFAULT 0,
   current_sign_in_at TIMESTAMP WITHOUT TIME ZONE,
-  current_sign_in_ip INET,
+  current_sign_in_ip VARCHAR(45),
   last_sign_in_at    TIMESTAMP WITHOUT TIME ZONE,
-  last_sign_in_ip    INET,
+  last_sign_in_ip    VARCHAR(45),
   confirmed_at       TIMESTAMP WITHOUT TIME ZONE,
   locked_at          TIMESTAMP WITHOUT TIME ZONE,
   created_at         TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
@@ -61,7 +61,7 @@ CREATE INDEX idx_users_provider_type
 CREATE TABLE logs (
   id         BIGSERIAL PRIMARY KEY,
   user_id    BIGINT                      NOT NULL REFERENCES users,
-  ip         INET                        NOT NULL,
+  ip         VARCHAR(45)                 NOT NULL,
   message    VARCHAR(255)                NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now()
 );
@@ -85,8 +85,8 @@ CREATE TABLE policies (
   id         BIGSERIAL PRIMARY KEY,
   user_id    BIGINT                      NOT NULL REFERENCES users,
   role_id    BIGINT                      NOT NULL REFERENCES roles,
-  start_up   DATE                        NOT NULL DEFAULT current_date,
-  shut_down  DATE                        NOT NULL DEFAULT '2017-09-18',
+  _begin     DATE                        NOT NULL DEFAULT current_date,
+  _end       DATE                        NOT NULL,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
@@ -112,7 +112,7 @@ CREATE TABLE attachments (
   id            BIGSERIAL PRIMARY KEY,
   title         VARCHAR(255)                NOT NULL,
   url           VARCHAR(255)                NOT NULL,
-  length        INT                         NOT NULL,
+  length        BIGINT                      NOT NULL,
   media_type    VARCHAR(32)                 NOT NULL,
   resource_type VARCHAR(255)                NOT NULL,
   resource_id   BIGINT                      NOT NULL,
@@ -138,38 +138,40 @@ CREATE TABLE leave_words (
 
 CREATE TABLE links (
   id         BIGSERIAL PRIMARY KEY,
-  href       VARCHAR(255)                NOT NULL,
-  label      VARCHAR(255)                NOT NULL,
-  loc        VARCHAR(16)                 NOT NULL,
-  sort_order INT                         NOT NULL DEFAULT 0,
+  url        VARCHAR(255)                NOT NULL,
+  title      VARCHAR(255)                NOT NULL,
+  lang       VARCHAR(8)                  NOT NULL,
+  location   VARCHAR(16)                 NOT NULL,
+  _order     INT                         NOT NULL DEFAULT 0,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
-CREATE INDEX idx_links_loc
-  ON links (loc);
+CREATE INDEX idx_links_location_lang
+  ON links (location, lang);
 
 CREATE TABLE cards (
   id         BIGSERIAL PRIMARY KEY,
+  lang       VARCHAR(8)                  NOT NULL,
   title      VARCHAR(255)                NOT NULL,
   summary    VARCHAR(2048)               NOT NULL,
   type       VARCHAR(8)                  NOT NULL DEFAULT 'markdown',
   action     VARCHAR(32)                 NOT NULL,
-  href       VARCHAR(255)                NOT NULL,
+  url        VARCHAR(255)                NOT NULL,
   logo       VARCHAR(255)                NOT NULL,
-  loc        VARCHAR(16)                 NOT NULL,
-  sort_order INT                         NOT NULL DEFAULT 0,
+  location   VARCHAR(16)                 NOT NULL,
+  _order     INT                         NOT NULL DEFAULT 0,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
-CREATE INDEX idx_cards_loc
-  ON cards (loc);
+CREATE INDEX idx_cards_location_lang
+  ON cards (location, lang);
 
 CREATE TABLE friend_links (
   id         BIGSERIAL PRIMARY KEY,
   title      VARCHAR(255)                NOT NULL,
   home       VARCHAR(255)                NOT NULL,
   logo       VARCHAR(255)                NOT NULL,
-  sort_order INT                         NOT NULL DEFAULT 0,
+  _order     INT                         NOT NULL DEFAULT 0,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );

@@ -18,10 +18,10 @@ public class Log implements Serializable {
     private User user;
     @Column(length = 45, nullable = false)
     private String trustedIp;
-    private int trustedPort;
+    private short trustedPort;
     @Column(length = 45, nullable = false)
     private String remoteIp;
-    private int remotePort;
+    private short remotePort;
     private double received;
     private double send;
     @Column(nullable = false, name = "_begin")
@@ -53,13 +53,6 @@ public class Log implements Serializable {
         this.trustedIp = trustedIp;
     }
 
-    public int getTrustedPort() {
-        return trustedPort;
-    }
-
-    public void setTrustedPort(int trustedPort) {
-        this.trustedPort = trustedPort;
-    }
 
     public String getRemoteIp() {
         return remoteIp;
@@ -69,11 +62,19 @@ public class Log implements Serializable {
         this.remoteIp = remoteIp;
     }
 
-    public int getRemotePort() {
+    public short getTrustedPort() {
+        return trustedPort;
+    }
+
+    public void setTrustedPort(short trustedPort) {
+        this.trustedPort = trustedPort;
+    }
+
+    public short getRemotePort() {
         return remotePort;
     }
 
-    public void setRemotePort(int remotePort) {
+    public void setRemotePort(short remotePort) {
         this.remotePort = remotePort;
     }
 

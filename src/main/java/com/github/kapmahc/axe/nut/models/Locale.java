@@ -23,7 +23,8 @@ public class Locale implements Serializable {
     private String lang;
     @Column(nullable = false)
     private String code;
-    @Column(nullable = false, length = 1024)
+    @Column(nullable = false)
+    @Lob
     private String message;
     @Column(nullable = false)
     @UpdateTimestamp
