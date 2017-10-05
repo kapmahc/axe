@@ -2,17 +2,10 @@
 <html th:lang="${#locale}" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <meta charset="utf-8">
+    <th:block th:include="layouts/meta :: main"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <meta name="description" th:content="#{site.description}">
-    <meta name="keywords" th:content="#{site.keywords}">
-    <meta name="author" th:content="#{site.author.name} + #{site.author.email}">
-    <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">[[#{site.subhead}]] | [[#{site.title}]]</title>
     <link rel="stylesheet" th:href="@{/assets/bootstrap/dist/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/assets/application.css}">
-    <link rel="icon" type="image/png" th:href="@{/assets/favicon.png}"/>
     <script th:src="@{/assets/jquery/dist/jquery.min.js}"></script>
     <script th:src="@{/assets/popper.js/dist/umd/popper.min.js}"></script>
     <script th:src="@{/assets/bootstrap/dist/js/bootstrap.min.js}"></script>

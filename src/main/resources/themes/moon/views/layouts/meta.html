@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:fragment="main">
+    <meta charset="utf-8">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="description" th:content="#{site.description}">
+    <meta name="keywords" th:content="#{site.keywords}">
+    <meta name="author" th:content="#{site.author.name} + #{site.author.email}">
+    <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">[[#{site.subhead}]] | [[#{site.title}]]</title>
+    <link rel="icon" type="image/png" th:href="@{/assets/favicon.png}"/>
+</head>
+<body>
+</body>
+</html>
