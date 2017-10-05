@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.nut;
 
 import com.github.kapmahc.axe.nut.repositories.LocaleRepository;
+import com.github.kapmahc.axe.nut.services.LocaleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +48,7 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource implement
     }
 
     private String tr(String code, Locale locale) {
-        com.github.kapmahc.axe.nut.models.Locale it = localeRepository.findByLangAndCode(code, locale.toLanguageTag());
-        return it == null ? null : it.getMessage();
+        return localeService.get(locale.toLanguageTag(), code);
     }
 
     @Value("${spring.messages.basename}")
@@ -61,7 +61,7 @@ public class DatabaseDrivenMessageSource extends AbstractMessageSource implement
     boolean fallbackToSystemLocale;
 
     @Resource
-    LocaleRepository localeRepository;
+    LocaleService localeService;
 
     private final static Logger logger = LoggerFactory.getLogger(DatabaseDrivenMessageSource.class);
 }

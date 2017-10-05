@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.nut.controllers;
 
 import com.github.kapmahc.axe.nut.helper.FormHelper;
+import com.github.kapmahc.axe.nut.repositories.LocaleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -26,8 +27,7 @@ public class InstallController {
         if (formHelper.check(result, attributes)) {
 
         }
-        //
-//        attributes.addFlashAttribute(NOTICE, "aaa");
+
         return "redirect:/install";
 
     }
