@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.nut.models;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Table(name = "links", indexes = {
         @Index(columnList = "location", name = "idx_links_location")
 })
+@DynamicUpdate
 public class Link implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

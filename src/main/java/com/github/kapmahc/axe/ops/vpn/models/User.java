@@ -1,5 +1,6 @@
 package com.github.kapmahc.axe.ops.vpn.models;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.List;
         @Index(columnList = "email", unique = true, name = "idx_vpn_users_email"),
         @Index(columnList = "name", name = "idx_vpn_users_name")
 })
+@DynamicUpdate
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

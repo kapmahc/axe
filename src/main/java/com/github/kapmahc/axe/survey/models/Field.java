@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.survey.models;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "survey_fields")
+@DynamicUpdate
 public class Field implements Serializable {
     public enum Type {
         TEXT, TEXTAREA, RADIOS, CHECKBOXES, SELECT

@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.ops.mail.models;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Date;
         @Index(columnList = "email", unique = true, name = "idx_mail_users_email"),
         @Index(columnList = "name", name = "idx_mail_users_name")
 })
+@DynamicUpdate
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

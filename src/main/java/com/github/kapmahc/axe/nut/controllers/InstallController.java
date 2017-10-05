@@ -21,30 +21,29 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 
 import static com.github.kapmahc.axe.Flash.ERROR;
+import static com.github.kapmahc.axe.Flash.NOTICE;
 
 @Controller
 @RequestMapping(value = "/install")
 public class InstallController {
     @GetMapping
-    public String getInstall(InstallForm installForm, Locale locale) {
-        if (userRepository.count() > 0) {
-            throw new IllegalArgumentException();
-        }
+    public String getInstall(InstallForm installForm) {
+        checkDatabaseIsEmpty();
         return "nut/install";
     }
 
     @PostMapping
     public String postInstall(@Valid InstallForm installForm, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        if (userRepository.count() > 0) {
-            throw new IllegalArgumentException();
-        }
-
+        checkDatabaseIsEmpty();
         if (requestHelper.check(result, attributes)) {
             if (installForm.getPassword().equals(installForm.getPasswordConfirmation())) {
                 String ip = requestHelper.clientIp(request);
                 try {
                     userService.install(locale, ip, installForm);
+                    attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.install.success", null, locale));
+                    return "redirect:/users/sign-in";
                 } catch (Exception e) {
+                    e.printStackTrace();
                     attributes.addFlashAttribute(ERROR, e.getMessage());
                 }
             } else {
@@ -55,6 +54,12 @@ public class InstallController {
 
         return "redirect:/install";
 
+    }
+
+    private void checkDatabaseIsEmpty() {
+        if (userRepository.count() > 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Resource

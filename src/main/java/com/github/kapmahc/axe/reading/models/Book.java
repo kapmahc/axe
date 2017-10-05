@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.reading.models;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.List;
         @Index(columnList = "file", unique = true, name = "idx_reading_books_file"),
         @Index(columnList = "uid", unique = true, name = "idx_reading_books_uid")
 })
+@DynamicUpdate
 public class Book implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

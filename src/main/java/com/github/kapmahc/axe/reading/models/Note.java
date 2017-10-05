@@ -3,6 +3,7 @@ package com.github.kapmahc.axe.reading.models;
 import com.github.kapmahc.axe.nut.models.ContentType;
 import com.github.kapmahc.axe.nut.models.User;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "reading_notes")
+@DynamicUpdate
 public class Note implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

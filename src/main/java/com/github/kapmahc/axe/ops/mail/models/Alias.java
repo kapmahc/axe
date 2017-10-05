@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.ops.mail.models;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Date;
         @Index(columnList = "source", unique = true, name = "idx_mail_aliases_source"),
         @Index(columnList = "destination", name = "idx_mail_aliases_destination")
 })
+@DynamicUpdate
 public class Alias implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

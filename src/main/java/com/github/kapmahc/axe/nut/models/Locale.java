@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.nut.models;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.Date;
         @Index(columnList = "lang", name = "idx_locales_lang"),
         @Index(columnList = "code", name = "idx_locales_code")
 })
+@DynamicUpdate
 public class Locale implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

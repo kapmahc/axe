@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.forum.models;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @Table(name = "forum_tags", indexes = {
         @Index(columnList = "name", unique = true, name = "idx_forum_tags_name")
 })
+@DynamicUpdate
 public class Tag implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -3,6 +3,7 @@ package com.github.kapmahc.axe.survey.models;
 
 import com.github.kapmahc.axe.nut.models.ContentType;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "survey_forms")
+@DynamicUpdate
 public class Form implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.nut.models;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Table(name = "cards", indexes = {
         @Index(columnList = "location", name = "idx_cards_location")
 })
+@DynamicUpdate
 public class Card implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

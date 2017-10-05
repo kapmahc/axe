@@ -12,7 +12,7 @@ import javax.annotation.Resource;
 public class LocaleService {
     public void set(java.util.Locale locale, String code, String message) {
         String lang = locale2lang(locale);
-        Locale it = localeRepository.findByLangAndCode(code, lang);
+        Locale it = localeRepository.findByLangAndCode(lang, code);
         if (it == null) {
             it = new Locale();
             it.setCode(code);
@@ -23,7 +23,7 @@ public class LocaleService {
     }
 
     public String get(java.util.Locale locale, String code) {
-        Locale it = localeRepository.findByLangAndCode(code, locale2lang(locale));
+        Locale it = localeRepository.findByLangAndCode(locale2lang(locale), code);
         return it == null ? null : it.getMessage();
     }
 

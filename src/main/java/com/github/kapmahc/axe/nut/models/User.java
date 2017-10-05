@@ -2,6 +2,7 @@ package com.github.kapmahc.axe.nut.models;
 
 import com.google.common.io.BaseEncoding;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ import java.util.List;
         @Index(columnList = "providerType", name = "idx_users_provider_type"),
         @Index(columnList = "providerType,providerId", unique = true, name = "idx_users_provider"),
 })
+@DynamicUpdate
 public class User implements Serializable {
     public enum Type {
         EMAIL, GOOGLE, FACEBOOK, WECHAT

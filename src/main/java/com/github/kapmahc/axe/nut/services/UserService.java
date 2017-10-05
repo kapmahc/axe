@@ -12,6 +12,7 @@ import com.github.kapmahc.axe.nut.repositories.RoleRepository;
 import com.github.kapmahc.axe.nut.repositories.UserRepository;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -25,17 +26,17 @@ import java.util.UUID;
 @Service("nut.userService")
 @Transactional(readOnly = true)
 public class UserService {
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     public void install(Locale locale, String ip, InstallForm form) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         localeService.set(locale, "site.title", form.getTitle());
-        localeService.set(locale, "site.title", form.getSubhead());
+        localeService.set(locale, "site.subhead", form.getSubhead());
         User user = addUser(form.getName(), form.getEmail(), form.getPassword());
         log(user, ip, messageSource.getMessage("nut.logs.sign-up", null, locale));
         confirmUser(user.getId());
         log(user, ip, messageSource.getMessage("nut.logs.confirm", null, locale));
         for (String n : new String[]{Role.ADMIN, Role.ROOT}) {
             allow(user, n, 20);
-            log(user, ip, messageSource.getMessage("nut.logs.alloy", new Object[]{n, null, null}, locale));
+            log(user, ip, messageSource.getMessage("nut.logs.allow", new Object[]{n, null, null}, locale));
         }
     }
 

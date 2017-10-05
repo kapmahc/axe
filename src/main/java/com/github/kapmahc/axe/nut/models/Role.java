@@ -1,6 +1,7 @@
 package com.github.kapmahc.axe.nut.models;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.util.List;
         @Index(columnList = "name", name = "idx_roles_name"),
         @Index(columnList = "resourceType", name = "idx_roles_resource_type")
 })
+@DynamicUpdate
 public class Role implements Serializable {
     public final static String ADMIN = "admin";
     public final static String ROOT = "root";
@@ -27,7 +29,6 @@ public class Role implements Serializable {
     @Column(nullable = false)
     private String name;
     private Long resourceId;
-    @Column(nullable = false)
     private String resourceType;
     @Column(nullable = false)
     @UpdateTimestamp

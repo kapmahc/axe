@@ -1,11 +1,14 @@
 package com.github.kapmahc.axe.ops.vpn.models;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "vpn_logs")
+@DynamicUpdate
 public class Log implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
