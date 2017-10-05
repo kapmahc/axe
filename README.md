@@ -21,4 +21,8 @@ gradle build
 
 ## Documents
 
+- [spring-boot](https://docs.spring.io/spring-boot/docs/current/reference/html/index.html)
 - [application.properties](https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html)
+- [spring-security](https://docs.spring.io/spring-security/site/docs/5.0.0.M3/reference/htmlsingle/)
+- [thymeleaf](http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html)
+- [thymeleaf-layout](https://ultraq.github.io/thymeleaf-layout-dialect/Installation.html)

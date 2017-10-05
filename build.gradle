@@ -62,6 +62,7 @@ dependencies {
 	compile('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.2.2')
 
 	compile 'com.amazonaws:aws-java-sdk-s3'
+	compile 'com.google.guava:guava:23.1-jre'
 
 	compile('org.flywaydb:flyway-core')
 //    https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter

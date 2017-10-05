@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/application/index}">
 <head>
-    <meta charset="UTF-8">
-    <title>Home</title>
+    <title th:text="#{nut.home.title}">title</title>
 </head>
 <body>
-
+<div class="row" layout:fragment="content">
+    <h1>home</h1>
+</div>
 </body>
 </html>
