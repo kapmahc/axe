@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity
+@Entity(name="MailAlias")
 @Table(name = "mail_aliases", indexes = {
         @Index(columnList = "source", unique = true, name = "idx_mail_aliases_source"),
         @Index(columnList = "destination", name = "idx_mail_aliases_destination")

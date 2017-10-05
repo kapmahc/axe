@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity
+@Entity(name="VpnLog")
 @Table(name = "vpn_logs")
 @DynamicUpdate
 public class Log implements Serializable {

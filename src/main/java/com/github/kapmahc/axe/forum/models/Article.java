@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
+@Entity(name="ForumArticle")
 @Table(name = "forum_articles")
 @DynamicUpdate
 public class Article implements Serializable {

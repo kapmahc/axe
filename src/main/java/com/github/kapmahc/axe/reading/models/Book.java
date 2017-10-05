@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
+@Entity(name="ReadingBook")
 @Table(name = "reading_books", indexes = {
         @Index(columnList = "file", unique = true, name = "idx_reading_books_file"),
         @Index(columnList = "uid", unique = true, name = "idx_reading_books_uid")

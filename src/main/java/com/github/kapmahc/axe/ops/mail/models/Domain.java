@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
+@Entity(name="MailDomain")
 @Table(name = "mail_domains", indexes = {
         @Index(columnList = "name", unique = true, name = "idx_mail_domains_name")
 })

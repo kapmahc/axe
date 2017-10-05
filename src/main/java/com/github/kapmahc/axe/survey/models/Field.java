@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity
+@Entity(name="SurveyField")
 @Table(name = "survey_fields")
 @DynamicUpdate
 public class Field implements Serializable {

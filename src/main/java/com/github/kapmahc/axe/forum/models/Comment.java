@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity
+@Entity(name="ForumComment")
 @Table(name = "forum_comments")
 @DynamicUpdate
 public class Comment implements Serializable {

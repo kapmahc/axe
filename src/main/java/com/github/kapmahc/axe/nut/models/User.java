@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
+@Entity(name="User")
 @Table(name = "users", indexes = {
         @Index(columnList = "name", name = "idx_users_name"),
         @Index(columnList = "email", unique = true, name = "idx_users_email"),

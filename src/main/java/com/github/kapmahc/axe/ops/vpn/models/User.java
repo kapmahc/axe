@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
+@Entity(name="VpnUser")
 @Table(name = "vpn_users", indexes = {
         @Index(columnList = "email", unique = true, name = "idx_vpn_users_email"),
         @Index(columnList = "name", name = "idx_vpn_users_name")
