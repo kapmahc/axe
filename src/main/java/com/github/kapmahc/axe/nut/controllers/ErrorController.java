@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,7 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
     /**
      * Supports the HTML Error View
      */
-    @RequestMapping(value = ERROR_PATH, produces = "text/html")
+    @RequestMapping(value = ERROR_PATH, produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView errorHtml(HttpServletRequest request) {
         Map<String, Object> model = getErrorAttributes(request, getTraceParameter(request));
         logger.debug("{}", model);
