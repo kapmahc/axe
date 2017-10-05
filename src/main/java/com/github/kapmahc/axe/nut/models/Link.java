@@ -1,5 +1,8 @@
 package com.github.kapmahc.axe.nut.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,8 +24,10 @@ public class Link implements Serializable {
     @Column(nullable = false, name = "_order")
     private int order;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
 
     public Long getId() {

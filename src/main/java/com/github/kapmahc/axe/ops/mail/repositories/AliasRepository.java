@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("ops.mail.aliasRepository")
-public interface AliasRepository  extends CrudRepository<Alias, Long> {
+public interface AliasRepository extends CrudRepository<Alias, Long> {
 }

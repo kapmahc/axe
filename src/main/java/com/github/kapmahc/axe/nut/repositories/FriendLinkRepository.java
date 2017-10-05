@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("nut.friendLinkRepository")
-public interface FriendLinkRepository  extends CrudRepository<FriendLink, Long> {
+public interface FriendLinkRepository extends CrudRepository<FriendLink, Long> {
 }

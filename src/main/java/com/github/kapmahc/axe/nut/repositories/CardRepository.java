@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("nut.cardRepository")
-public interface CardRepository  extends CrudRepository<Card, Long> {
+public interface CardRepository extends CrudRepository<Card, Long> {
 }

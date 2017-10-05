@@ -1,5 +1,8 @@
 package com.github.kapmahc.axe.survey.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -14,8 +17,10 @@ public class Record implements Serializable {
     @Lob
     private String value;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
     @ManyToOne
     @JoinColumn(nullable = false, updatable = false)

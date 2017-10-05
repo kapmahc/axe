@@ -2,6 +2,8 @@ package com.github.kapmahc.axe.reading.models;
 
 import com.github.kapmahc.axe.nut.models.ContentType;
 import com.github.kapmahc.axe.nut.models.User;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,8 +22,10 @@ public class Note implements Serializable {
     @Enumerated(EnumType.STRING)
     private ContentType type;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
     @ManyToOne
     @JoinColumn(nullable = false, updatable = false)

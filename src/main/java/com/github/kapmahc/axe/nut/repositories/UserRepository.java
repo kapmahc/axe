@@ -5,7 +5,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("nut.userRepository")
-public interface UserRepository extends CrudRepository<User,Long> {
+public interface UserRepository extends CrudRepository<User, Long> {
     User findByProviderTypeAndProviderId(User.Type type, String pid);
+
     User findByUid(String uid);
 }

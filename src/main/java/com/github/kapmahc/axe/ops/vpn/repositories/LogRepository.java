@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("ops.vpn.LogRepository")
-public interface LogRepository  extends CrudRepository<Log, Long> {
+public interface LogRepository extends CrudRepository<Log, Long> {
 }

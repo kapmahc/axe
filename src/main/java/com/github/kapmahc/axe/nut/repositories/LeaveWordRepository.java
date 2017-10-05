@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("nut.leaveWordRepository")
-public interface LeaveWordRepository  extends CrudRepository<LeaveWord, Long> {
+public interface LeaveWordRepository extends CrudRepository<LeaveWord, Long> {
 }

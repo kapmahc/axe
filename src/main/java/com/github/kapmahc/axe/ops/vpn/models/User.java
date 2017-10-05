@@ -1,5 +1,7 @@
 package com.github.kapmahc.axe.ops.vpn.models;
 
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class User implements Serializable {
     @Lob
     private String details;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
     private Date createdAt;

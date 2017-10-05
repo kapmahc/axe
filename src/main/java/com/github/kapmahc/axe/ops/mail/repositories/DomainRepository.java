@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("ops.mail.domainRepository")
-public interface DomainRepository  extends CrudRepository<Domain, Long> {
+public interface DomainRepository extends CrudRepository<Domain, Long> {
 }

@@ -1,5 +1,7 @@
 package com.github.kapmahc.axe.nut.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +19,7 @@ public class LeaveWord implements Serializable {
     @Enumerated(EnumType.STRING)
     private ContentType type;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
 
     public Long getId() {

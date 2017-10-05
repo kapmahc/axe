@@ -1,5 +1,8 @@
 package com.github.kapmahc.axe.nut.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,11 +25,14 @@ public class Role implements Serializable {
     @Column(nullable = false)
     private String resourceType;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
     @OneToMany(mappedBy = "role")
     private List<Policy> policies;
+
 
     public Role() {
         policies = new ArrayList<>();

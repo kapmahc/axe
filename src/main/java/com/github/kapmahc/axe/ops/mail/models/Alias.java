@@ -1,5 +1,8 @@
 package com.github.kapmahc.axe.ops.mail.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -18,8 +21,10 @@ public class Alias implements Serializable {
     @Column(nullable = false)
     private String destination;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
     @ManyToOne
     @JoinColumn(nullable = false, updatable = false)

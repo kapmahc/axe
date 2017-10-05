@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("ops.survey.RecordRepository")
-public interface RecordRepository  extends CrudRepository<Record, Long> {
+public interface RecordRepository extends CrudRepository<Record, Long> {
 }

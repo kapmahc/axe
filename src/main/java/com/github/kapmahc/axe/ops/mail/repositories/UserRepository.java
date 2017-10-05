@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("ops.mail.userRepository")
-public interface UserRepository  extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User, Long> {
 }

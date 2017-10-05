@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository("nut.voteRepository")
-public interface VoteRepository  extends CrudRepository<Vote, Long> {
+public interface VoteRepository extends CrudRepository<Vote, Long> {
 }

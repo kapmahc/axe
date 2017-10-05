@@ -1,5 +1,8 @@
 package com.github.kapmahc.axe.ops.mail.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,8 +20,10 @@ public class Domain implements Serializable {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
     @OneToMany(mappedBy = "domain")
     private List<User> users;

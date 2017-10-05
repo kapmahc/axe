@@ -1,5 +1,8 @@
 package com.github.kapmahc.axe.nut.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -25,8 +28,10 @@ public class Policy implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date end;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
 
     public Date getCreatedAt() {

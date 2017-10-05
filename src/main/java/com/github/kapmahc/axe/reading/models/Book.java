@@ -1,5 +1,8 @@
 package com.github.kapmahc.axe.reading.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,8 +40,10 @@ public class Book implements Serializable {
     private Date publishedAt;
     private String cover;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
     @OneToMany(mappedBy = "book")
     private List<Note> notes;

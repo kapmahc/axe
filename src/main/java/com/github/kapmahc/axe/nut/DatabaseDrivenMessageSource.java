@@ -1,6 +1,5 @@
 package com.github.kapmahc.axe.nut;
 
-import com.github.kapmahc.axe.nut.repositories.LocaleRepository;
 import com.github.kapmahc.axe.nut.services.LocaleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

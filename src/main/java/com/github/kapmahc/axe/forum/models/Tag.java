@@ -1,5 +1,8 @@
 package com.github.kapmahc.axe.forum.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,8 +20,10 @@ public class Tag implements Serializable {
     @Column(nullable = false, length = 32)
     private String name;
     @Column(nullable = false)
+    @UpdateTimestamp
     private Date updatedAt;
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
     @ManyToMany(mappedBy = "tags")
     private List<Article> articles;
