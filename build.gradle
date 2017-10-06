@@ -63,6 +63,7 @@ dependencies {
 
 	compile 'com.amazonaws:aws-java-sdk-s3'
 	compile 'com.google.guava:guava:23.1-jre'
+	compile 'com.auth0:java-jwt:3.2.0'
 
 	compile('org.flywaydb:flyway-core')
 //    https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter

@@ -18,6 +18,7 @@ git clone https://github.com/kapmahc/axe.git
 cd axe
 npm install
 gradle build
+java -jar -Dspring.profiles.active=production axe-xxx.jar
 ```
 
 ### Install ueditor

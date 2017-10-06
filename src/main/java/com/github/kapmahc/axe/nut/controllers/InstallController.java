@@ -1,5 +1,6 @@
 package com.github.kapmahc.axe.nut.controllers;
 
+import com.github.kapmahc.axe.nut.forms.InstallForm;
 import com.github.kapmahc.axe.nut.helper.RequestHelper;
 import com.github.kapmahc.axe.nut.repositories.UserRepository;
 import com.github.kapmahc.axe.nut.services.UserService;
@@ -23,23 +24,23 @@ import java.util.Locale;
 import static com.github.kapmahc.axe.Flash.ERROR;
 import static com.github.kapmahc.axe.Flash.NOTICE;
 
-@Controller
+@Controller("auth.installController")
 @RequestMapping(value = "/install")
 public class InstallController {
     @GetMapping
-    public String getInstall(InstallForm installForm) {
+    public String getInstall(InstallForm form) {
         checkDatabaseIsEmpty();
         return "nut/install";
     }
 
     @PostMapping
-    public String postInstall(@Valid InstallForm installForm, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String postInstall(@Valid InstallForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         checkDatabaseIsEmpty();
         if (requestHelper.check(result, attributes)) {
-            if (installForm.getPassword().equals(installForm.getPasswordConfirmation())) {
+            if (form.getPassword().equals(form.getPasswordConfirmation())) {
                 String ip = requestHelper.clientIp(request);
                 try {
-                    userService.install(locale, ip, installForm);
+                    userService.install(locale, ip, form);
                     attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.install.success", null, locale));
                     return "redirect:/users/sign-in";
                 } catch (Exception e) {

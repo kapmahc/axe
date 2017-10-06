@@ -1,4 +1,4 @@
-package com.github.kapmahc.axe.nut.controllers;
+package com.github.kapmahc.axe.nut.forms;
 
 
 import org.hibernate.validator.constraints.Email;
