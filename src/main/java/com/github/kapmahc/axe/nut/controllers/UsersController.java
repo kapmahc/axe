@@ -24,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -43,34 +42,20 @@ import static com.github.kapmahc.axe.nut.services.UserService.*;
 @RequestMapping(value = "/users")
 public class UsersController {
     @GetMapping("/logs")
-    public String getLogs(Model model, Principal principal) {
-        logger.debug("current user {}", principal.getName());
+    public String getLogs(Principal principal) {
         return "nut/users/logs";
     }
+
+
     // ------------------------------------------
 
+    // http://www.thymeleaf.org/doc/articles/springsecurity.html
     @GetMapping("/sign-in")
     public String getSignIn(SignInForm signInForm) {
         return "nut/users/sign-in";
     }
 
-    @PostMapping("/sign-in")
-    public String postSignIn(HttpSession session, @Valid SignInForm signInForm, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
-
-        if (requestHelper.check(result, attributes)) {
-            String ip = requestHelper.clientIp(request);
-            try {
-                User user = userService.signIn(locale, ip, signInForm);
-                session.setAttribute("name", user.getName());
-                return "redirect:/";
-            } catch (Exception e) {
-                e.printStackTrace();
-                attributes.addFlashAttribute(ERROR, e.getMessage());
-            }
-        }
-        return "redirect:/users/sign-in";
-    }
-
+    // ------------------------------------------
     @GetMapping("/sign-up")
     public String getSignUp(SignUpForm form) {
         return "nut/users/sign-up";
@@ -105,6 +90,7 @@ public class UsersController {
         return "nut/users/email-form";
     }
 
+    // ------------------------------------------
     @PostMapping("/confirm")
     public String postConfirm(HttpServletRequest request, @Valid EmailForm emailForm, BindingResult result, final RedirectAttributes attributes, Locale locale) throws IOException {
         if (requestHelper.check(result, attributes)) {
@@ -136,6 +122,7 @@ public class UsersController {
         return "redirect:/users/sign-in";
     }
 
+    // ------------------------------------------
     @GetMapping("/unlock")
     public String getUnlock(EmailForm emailForm, Model model, Locale locale) {
         String act = ACTION_UNLOCK;
@@ -174,6 +161,7 @@ public class UsersController {
         return "redirect:/users/sign-in";
     }
 
+    // ------------------------------------------
     @GetMapping("/forgot-password")
     public String getForgotPassword(EmailForm emailForm, Model model, Locale locale) {
         String act = "forgot-password";
@@ -196,6 +184,7 @@ public class UsersController {
         return "redirect:/users/forgot-password";
     }
 
+    // ------------------------------------------
     @GetMapping("/reset-password/{token}")
     public String getResetPassword(ResetPasswordForm resetPasswordForm) {
         return "nut/users/reset-password";
@@ -222,6 +211,7 @@ public class UsersController {
         return "redirect:/users/reset-password/" + token;
     }
 
+    // ------------------------------------------
     private void sendEmail(HttpServletRequest request, Locale locale, User user, String action) throws IOException {
         Map<String, String> claim = new HashMap<>();
         claim.put("uid", user.getUid());

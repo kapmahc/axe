@@ -1,6 +1,9 @@
 package com.github.kapmahc.axe;
 
-import com.github.kapmahc.axe.nut.services.UserDetailsService;
+import com.github.kapmahc.axe.nut.security.AuthenticationFailureHandler;
+import com.github.kapmahc.axe.nut.security.AuthenticationSuccessHandler;
+import com.github.kapmahc.axe.nut.security.LogoutSuccessHandler;
+import com.github.kapmahc.axe.nut.security.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -46,8 +49,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 .antMatchers(
                         HttpMethod.POST,
+
                         "/install",
-                        "/users/sign-in",
+
                         "/users/sign-up",
                         "/users/confirm",
                         "/users/unlock",
@@ -59,8 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/users/sign-up"
                 ).permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin().usernameParameter("email").passwordParameter("password").loginPage("/users/sign-in").failureForwardUrl("/users/sign-in")
-                .and().logout().logoutUrl("/users/sign-out").logoutSuccessUrl("/users/sign-in");
+                .and().formLogin().usernameParameter("email").passwordParameter("password").loginPage("/users/sign-in").loginProcessingUrl("/login").successHandler(authenticationSuccessHandler).failureHandler(authenticationFailureHandler)
+                .and().logout().invalidateHttpSession(true).logoutSuccessHandler(logoutSuccessHandler);
     }
 
     @Autowired
@@ -77,4 +81,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Resource
     UserDetailsService detailsService;
+    @Resource
+    AuthenticationFailureHandler authenticationFailureHandler;
+    @Resource
+    AuthenticationSuccessHandler authenticationSuccessHandler;
+    @Resource
+    LogoutSuccessHandler logoutSuccessHandler;
 }

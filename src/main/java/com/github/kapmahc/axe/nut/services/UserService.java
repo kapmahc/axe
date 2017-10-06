@@ -2,7 +2,6 @@ package com.github.kapmahc.axe.nut.services;
 
 import com.github.kapmahc.axe.nut.forms.InstallForm;
 import com.github.kapmahc.axe.nut.forms.users.ResetPasswordForm;
-import com.github.kapmahc.axe.nut.forms.users.SignInForm;
 import com.github.kapmahc.axe.nut.forms.users.SignUpForm;
 import com.github.kapmahc.axe.nut.helper.JwtHelper;
 import com.github.kapmahc.axe.nut.helper.SecurityHelper;
@@ -93,23 +92,22 @@ public class UserService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public User signIn(Locale locale, String ip, SignInForm form) {
-        User user = userRepository.findByProviderTypeAndProviderId(User.Type.EMAIL, form.getEmail());
-        if (user == null) {
-            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
-        }
-        if (!securityHelper.check(form.getPassword(), user.getPassword())) {
-            String msg = messageSource.getMessage("nut.errors.bad-password", null, locale);
-            log(user, ip, msg);
-            throw new IllegalArgumentException(msg);
-        }
-        if (!user.isConfirm()) {
-            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.not-confirm", null, locale));
-        }
-        if (user.isLock()) {
-            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.is-lock", null, locale));
-        }
-        return user;
+    public void signOut(User user, Locale locale, String ip) {
+        user.setLastSignInAt(user.getCurrentSignInAt());
+        user.setLastSignInIp(user.getCurrentSignInIp());
+        user.setCurrentSignInAt(null);
+        user.setCurrentSignInIp("");
+        userRepository.save(user);
+        log(user, ip, messageSource.getMessage("nut.logs.sign-out", null, locale));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void signIn(User user, Locale locale, String ip) {
+        user.setSignInCount(user.getSignInCount() + 1);
+        user.setCurrentSignInAt(new Date());
+        user.setCurrentSignInIp(ip);
+        userRepository.save(user);
+        log(user, ip, messageSource.getMessage("nut.logs.sign-in.success", null, locale));
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

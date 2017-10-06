@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<div th:fragment="main">
+    <li sec:authorize="isAuthenticated()" class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="personal-bar-authenticated" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false" th:text="#{personal-bar.welcome(${session.name})}">welcome</a>
+        <div class="dropdown-menu" aria-labelledby="personal-bar-authenticated">
+            <a class="dropdown-item" href="/dashboard">
+                [[#{nut.dashboard.title}]]
+            </a>
+            <a href="/logout" data-method="post" data-next="/users/sign-in" th:data-confirm="#{flash.are-you-sure}"
+               class="dropdown-item">
+                [[#{nut.users.sign-out.title}]]
+            </a>
+        </div>
+    </li>
+    <li sec:authorize="isAnonymous()" class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="personal-bar-anonymous" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false" th:text="#{personal-bar.sign-in-or-up}">sign</a>
+        <div class="dropdown-menu" aria-labelledby="personal-bar-anonymous">
+            <a class="dropdown-item" href="/users/sign-in">
+                [[#{nut.users.sign-in.title}]]
+            </a>
+            <a class="dropdown-item" href="/users/sign-up">
+                [[#{nut.users.sign-up.title}]]
+            </a>
+            <a class="dropdown-item" href="/users/confirm">
+                [[#{nut.users.confirm.title}]]
+            </a>
+            <a class="dropdown-item" href="/users/unlock">
+                [[#{nut.users.unlock.title}]]
+            </a>
+            <a class="dropdown-item" href="/users/forgot-password">
+                [[#{nut.users.forgot-password.title}]]
+            </a>
+            <a class="dropdown-item" href="/leave-words/new">
+                [[#{nut.leave-words.new.title}]]
+            </a>
+        </div>
+    </li>
+</div>
+</body>
+</html>

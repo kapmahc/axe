@@ -67,6 +67,7 @@ dependencies {
 
 	compile('org.flywaydb:flyway-core')
 //    https://github.com/alibaba/druid/tree/master/druid-spring-boot-starter
+//    https://github.com/alibaba/druid/issues/2024
 //    compile 'com.alibaba:druid-spring-boot-starter:1.1.4'
 //    compile 'net.bull.javamelody:javamelody-spring-boot-starter:1.69.0'
 	runtime('mysql:mysql-connector-java')

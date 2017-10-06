@@ -1,12 +1,12 @@
 package com.github.kapmahc.axe.nut.forms.users;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class SignInForm implements Serializable {
-    @Size(min = 2, max = 255)
+    @NotNull
     private String email;
-    @Size(min = 6, max = 32)
+    @NotNull
     private String password;
 
     public String getEmail() {

@@ -34,12 +34,7 @@ $(function () {
         if (ok) {
             // console.log(method, url, next);
             $.ajax({type: method, url: url}).done(function (rst) {
-                // FIXME
-                if (rst.ok) {
-                    window.location.href = next;
-                } else {
-                    alert(rst);
-                }
+                window.location.href = next;
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 alert(textStatus);
             });

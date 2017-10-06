@@ -1,4 +1,4 @@
-package com.github.kapmahc.axe.nut.services;
+package com.github.kapmahc.axe.nut.security;
 
 import com.github.kapmahc.axe.nut.models.Policy;
 import com.github.kapmahc.axe.nut.models.Role;
@@ -11,13 +11,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
 
-@Service
+@Component
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
