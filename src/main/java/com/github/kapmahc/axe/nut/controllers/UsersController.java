@@ -42,7 +42,9 @@ import static com.github.kapmahc.axe.nut.services.UserService.*;
 @RequestMapping(value = "/users")
 public class UsersController {
     @GetMapping("/logs")
-    public String getLogs(Principal principal) {
+    public String getLogs(Principal principal, Model model) {
+        User user = userRepository.findByUid(principal.getName());
+        model.addAttribute("user", user);
         return "nut/users/logs";
     }
 
