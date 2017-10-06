@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 @Configuration
 @EnableWebSecurity
@@ -15,14 +16,19 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        http.sessionManagement()
+                .invalidSessionUrl("/users/sign-in")
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(3);
+
         http
-//                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
 
-
+"/users/logs",
                         "/install",
                         "/users/sign-in",
                         "/users/sign-up",
@@ -50,8 +56,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/users/sign-up"
                 ).permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin().loginPage("/users/sign-in").permitAll()
-                .and().logout().permitAll();
+                .and().formLogin().loginPage("/users/sign-in").failureForwardUrl("/users/sign-in")
+                .and().logout().logoutUrl("/users/sign-out").logoutSuccessUrl("/users/sign-in");
     }
 
     @Autowired

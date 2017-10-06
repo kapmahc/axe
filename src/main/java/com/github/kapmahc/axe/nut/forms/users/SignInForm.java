@@ -7,8 +7,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 public class SignInForm implements Serializable {
-    @Email
-    @NotNull
+    @Size(min = 2, max = 255)
     private String email;
     @Size(min = 6, max = 32)
     private String password;

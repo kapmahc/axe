@@ -1,5 +1,6 @@
 package com.github.kapmahc.axe.nut.controllers;
 
+import com.github.kapmahc.axe.nut.CurrentUser;
 import com.github.kapmahc.axe.nut.forms.users.EmailForm;
 import com.github.kapmahc.axe.nut.forms.users.ResetPasswordForm;
 import com.github.kapmahc.axe.nut.forms.users.SignInForm;
@@ -10,6 +11,8 @@ import com.github.kapmahc.axe.nut.helper.RequestHelper;
 import com.github.kapmahc.axe.nut.models.User;
 import com.github.kapmahc.axe.nut.repositories.UserRepository;
 import com.github.kapmahc.axe.nut.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -37,6 +41,13 @@ import static com.github.kapmahc.axe.Flash.NOTICE;
 @Controller("nut.usersController")
 @RequestMapping(value = "/users")
 public class UsersController {
+    @GetMapping("/logs")
+    public String getLogs(Model model) {
+        logger.debug("current user {} {}",currentUser.getName(), currentUser.getUid());
+        return "nut/users/logs";
+    }
+    // ------------------------------------------
+
     @GetMapping("/sign-in")
     public String getSignIn(SignInForm signInForm) {
         return "nut/users/sign-in";
@@ -48,7 +59,9 @@ public class UsersController {
             String ip = requestHelper.clientIp(request);
             try {
                 User user = userService.signIn(locale, ip, signInForm);
-                request.getSession().setAttribute("uid", user.getUid());
+                currentUser.setUid(user.getUid());
+                currentUser.setId(user.getId());
+                currentUser.setName(user.getName());
                 return "redirect:/";
             } catch (Exception e) {
                 e.printStackTrace();
@@ -242,9 +255,12 @@ public class UsersController {
 
     @Resource
     RequestHelper requestHelper;
+    @Resource
+    CurrentUser currentUser;
 
 
-    public final static String ACTION_CONFIRM = "confirm";
-    public final static String ACTION_UNLOCK = "unlock";
-    public final static String ACTION_RESET_PASSWORD = "reset-password";
+    private final static String ACTION_CONFIRM = "confirm";
+    private final static String ACTION_UNLOCK = "unlock";
+    private final static String ACTION_RESET_PASSWORD = "reset-password";
+    private final static Logger logger = LoggerFactory.getLogger(UsersController.class);
 }
