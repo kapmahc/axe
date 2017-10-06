@@ -1,5 +1,6 @@
 package com.github.kapmahc.axe;
 
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import java.util.Locale;
 
 @Configuration
+@EnableCaching
 @EnableTransactionManagement(proxyTargetClass = true)
 public class WebConfig {
 
