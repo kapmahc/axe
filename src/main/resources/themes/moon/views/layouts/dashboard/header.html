@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav th:fragment="main" class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container">
+        <a id="logo-container" href="/dashboard" th:text="#{site.subhead}" class="brand-logo">logo</a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="/home"><i class="material-icons">home</i></a></li>
+            <li><a href="/search"><i class="material-icons">search</i></a></li>
+            <li><a href="/dashboard"><i class="material-icons">view_module</i></a></li>
+            <li><a href="javascript:history.go(0);"><i class="material-icons">refresh</i></a></li>
+            <li>
+                <a href="/logout"
+                   data-method="post"
+                   data-next="/users/sign-in"
+                   th:data-confirm="#{flash.are-you-sure}">
+                    <i class="material-icons">exit_to_app</i>
+                </a>
+            </li>
+        </ul>
+        <ul id="nav-mobile" class="side-nav">
+            <li><a href="/" th:text="#{nut.home.title}">label</a></li>
+            <li><a href="/dashboard" th:text="#{nut.dashboard.title}">label</a></li>
+            <li>
+                <a th:text="#{nut.users.sign-out.title}"
+                   href="/logout"
+                   data-method="post"
+                   data-next="/users/sign-in"
+                   th:data-confirm="#{flash.are-you-sure}">
+                    label
+                </a>
+            </li>
+        </ul>
+        <a href="#" data-activates="nav-mobile" class="button-collapse">
+            <i class="material-icons">menu</i>
+        </a>
+    </div>
+</nav>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html th:lang="${#locale}" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <th:block th:include="layouts/components :: meta"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link type="text/css" rel="stylesheet" th:href="@{/assets/materialize-css/dist/css/materialize.min.css}"
+          media="screen,projection"/>
+    <link rel="stylesheet" th:href="@{/assets/material-design-icons/iconfont/material-icons.css}">
+    <script th:src="@{/assets/jquery/dist/jquery.min.js}"></script>
+    <script th:src="@{/assets/materialize-css/dist/js/materialize.min.js}"></script>
+    <script th:src="@{/assets/marked/marked.min.js}"></script>
+    <script th:src="@{/assets/main.js}"></script>
+    <script th:src="@{/assets/dashboard.js}"></script>
+</head>
+<body>
+
+<div th:replace="layouts/dashboard/header :: main">header</div>
+
+<div class="container">
+    <div layout:fragment="content">content</div>
+</div>
+
+<div th:replace="layouts/dashboard/footer :: main">header</div>
+
+</body>
+</html>

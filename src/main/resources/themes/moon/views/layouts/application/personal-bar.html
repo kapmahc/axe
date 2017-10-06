@@ -7,12 +7,15 @@
         <a class="nav-link dropdown-toggle" href="#" id="personal-bar-authenticated" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false" th:text="#{personal-bar.welcome(${session.name})}">welcome</a>
         <div class="dropdown-menu" aria-labelledby="personal-bar-authenticated">
-            <a class="dropdown-item" href="/dashboard">
-                [[#{nut.dashboard.title}]]
+            <a th:text="#{nut.dashboard.title}" class="dropdown-item" href="/dashboard">
+                label
             </a>
-            <a href="/logout" data-method="post" data-next="/users/sign-in" th:data-confirm="#{flash.are-you-sure}"
-               class="dropdown-item">
-                [[#{nut.users.sign-out.title}]]
+            <a th:text="#{nut.users.sign-out.title}" class="dropdown-item"
+               href="/logout"
+               data-method="post"
+               data-next="/users/sign-in"
+               th:data-confirm="#{flash.are-you-sure}">
+                label
             </a>
         </div>
     </li>
@@ -20,23 +23,23 @@
         <a class="nav-link dropdown-toggle" href="#" id="personal-bar-anonymous" data-toggle="dropdown"
            aria-haspopup="true" aria-expanded="false" th:text="#{personal-bar.sign-in-or-up}">sign</a>
         <div class="dropdown-menu" aria-labelledby="personal-bar-anonymous">
-            <a class="dropdown-item" href="/users/sign-in">
-                [[#{nut.users.sign-in.title}]]
+            <a th:text="#{nut.users.sign-in.title}" class="dropdown-item" href="/users/sign-in">
+                label
             </a>
-            <a class="dropdown-item" href="/users/sign-up">
-                [[#{nut.users.sign-up.title}]]
+            <a th:text="#{nut.users.sign-up.title}" class="dropdown-item" href="/users/sign-up">
+                label
             </a>
-            <a class="dropdown-item" href="/users/confirm">
-                [[#{nut.users.confirm.title}]]
+            <a th:text="#{nut.users.confirm.title}" class="dropdown-item" href="/users/confirm">
+                label
             </a>
-            <a class="dropdown-item" href="/users/unlock">
-                [[#{nut.users.unlock.title}]]
+            <a th:text="#{nut.users.unlock.title}" class="dropdown-item" href="/users/unlock">
+                label
             </a>
-            <a class="dropdown-item" href="/users/forgot-password">
-                [[#{nut.users.forgot-password.title}]]
+            <a th:text="#{nut.users.forgot-password.title}" class="dropdown-item" href="/users/forgot-password">
+                label
             </a>
-            <a class="dropdown-item" href="/leave-words/new">
-                [[#{nut.leave-words.new.title}]]
+            <a th:text="#{nut.leave-words.new.title}" class="dropdown-item" href="/leave-words/new">
+                label
             </a>
         </div>
     </li>
