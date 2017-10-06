@@ -28,19 +28,19 @@ import static com.github.kapmahc.axe.Flash.NOTICE;
 @RequestMapping(value = "/install")
 public class InstallController {
     @GetMapping
-    public String getInstall(InstallForm form) {
+    public String getInstall(InstallForm installForm) {
         checkDatabaseIsEmpty();
         return "nut/install";
     }
 
     @PostMapping
-    public String postInstall(@Valid InstallForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String postInstall(@Valid InstallForm installForm, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         checkDatabaseIsEmpty();
         if (requestHelper.check(result, attributes)) {
-            if (form.getPassword().equals(form.getPasswordConfirmation())) {
+            if (installForm.getPassword().equals(installForm.getPasswordConfirmation())) {
                 String ip = requestHelper.clientIp(request);
                 try {
-                    userService.install(locale, ip, form);
+                    userService.install(locale, ip, installForm);
                     attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.install.success", null, locale));
                     return "redirect:/users/sign-in";
                 } catch (Exception e) {

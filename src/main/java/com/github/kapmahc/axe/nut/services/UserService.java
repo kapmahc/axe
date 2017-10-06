@@ -14,6 +14,8 @@ import com.github.kapmahc.axe.nut.repositories.LogRepository;
 import com.github.kapmahc.axe.nut.repositories.PolicyRepository;
 import com.github.kapmahc.axe.nut.repositories.RoleRepository;
 import com.github.kapmahc.axe.nut.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -48,7 +50,7 @@ public class UserService {
         User user = userRepository.findByUid(claim.get("uid"));
         if (user == null) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
-        } else if (user.getConfirmedAt() != null) {
+        } else if (user.getLockedAt() == null) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.not-lock", null, locale));
         }
         user.setLockedAt(null);
@@ -73,11 +75,11 @@ public class UserService {
     @Transactional(propagation = Propagation.REQUIRED)
     public User signUp(Locale locale, String ip, SignUpForm form) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         User user = userRepository.findByProviderTypeAndProviderId(User.Type.EMAIL, form.getEmail());
-        if (user == null) {
+        if (user != null) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-exist", null, locale));
         }
         user = addUser(form.getName(), form.getEmail(), form.getPassword());
-        log(user, ip, messageSource.getMessage("nut.log.sign-up", null, locale));
+        log(user, ip, messageSource.getMessage("nut.logs.sign-up", null, locale));
         return user;
     }
 
@@ -207,4 +209,5 @@ public class UserService {
     SecurityHelper securityHelper;
     @Resource
     JwtHelper jwtHelper;
+    private final static Logger logger = LoggerFactory.getLogger(UserService.class);
 }

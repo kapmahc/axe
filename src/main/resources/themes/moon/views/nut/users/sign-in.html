@@ -4,16 +4,16 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{layouts/application/index}">
 <head>
-    <title th:text="#{nut.sign-in.title}">title</title>
+    <title th:text="#{nut.users.sign-in.title}">title</title>
 </head>
 <body>
 
 <div layout:fragment="content" class="row justify-content-md-center">
     <div class="col-md-6">
         <div th:replace="layouts/application/flash :: main">flash</div>
-        <h2 th:text="#{nut.sign-in.title}">title</h2>
+        <h2 th:text="#{nut.users.sign-in.title}">title</h2>
         <hr/>
-        <form method="post" th:object="${form}">
+        <form method="post" th:object="${signInForm}">
             <div class="form-group">
                 <label th:text="#{attributes.email}">label</label>
                 <input th:field="*{email}" type="email" class="form-control">
@@ -24,6 +24,8 @@
             </div>
             <div th:replace="layouts/application/form :: buttons">buttons</div>
         </form>
+        <br/>
+        <div th:replace="nut/users/shared-links :: main">links</div>
     </div>
 </div>
 

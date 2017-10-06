@@ -1,10 +1,10 @@
 package com.github.kapmahc.axe.nut.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.kapmahc.axe.TaskReceiver;
-import org.springframework.amqp.core.MessageBuilder;
-import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Queue;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Component("nut.emailJobSender")
 public class EmailJobSender {
@@ -22,33 +21,23 @@ public class EmailJobSender {
         map.put("to", to);
         map.put("subject", subject);
         map.put("body", body);
-        MessageProperties mp = new MessageProperties();
-        mp.setMessageId(UUID.randomUUID().toString());
-        mp.setType(TYPE);
-        rabbitTemplate.send(
-                MessageBuilder
-                        .withBody(mapper.writeValueAsBytes(map))
-                        .andProperties(mp)
-                        .build()
+        amqpTemplate.convertAndSend(
+                queue.getName(),
+                mapper.writeValueAsString(map)
         );
     }
 
 
     @PostConstruct
     void init() {
-        taskReceiver.register(TYPE, emailJobReceiver);
         mapper = new ObjectMapper();
     }
 
     @Resource
-    RabbitTemplate rabbitTemplate;
-    @Resource
-    EmailJobReceiver emailJobReceiver;
-    @Resource
-    TaskReceiver taskReceiver;
+    AmqpTemplate amqpTemplate;
+    @Resource(name = "emailsQueue")
+    Queue queue;
+
     private ObjectMapper mapper;
-
-
-    private final static String TYPE = "send-email";
-
+    private final static Logger logger = LoggerFactory.getLogger(EmailJobSender.class);
 }

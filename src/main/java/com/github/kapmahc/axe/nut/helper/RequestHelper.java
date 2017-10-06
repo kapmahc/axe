@@ -16,6 +16,11 @@ import static com.github.kapmahc.axe.Flash.ERROR;
 
 @Component("nut.requestHelper")
 public class RequestHelper {
+    public String home(HttpServletRequest request){
+        StringBuffer url = request.getRequestURL();
+        String uri = request.getRequestURI();
+        return url.substring(0, url.length()-uri.length());
+    }
     public String clientIp(HttpServletRequest request) {
         String addr = request.getHeader("X-FORWARDED-FOR");
         return Strings.isNullOrEmpty(addr) ? request.getRemoteAddr() : addr;

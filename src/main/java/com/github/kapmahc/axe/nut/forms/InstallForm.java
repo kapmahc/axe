@@ -1,9 +1,6 @@
 package com.github.kapmahc.axe.nut.forms;
 
 
-import org.hibernate.validator.constraints.Email;
-
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -14,8 +11,7 @@ public class InstallForm implements Serializable {
     private String title;
     @Size(min = 2, max = 32)
     private String name;
-    @Email
-    @NotNull
+    @Size(min = 2, max = 255)
     private String email;
     @Size(min = 6, max = 32)
     private String password;

@@ -4,6 +4,8 @@ import com.google.common.io.BaseEncoding;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -41,6 +43,8 @@ public class User implements Serializable {
     @Column(nullable = false, length = 64)
     private String name;
     @Column(nullable = false, updatable = false)
+    @Email
+    @NotBlank
     private String email;
     @Column(nullable = false, length = 36)
     private String uid;

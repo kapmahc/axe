@@ -19,13 +19,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(
-                        HttpMethod.POST,
-                        "/install").permitAll()
-                .antMatchers(
                         HttpMethod.GET,
                         "/",
+
+
                         "/install",
-                        "/assets/**").permitAll()
+                        "/users/sign-in",
+                        "/users/sign-up",
+                        "/users/confirm",
+                        "/users/confirm/{token}",
+                        "/users/unlock",
+                        "/users/unlock/{token}",
+                        "/users/forgot-password",
+                        "/users/reset-password/{token}",
+
+                        "/assets/**"
+                ).permitAll()
+                .antMatchers(
+                        HttpMethod.POST,
+                        "/install",
+                        "/users/sign-in",
+                        "/users/sign-up",
+                        "/users/confirm",
+                        "/users/unlock",
+                        "/users/forgot-password",
+                        "/users/reset-password/{token}"
+                ).permitAll()
+                .antMatchers(
+                        HttpMethod.DELETE,
+                        "/users/sign-up"
+                ).permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage("/users/sign-in").permitAll()
                 .and().logout().permitAll();
@@ -37,4 +60,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .inMemoryAuthentication()
                 .withUser("user").password("password").roles("USER");
     }
+
+
 }
