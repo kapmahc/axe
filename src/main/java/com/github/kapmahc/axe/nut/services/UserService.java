@@ -36,6 +36,9 @@ public class UserService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void resetPassword(Locale locale, String ip, String token, ResetPasswordForm form) {
         Map<String, String> claim = jwtHelper.parse(token);
+        if (!ACTION_RESET_PASSWORD.equals(claim.get("act"))) {
+            throw new IllegalArgumentException(messageSource.getMessage("errors.bad-action", null, locale));
+        }
         User user = userRepository.findByUid(claim.get("uid"));
         if (user == null) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
@@ -47,10 +50,13 @@ public class UserService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void unlock(Locale locale, String ip, String token) {
         Map<String, String> claim = jwtHelper.parse(token);
+        if (!ACTION_UNLOCK.equals(claim.get("act"))) {
+            throw new IllegalArgumentException(messageSource.getMessage("errors.bad-action", null, locale));
+        }
         User user = userRepository.findByUid(claim.get("uid"));
         if (user == null) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
-        } else if (user.getLockedAt() == null) {
+        } else if (!user.isLock()) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.not-lock", null, locale));
         }
         user.setLockedAt(null);
@@ -61,10 +67,13 @@ public class UserService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void confirm(Locale locale, String ip, String token) {
         Map<String, String> claim = jwtHelper.parse(token);
+        if (!ACTION_CONFIRM.equals(claim.get("act"))) {
+            throw new IllegalArgumentException(messageSource.getMessage("errors.bad-action", null, locale));
+        }
         User user = userRepository.findByUid(claim.get("uid"));
         if (user == null) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
-        } else if (user.getConfirmedAt() != null) {
+        } else if (user.isConfirm()) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.already-confirm", null, locale));
         }
         user.setConfirmedAt(new Date());
@@ -94,10 +103,10 @@ public class UserService {
             log(user, ip, msg);
             throw new IllegalArgumentException(msg);
         }
-        if (user.getConfirmedAt() == null) {
+        if (!user.isConfirm()) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.not-confirm", null, locale));
         }
-        if (user.getLockedAt() != null) {
+        if (user.isLock()) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.is-lock", null, locale));
         }
         return user;
@@ -138,6 +147,16 @@ public class UserService {
         it.setMessage(message);
         it.setUser(user);
         logRepository.save(it);
+    }
+
+
+    public boolean can(User user, String role, String resourceType, Long resourceId) {
+        Role r = roleRepository.findByNameAndResourceTypeAndResourceId(role, resourceType, resourceId);
+        if (r == null) {
+            return false;
+        }
+        Policy policy = policyRepository.findByUserAndRole(user, r);
+        return policy != null && policy.isEnable();
     }
 
     public void deny(User user, String role) {
@@ -209,5 +228,9 @@ public class UserService {
     SecurityHelper securityHelper;
     @Resource
     JwtHelper jwtHelper;
+
+    public final static String ACTION_CONFIRM = "confirm";
+    public final static String ACTION_UNLOCK = "unlock";
+    public final static String ACTION_RESET_PASSWORD = "reset-password";
     private final static Logger logger = LoggerFactory.getLogger(UserService.class);
 }

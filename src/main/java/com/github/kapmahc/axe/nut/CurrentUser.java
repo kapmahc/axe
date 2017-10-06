@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 
 @Component("nut.currentUser")
-@Scope(proxyMode= ScopedProxyMode.TARGET_CLASS, value="session")
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
 public class CurrentUser implements Serializable {
     private String uid;
     private long id;

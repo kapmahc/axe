@@ -14,6 +14,11 @@ import java.util.Date;
 })
 @DynamicUpdate
 public class Policy implements Serializable {
+    public boolean isEnable() {
+        Date now = new Date();
+        return now.after(begin) && now.before(end);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

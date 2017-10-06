@@ -30,6 +30,15 @@ public class User implements Serializable {
         EMAIL, GOOGLE, FACEBOOK, WECHAT
     }
 
+    public boolean isConfirm() {
+        return confirmedAt != null;
+    }
+
+    public boolean isLock() {
+        return lockedAt != null;
+    }
+
+
     // https://en.gravatar.com/site/implement/images/java/
     public void setGravatarLogo() throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md = MessageDigest.getInstance("MD5");

@@ -1,5 +1,6 @@
 package com.github.kapmahc.axe;
 
+import com.github.kapmahc.axe.nut.services.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -9,6 +10,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import javax.annotation.Resource;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         HttpMethod.GET,
                         "/",
 
-"/users/logs",
                         "/install",
                         "/users/sign-in",
                         "/users/sign-up",
@@ -56,7 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/users/sign-up"
                 ).permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin().loginPage("/users/sign-in").failureForwardUrl("/users/sign-in")
+                .and().formLogin().usernameParameter("email").passwordParameter("password").loginPage("/users/sign-in").failureForwardUrl("/users/sign-in")
                 .and().logout().logoutUrl("/users/sign-out").logoutSuccessUrl("/users/sign-in");
     }
 
@@ -67,5 +70,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("user").password("password").roles("USER");
     }
 
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(detailsService).passwordEncoder(new BCryptPasswordEncoder());
+    }
 
+    @Resource
+    UserDetailsService detailsService;
 }

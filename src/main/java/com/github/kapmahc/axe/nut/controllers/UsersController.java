@@ -1,6 +1,5 @@
 package com.github.kapmahc.axe.nut.controllers;
 
-import com.github.kapmahc.axe.nut.CurrentUser;
 import com.github.kapmahc.axe.nut.forms.users.EmailForm;
 import com.github.kapmahc.axe.nut.forms.users.ResetPasswordForm;
 import com.github.kapmahc.axe.nut.forms.users.SignInForm;
@@ -30,6 +29,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Locale;
@@ -37,13 +37,14 @@ import java.util.Map;
 
 import static com.github.kapmahc.axe.Flash.ERROR;
 import static com.github.kapmahc.axe.Flash.NOTICE;
+import static com.github.kapmahc.axe.nut.services.UserService.*;
 
 @Controller("nut.usersController")
 @RequestMapping(value = "/users")
 public class UsersController {
     @GetMapping("/logs")
-    public String getLogs(Model model) {
-        logger.debug("current user {} {}",currentUser.getName(), currentUser.getUid());
+    public String getLogs(Model model, Principal principal) {
+        logger.debug("current user {}", principal.getName());
         return "nut/users/logs";
     }
     // ------------------------------------------
@@ -54,14 +55,13 @@ public class UsersController {
     }
 
     @PostMapping("/sign-in")
-    public String postSignIn(@Valid SignInForm signInForm, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
+    public String postSignIn(HttpSession session, @Valid SignInForm signInForm, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
+
         if (requestHelper.check(result, attributes)) {
             String ip = requestHelper.clientIp(request);
             try {
                 User user = userService.signIn(locale, ip, signInForm);
-                currentUser.setUid(user.getUid());
-                currentUser.setId(user.getId());
-                currentUser.setName(user.getName());
+                session.setAttribute("name", user.getName());
                 return "redirect:/";
             } catch (Exception e) {
                 e.printStackTrace();
@@ -111,7 +111,7 @@ public class UsersController {
             User user = userRepository.findByProviderTypeAndProviderId(User.Type.EMAIL, emailForm.getEmail());
             if (user == null) {
                 attributes.addFlashAttribute(ERROR, messageSource.getMessage("nut.errors.email-not-exist", null, locale));
-            } else if (user.getConfirmedAt() != null) {
+            } else if (user.isConfirm()) {
                 attributes.addFlashAttribute(ERROR, messageSource.getMessage("nut.errors.already-confirm", null, locale));
             } else {
                 sendEmail(request, locale, user, ACTION_CONFIRM);
@@ -150,7 +150,7 @@ public class UsersController {
             User user = userRepository.findByProviderTypeAndProviderId(User.Type.EMAIL, emailForm.getEmail());
             if (user == null) {
                 attributes.addFlashAttribute(ERROR, messageSource.getMessage("nut.errors.email-not-exist", null, locale));
-            } else if (user.getLockedAt() == null) {
+            } else if (!user.isLock()) {
                 attributes.addFlashAttribute(ERROR, messageSource.getMessage("nut.errors.not-lock", null, locale));
             } else {
                 sendEmail(request, locale, user, ACTION_UNLOCK);
@@ -255,12 +255,7 @@ public class UsersController {
 
     @Resource
     RequestHelper requestHelper;
-    @Resource
-    CurrentUser currentUser;
 
 
-    private final static String ACTION_CONFIRM = "confirm";
-    private final static String ACTION_UNLOCK = "unlock";
-    private final static String ACTION_RESET_PASSWORD = "reset-password";
     private final static Logger logger = LoggerFactory.getLogger(UsersController.class);
 }
