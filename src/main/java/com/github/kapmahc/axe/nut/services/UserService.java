@@ -1,6 +1,10 @@
 package com.github.kapmahc.axe.nut.services;
 
 import com.github.kapmahc.axe.nut.forms.InstallForm;
+import com.github.kapmahc.axe.nut.forms.users.ResetPasswordForm;
+import com.github.kapmahc.axe.nut.forms.users.SignInForm;
+import com.github.kapmahc.axe.nut.forms.users.SignUpForm;
+import com.github.kapmahc.axe.nut.helper.JwtHelper;
 import com.github.kapmahc.axe.nut.helper.SecurityHelper;
 import com.github.kapmahc.axe.nut.models.Log;
 import com.github.kapmahc.axe.nut.models.Policy;
@@ -21,18 +25,90 @@ import java.security.NoSuchAlgorithmException;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 @Service("nut.userService")
 @Transactional(readOnly = true)
 public class UserService {
     @Transactional(propagation = Propagation.REQUIRED)
+    public void resetPassword(Locale locale, String ip, String token, ResetPasswordForm form) {
+        Map<String, String> claim = jwtHelper.parse(token);
+        User user = userRepository.findByUid(claim.get("uid"));
+        if (user == null) {
+            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
+        }
+        user.setPassword(securityHelper.password(form.getPassword()));
+        log(user, ip, messageSource.getMessage("nut.logs.reset-password", null, locale));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void unlock(Locale locale, String ip, String token) {
+        Map<String, String> claim = jwtHelper.parse(token);
+        User user = userRepository.findByUid(claim.get("uid"));
+        if (user == null) {
+            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
+        } else if (user.getConfirmedAt() != null) {
+            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.not-lock", null, locale));
+        }
+        user.setLockedAt(null);
+        userRepository.save(user);
+        log(user, ip, messageSource.getMessage("nut.logs.unlock", null, locale));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void confirm(Locale locale, String ip, String token) {
+        Map<String, String> claim = jwtHelper.parse(token);
+        User user = userRepository.findByUid(claim.get("uid"));
+        if (user == null) {
+            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
+        } else if (user.getConfirmedAt() != null) {
+            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.already-confirm", null, locale));
+        }
+        user.setConfirmedAt(new Date());
+        userRepository.save(user);
+        log(user, ip, messageSource.getMessage("nut.logs.confirm", null, locale));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public User signUp(Locale locale, String ip, SignUpForm form) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        User user = userRepository.findByProviderTypeAndProviderId(User.Type.EMAIL, form.getEmail());
+        if (user == null) {
+            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-exist", null, locale));
+        }
+        user = addUser(form.getName(), form.getEmail(), form.getPassword());
+        log(user, ip, messageSource.getMessage("nut.log.sign-up", null, locale));
+        return user;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public User signIn(Locale locale, String ip, SignInForm form) {
+        User user = userRepository.findByProviderTypeAndProviderId(User.Type.EMAIL, form.getEmail());
+        if (user == null) {
+            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
+        }
+        if (!securityHelper.check(form.getPassword(), user.getPassword())) {
+            String msg = messageSource.getMessage("nut.errors.bad-password", null, locale);
+            log(user, ip, msg);
+            throw new IllegalArgumentException(msg);
+        }
+        if (user.getConfirmedAt() == null) {
+            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.not-confirm", null, locale));
+        }
+        if (user.getLockedAt() != null) {
+            throw new IllegalArgumentException(messageSource.getMessage("nut.errors.is-lock", null, locale));
+        }
+        return user;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
     public void install(Locale locale, String ip, InstallForm form) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         localeService.set(locale, "site.title", form.getTitle());
         localeService.set(locale, "site.subhead", form.getSubhead());
         User user = addUser(form.getName(), form.getEmail(), form.getPassword());
         log(user, ip, messageSource.getMessage("nut.logs.sign-up", null, locale));
-        confirmUser(user.getId());
+        user.setConfirmedAt(new Date());
+        userRepository.save(user);
         log(user, ip, messageSource.getMessage("nut.logs.confirm", null, locale));
         for (String n : new String[]{Role.ADMIN, Role.ROOT}) {
             allow(user, n, 20);
@@ -40,13 +116,8 @@ public class UserService {
         }
     }
 
-    public void confirmUser(long user) {
-        User it = userRepository.findById(user);
-        it.setConfirmedAt(new Date());
-        userRepository.save(it);
-    }
 
-    public User addUser(String name, String email, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    private User addUser(String name, String email, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         User it = new User();
         it.setName(name);
         it.setEmail(email);
@@ -134,4 +205,6 @@ public class UserService {
     MessageSource messageSource;
     @Resource
     SecurityHelper securityHelper;
+    @Resource
+    JwtHelper jwtHelper;
 }

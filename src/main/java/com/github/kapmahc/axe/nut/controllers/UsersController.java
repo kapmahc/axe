@@ -6,6 +6,7 @@ import com.github.kapmahc.axe.nut.forms.users.SignInForm;
 import com.github.kapmahc.axe.nut.forms.users.SignUpForm;
 import com.github.kapmahc.axe.nut.helper.EmailJobSender;
 import com.github.kapmahc.axe.nut.helper.JwtHelper;
+import com.github.kapmahc.axe.nut.helper.RequestHelper;
 import com.github.kapmahc.axe.nut.models.User;
 import com.github.kapmahc.axe.nut.repositories.UserRepository;
 import com.github.kapmahc.axe.nut.services.UserService;
@@ -30,6 +31,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.github.kapmahc.axe.Flash.ERROR;
+import static com.github.kapmahc.axe.Flash.NOTICE;
+
 @Controller("nut.usersController")
 @RequestMapping(value = "/users")
 public class UsersController {
@@ -39,8 +43,18 @@ public class UsersController {
     }
 
     @PostMapping("/sign-in")
-    public String postSignUp(@Valid SignInForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
-        // TODO
+    public String postSignIn(@Valid SignInForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
+        if (requestHelper.check(result, attributes)) {
+            String ip = requestHelper.clientIp(request);
+            try {
+                User user = userService.signIn(locale, ip, form);
+                request.getSession().setAttribute("uid", user.getUid());
+                return "redirect:/";
+            } catch (Exception e) {
+                e.printStackTrace();
+                attributes.addFlashAttribute(ERROR, e.getMessage());
+            }
+        }
         return "redirect:/users/sign-in";
     }
 
@@ -50,68 +64,154 @@ public class UsersController {
     }
 
     @PostMapping("/sign-up")
-    public String postInstall(@Valid SignUpForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        // TODO
+    public String postSignUp(@Valid SignUpForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        if (requestHelper.check(result, attributes)) {
+            if (form.getPassword().equals(form.getPasswordConfirmation())) {
+                String ip = requestHelper.clientIp(request);
+                try {
+                    User user = userService.signUp(locale, ip, form);
+                    sendEmail(locale, user, ACTION_CONFIRM);
+                    attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.confirm.notice", null, locale));
+                    return "redirect:/users/sign-in";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    attributes.addFlashAttribute(ERROR, e.getMessage());
+                }
+            } else {
+                attributes.addFlashAttribute(ERROR, messageSource.getMessage("validators.passwords-not-match", null, locale));
+            }
+        }
         return "redirect:/users/sign-up";
     }
 
     @GetMapping("/confirm")
-    public String getConfirm(EmailForm form, Model model) {
-        model.addAttribute("action", "confirm");
+    public String getConfirm(EmailForm form, Model model, Locale locale) {
+        String act = ACTION_CONFIRM;
+        model.addAttribute("action", act);
+        model.addAttribute("title", messageSource.getMessage("nut." + act + ".title", null, locale));
         return "nut/users/email-form";
     }
 
     @PostMapping("/confirm")
-    public String postConfirm(@Valid EmailForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
-        // TODO
+    public String postConfirm(@Valid EmailForm form, BindingResult result, final RedirectAttributes attributes, Locale locale) throws IOException {
+        if (requestHelper.check(result, attributes)) {
+            User user = userRepository.findByProviderTypeAndProviderId(User.Type.EMAIL, form.getEmail());
+            if (user == null) {
+                attributes.addFlashAttribute(ERROR, messageSource.getMessage("nut.errors.email-not-exist", null, locale));
+            } else if (user.getConfirmedAt() != null) {
+                attributes.addFlashAttribute(ERROR, messageSource.getMessage("nut.errors.already-confirm", null, locale));
+            } else {
+                sendEmail(locale, user, ACTION_CONFIRM);
+                attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.confirm.notice", null, locale));
+            }
+            return "redirect:/users/confirm";
+        }
         return "redirect:/users/sign-in";
     }
 
     @GetMapping("/confirm/{token}")
     public String getConfirm(@PathVariable("token") String token, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
 
-        return "nut/users/email-form";
+        String ip = requestHelper.clientIp(request);
+        try {
+            userService.confirm(locale, ip, token);
+            attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.confirm.success", null, locale));
+            return "redirect:/users/sign-in";
+        } catch (Exception e) {
+            e.printStackTrace();
+            attributes.addFlashAttribute(ERROR, e.getMessage());
+        }
+
+        return "redirect:/users/sign-in";
     }
 
     @GetMapping("/unlock")
-    public String getUnlock(EmailForm form, Model model) {
-        model.addAttribute("action", "unlock");
+    public String getUnlock(EmailForm form, Model model, Locale locale) {
+        String act = ACTION_UNLOCK;
+        model.addAttribute("action", act);
+        model.addAttribute("title", messageSource.getMessage("nut." + act + ".title", null, locale));
         return "nut/users/email-form";
     }
 
     @PostMapping("/unlock")
-    public String postUnlock(@Valid EmailForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
-        // TODO
-        return "redirect:/users/sign-in";
+    public String postUnlock(@Valid EmailForm form, BindingResult result, final RedirectAttributes attributes, Locale locale) throws IOException {
+        if (requestHelper.check(result, attributes)) {
+            User user = userRepository.findByProviderTypeAndProviderId(User.Type.EMAIL, form.getEmail());
+            if (user == null) {
+                attributes.addFlashAttribute(ERROR, messageSource.getMessage("nut.errors.email-not-exist", null, locale));
+            } else if (user.getLockedAt() == null) {
+                attributes.addFlashAttribute(ERROR, messageSource.getMessage("nut.errors.not-lock", null, locale));
+            } else {
+                sendEmail(locale, user, ACTION_UNLOCK);
+                attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.unlock.notice", null, locale));
+            }
+            return "redirect:/users/sign-in";
+        }
+        return "redirect:/users/unlock";
     }
 
     @GetMapping("/unlock/{token}")
     public String getUnlock(@PathVariable("token") String token, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
+        String ip = requestHelper.clientIp(request);
+        try {
+            userService.unlock(locale, ip, token);
+            attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.unlock.success", null, locale));
+            return "redirect:/users/sign-in";
+        } catch (Exception e) {
+            e.printStackTrace();
+            attributes.addFlashAttribute(ERROR, e.getMessage());
+        }
 
-        return "nut/users/email-form";
+        return "redirect:/users/sign-in";
     }
 
     @GetMapping("/forgot-password")
-    public String getForgotPassword(EmailForm form, Model model) {
-        model.addAttribute("action", "forgot-password");
+    public String getForgotPassword(EmailForm form, Model model, Locale locale) {
+        String act = "forgot-password";
+        model.addAttribute("action", act);
+        model.addAttribute("title", messageSource.getMessage("nut." + act + ".title", null, locale));
         return "nut/users/email-form";
     }
 
     @PostMapping("/forgot-password")
-    public String postForgotPassword(@Valid EmailForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
-        // TODO
-        return "redirect:/users/sign-in";
+    public String postForgotPassword(@Valid EmailForm form, BindingResult result, final RedirectAttributes attributes, Locale locale) throws IOException {
+        if (requestHelper.check(result, attributes)) {
+            User user = userRepository.findByProviderTypeAndProviderId(User.Type.EMAIL, form.getEmail());
+            if (user == null) {
+                attributes.addFlashAttribute(ERROR, messageSource.getMessage("nut.errors.email-not-exist", null, locale));
+            } else {
+                sendEmail(locale, user, ACTION_RESET_PASSWORD);
+                attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.forgot-password.notice", null, locale));
+            }
+            return "redirect:/users/sign-in";
+        }
+        return "redirect:/users/forgot-password";
     }
 
     @GetMapping("/reset-password/{token}")
-    public String getResetPassword(@PathVariable("token") String token, ResetPasswordForm form, Model model) {
+    public String getResetPassword(ResetPasswordForm form) {
         return "nut/users/reset-password";
     }
 
     @PostMapping("/reset-password/{token}")
     public String postResetPassword(@PathVariable("token") String token, @Valid ResetPasswordForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) {
-        // TODO
-        return "redirect:/users/reset-password";
+        if (requestHelper.check(result, attributes)) {
+            if (form.getPassword().equals(form.getPasswordConfirmation())) {
+                String ip = requestHelper.clientIp(request);
+                try {
+                    userService.resetPassword(locale, ip, token, form);
+                    attributes.addFlashAttribute(NOTICE, messageSource.getMessage("nut.reset-password.success", null, locale));
+                    return "redirect:/users/sign-in";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    attributes.addFlashAttribute(ERROR, e.getMessage());
+                }
+            } else {
+                attributes.addFlashAttribute(ERROR, messageSource.getMessage("validators.passwords-not-match", null, locale));
+            }
+        }
+
+        return "redirect:/users/reset-password/" + token;
     }
 
     private void sendEmail(Locale locale, User user, String action) throws IOException {
@@ -143,6 +243,9 @@ public class UsersController {
     JwtHelper jwtHelper;
     @Resource
     MessageSource messageSource;
+
+    @Resource
+    RequestHelper requestHelper;
 
 
     public final static String ACTION_CONFIRM = "confirm";
