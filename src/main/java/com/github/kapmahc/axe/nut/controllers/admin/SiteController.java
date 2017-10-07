@@ -103,6 +103,15 @@ public class SiteController {
                         run.maxMemory() / 1024 / 1024
                 )
         );
+        Package pkg = getClass().getPackage();
+        map.put(
+                "application",
+                String.format(
+                        "%s (%s)",
+                        pkg.getImplementationTitle(),
+                        pkg.getImplementationVersion()
+                )
+        );
         map.put("classpath", System.getProperty("java.class.path").replaceAll(":", "\n"));
         return map;
     }
