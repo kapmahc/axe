@@ -5,14 +5,17 @@ import com.github.kapmahc.axe.nut.repositories.LocaleRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 @Service("nut.localeService")
 @Transactional(readOnly = true)
 public class LocaleService {
     @CacheEvict(cacheNames = "locales", key = "#locale.#code")
+    @Transactional(propagation = Propagation.REQUIRED)
     public void set(java.util.Locale locale, String code, String message) {
         String lang = locale2lang(locale);
         Locale it = localeRepository.findByLangAndCode(lang, code);
@@ -20,6 +23,7 @@ public class LocaleService {
             it = new Locale();
             it.setCode(code);
             it.setLang(lang);
+            it.setUpdatedAt(new Date());
         }
         it.setMessage(message);
         localeRepository.save(it);

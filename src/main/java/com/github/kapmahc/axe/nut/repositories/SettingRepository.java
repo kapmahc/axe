@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository("nut.settingRepository")
 public interface SettingRepository extends CrudRepository<Setting, Long> {
+    Setting findByKey(String k);
 }

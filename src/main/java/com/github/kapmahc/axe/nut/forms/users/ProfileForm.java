@@ -4,7 +4,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class ProfileForm implements Serializable {
-    @NotNull
     private String email;
     @NotNull
     private String name;

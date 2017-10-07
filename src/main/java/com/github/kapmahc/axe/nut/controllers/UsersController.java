@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -81,17 +82,15 @@ public class UsersController {
     }
 
     @PostMapping("/profile")
-    public String postProfile(Principal principal, @Valid ProfileForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String postProfile(HttpSession session, Principal principal, @Valid ProfileForm form, BindingResult result, final RedirectAttributes attributes) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         if (requestHelper.check(result, attributes)) {
-
-            String ip = requestHelper.clientIp(request);
             try {
-                userService.setName(locale, ip, form);
+                userService.setName(principal.getName(), form);
+                session.setAttribute("name", form.getName());
             } catch (Exception e) {
                 e.printStackTrace();
                 attributes.addFlashAttribute(ERROR, e.getMessage());
             }
-
         }
         return "redirect:/users/profile";
     }

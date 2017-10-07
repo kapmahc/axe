@@ -16,7 +16,7 @@ CREATE INDEX idx_locales_lang
 CREATE TABLE settings (
   id         BIGSERIAL PRIMARY KEY,
   _key       VARCHAR(255)                NOT NULL,
-  value      TEXT                        NOT NULL,
+  value      BYTEA                       NOT NULL,
   encode     BOOLEAN                     NOT NULL DEFAULT FALSE,
   created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL

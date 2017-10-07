@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="main" class="row">
+    <div th:if="${notice} != null" th:utext="${notice}" class="card-panel teal lighten-2">notice</div>
+    <div th:if="${warning} != null" th:utext="${warning}" class="card-panel lime accent-2">warning</div>
+    <div th:if="${error} != null" th:utext="${error}" class="card-panel deep-orange accent-4">error</div>
+</div>
+</body>
+</html>

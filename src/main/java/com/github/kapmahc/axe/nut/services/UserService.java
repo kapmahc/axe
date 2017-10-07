@@ -35,9 +35,10 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class UserService {
     @Transactional(propagation = Propagation.REQUIRED)
-    public void setName(Locale locale, String uid, ProfileForm form) {
+    public void setName(String uid, ProfileForm form) {
         User user = userRepository.findByUid(uid);
         user.setName(form.getName());
+        user.setUpdatedAt(new Date());
         userRepository.save(user);
     }
 
@@ -50,7 +51,9 @@ public class UserService {
         if (!securityHelper.check(form.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.bad-password", null, locale));
         }
+
         user.setPassword(securityHelper.password(form.getNewPassword()));
+        user.setUpdatedAt(new Date());
         userRepository.save(user);
         log(user, ip, messageSource.getMessage("nut.logs.change-password", null, locale));
     }
@@ -65,7 +68,9 @@ public class UserService {
         if (user == null) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.email-not-exist", null, locale));
         }
+
         user.setPassword(securityHelper.password(form.getPassword()));
+        user.setUpdatedAt(new Date());
         userRepository.save(user);
         log(user, ip, messageSource.getMessage("nut.logs.reset-password", null, locale));
     }
@@ -82,7 +87,9 @@ public class UserService {
         } else if (!user.isLock()) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.not-lock", null, locale));
         }
+
         user.setLockedAt(null);
+        user.setUpdatedAt(new Date());
         userRepository.save(user);
         log(user, ip, messageSource.getMessage("nut.logs.unlock", null, locale));
     }
@@ -99,7 +106,9 @@ public class UserService {
         } else if (user.isConfirm()) {
             throw new IllegalArgumentException(messageSource.getMessage("nut.errors.already-confirm", null, locale));
         }
+
         user.setConfirmedAt(new Date());
+        user.setUpdatedAt(new Date());
         userRepository.save(user);
         log(user, ip, messageSource.getMessage("nut.logs.confirm", null, locale));
     }
@@ -121,6 +130,7 @@ public class UserService {
         user.setLastSignInIp(user.getCurrentSignInIp());
         user.setCurrentSignInAt(null);
         user.setCurrentSignInIp("");
+        user.setUpdatedAt(new Date());
         userRepository.save(user);
         log(user, ip, messageSource.getMessage("nut.logs.sign-out", null, locale));
     }
@@ -141,6 +151,7 @@ public class UserService {
         User user = addUser(form.getName(), form.getEmail(), form.getPassword());
         log(user, ip, messageSource.getMessage("nut.logs.sign-up", null, locale));
         user.setConfirmedAt(new Date());
+        user.setUpdatedAt(new Date());
         userRepository.save(user);
         log(user, ip, messageSource.getMessage("nut.logs.confirm", null, locale));
         for (String n : new String[]{Role.ADMIN, Role.ROOT}) {
@@ -159,6 +170,7 @@ public class UserService {
         it.setProviderType(User.Type.EMAIL);
         it.setGravatarLogo();
         it.setPassword(securityHelper.password(password));
+        it.setUpdatedAt(new Date());
         userRepository.save(it);
         return it;
     }
@@ -218,6 +230,7 @@ public class UserService {
         }
         p.setBegin(begin);
         p.setEnd(end);
+        p.setUpdatedAt(new Date());
         policyRepository.save(p);
     }
 
