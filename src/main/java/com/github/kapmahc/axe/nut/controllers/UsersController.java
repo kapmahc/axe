@@ -1,9 +1,6 @@
 package com.github.kapmahc.axe.nut.controllers;
 
-import com.github.kapmahc.axe.nut.forms.users.EmailForm;
-import com.github.kapmahc.axe.nut.forms.users.ResetPasswordForm;
-import com.github.kapmahc.axe.nut.forms.users.SignInForm;
-import com.github.kapmahc.axe.nut.forms.users.SignUpForm;
+import com.github.kapmahc.axe.nut.forms.users.*;
 import com.github.kapmahc.axe.nut.helper.EmailJobSender;
 import com.github.kapmahc.axe.nut.helper.JwtHelper;
 import com.github.kapmahc.axe.nut.helper.RequestHelper;
@@ -41,11 +38,62 @@ import static com.github.kapmahc.axe.nut.services.UserService.*;
 @Controller("nut.usersController")
 @RequestMapping(value = "/users")
 public class UsersController {
+
     @GetMapping("/logs")
     public String getLogs(Principal principal, Model model) {
         User user = userRepository.findByUid(principal.getName());
         model.addAttribute("user", user);
         return "nut/users/logs";
+    }
+
+    // ------------------------------------------
+    @GetMapping("/change-password")
+    public String getChangePassword(ChangePasswordForm changePasswordForm) {
+        return "nut/users/change-password";
+    }
+
+    @PostMapping("/change-password")
+    public String postChangePassword(Principal principal, @Valid ChangePasswordForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        if (requestHelper.check(result, attributes)) {
+            if (form.getNewPassword().equals(form.getPasswordConfirmation())) {
+                String ip = requestHelper.clientIp(request);
+                try {
+                    userService.changePassword(locale, ip, principal.getName(), form);
+                    attributes.addFlashAttribute(NOTICE, messageSource.getMessage("flash.success", null, locale));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    attributes.addFlashAttribute(ERROR, e.getMessage());
+                }
+            } else {
+                attributes.addFlashAttribute(ERROR, messageSource.getMessage("validators.passwords-not-match", null, locale));
+            }
+        }
+        return "redirect:/users/change-password";
+    }
+
+    // ------------------------------------------
+    @GetMapping("/profile")
+    public String getProfile(ProfileForm profileForm, Principal principal) {
+        User user = userRepository.findByUid(principal.getName());
+        profileForm.setEmail(user.getEmail());
+        profileForm.setName(user.getName());
+        return "nut/users/profile";
+    }
+
+    @PostMapping("/profile")
+    public String postProfile(Principal principal, @Valid ProfileForm form, BindingResult result, final RedirectAttributes attributes, Locale locale, HttpServletRequest request) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        if (requestHelper.check(result, attributes)) {
+
+            String ip = requestHelper.clientIp(request);
+            try {
+                userService.setName(locale, ip, form);
+            } catch (Exception e) {
+                e.printStackTrace();
+                attributes.addFlashAttribute(ERROR, e.getMessage());
+            }
+
+        }
+        return "redirect:/users/profile";
     }
 
 
@@ -83,6 +131,8 @@ public class UsersController {
         }
         return "redirect:/users/sign-up";
     }
+
+    // -------------------------------------------------
 
     @GetMapping("/confirm")
     public String getConfirm(EmailForm emailForm, Model model, Locale locale) {
