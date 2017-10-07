@@ -2,6 +2,7 @@
 <html
         xmlns:th="http://www.thymeleaf.org"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
         layout:decorate="~{layouts/dashboard/index}">
 <head>
     <title th:text="#{nut.dashboard.title}">title</title>
@@ -23,15 +24,48 @@
                 <li class="collection-item">
                     <a href="/users/change-password" th:text="#{nut.users.change-password.title}">title</a>
                 </li>
+                <li class="collection-item">
+                    <a href="/attachments" th:text="#{nut.attachments.index.title}">title</a>
+                </li>
             </ul>
         </div>
-        <div class="col s12 m4">
+        <div sec:authorize="hasRole('ROLE_admin')" class="col s12 m4">
             <ul class="collection with-header">
                 <li class="collection-header">
                     <h4 th:text="#{nut.dashboard.site}">title</h4>
                 </li>
                 <li class="collection-item">
-                    <a href="/users/logs" th:text="#{nut.users.logs.title}">title</a>
+                    <a href="/admin/site/status" th:text="#{nut.admin.site.status.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/site/info" th:text="#{nut.admin.site.info.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/site/author" th:text="#{nut.admin.site.author.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/site/seo" th:text="#{nut.admin.site.seo.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/site/smtp" th:text="#{nut.admin.site.smtp.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/locales" th:text="#{nut.admin.locales.index.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/cards" th:text="#{nut.admin.cards.index.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/links" th:text="#{nut.admin.links.index.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/friend-links" th:text="#{nut.admin.friend-links.index.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/users" th:text="#{nut.admin.users.index.title}">title</a>
+                </li>
+                <li class="collection-item">
+                    <a href="/admin/leave-words" th:text="#{nut.admin.leave-words.index.title}">title</a>
                 </li>
             </ul>
         </div>

@@ -81,4 +81,5 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 - [thymeleaf](http://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html)
 - [thymeleaf-layout](https://ultraq.github.io/thymeleaf-layout-dialect/Installation.html)
 - [For gmail smtp](http://stackoverflow.com/questions/20337040/gmail-smtp-debug-error-please-log-in-via-your-web-browser)
+- [material icons](https://material.io/icons/)
 - [favicon.ico](http://icoconvert.com/)

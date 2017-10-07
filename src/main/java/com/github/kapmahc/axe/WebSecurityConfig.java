@@ -62,6 +62,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         HttpMethod.DELETE,
                         "/users/sign-up"
                 ).permitAll()
+                .antMatchers(
+                        "/admin/**"
+                ).hasRole(com.github.kapmahc.axe.nut.models.Role.ADMIN)
                 .anyRequest().authenticated()
                 .and().formLogin().usernameParameter("email").passwordParameter("password").loginPage("/users/sign-in").loginProcessingUrl("/login").successHandler(authenticationSuccessHandler).failureHandler(authenticationFailureHandler)
                 .and().logout().invalidateHttpSession(true).logoutSuccessHandler(logoutSuccessHandler);

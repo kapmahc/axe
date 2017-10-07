@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/dashboard/index}">
+<head>
+    <title th:text="#{nut.admin.site.status.title}">title</title>
+</head>
+<body>
+
+<li th:fragment="show">
+    <div class="collapsible-header">
+        <i class="material-icons">[[${icon}]]</i>
+        [[${title}]]
+    </div>
+    <div class="collapsible-body">
+        <table class="bordered highlight responsive-table">
+            <tbody>
+            <tr th:each="it : ${items}">
+                <td th:text="${it.key}">key</td>
+                <td th:text="${it.value}"><pre>value</pre></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</li>
+
+<div layout:fragment="content" class="section">
+    <div class="row">
+        <ul class="collapsible" data-collapsible="accordion">
+            <li th:replace="::show (title=#{nut.admin.site.status.os},icon='cloud',items=${os})"></li>
+            <li th:replace="::show (title=#{nut.admin.site.status.network},icon='wifi_tethering',items=${network})"></li>
+            <li th:replace="::show (title=#{nut.admin.site.status.java},icon='android',items=${java})"></li>
+            <li th:replace="::show (title=#{nut.admin.site.status.redis},icon='autorenew',items=${redis})"></li>
+            <li th:replace="::show (title=#{nut.admin.site.status.rabbitmq},icon='speaker_phone',items=${rabbitmq})"></li>
+            <li th:replace="::show (title=#{nut.admin.site.status.database},icon='storage',items=${database})"></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
