@@ -1,38 +1,25 @@
-package nut
+package web
 
 import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
-	"sync"
 
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 )
 
-var (
-	_security    *Security
-	securityOnce sync.Once
-)
-
-// SECURITY security handle
-func SECURITY() *Security {
-	securityOnce.Do(func() {
-		buf, err := base64.StdEncoding.DecodeString(viper.GetString("secret"))
-		if err != nil {
-			log.Error(err)
-			return
-		}
-		cip, err := aes.NewCipher(buf)
-		if err != nil {
-			log.Error(err)
-			return
-		}
-		_security = &Security{cip: cip}
-	})
-	return _security
+// NewSecurity new security
+func NewSecurity(s string) (*Security, error) {
+	buf, err := base64.StdEncoding.DecodeString(s)
+	if err != nil {
+		return nil, err
+	}
+	cip, err := aes.NewCipher(buf)
+	if err != nil {
+		return nil, err
+	}
+	return &Security{cip: cip}, nil
 }
 
 // Security security helper

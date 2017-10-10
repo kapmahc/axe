@@ -1,25 +1,16 @@
-package nut
+package web
 
 import (
 	"bytes"
 	"encoding/gob"
-	"sync"
 	"time"
 
 	"github.com/garyburd/redigo/redis"
 )
 
-var (
-	_cache    *Cache
-	cacheOnce sync.Once
-)
-
-// CACHE cache handle
-func CACHE() *Cache {
-	cacheOnce.Do(func() {
-		_cache = &Cache{pool: Redis(), prefix: "cache://"}
-	})
-	return _cache
+// NewCache new cache
+func NewCache(pool *redis.Pool, prefix string) *Cache {
+	return &Cache{pool: pool, prefix: prefix}
 }
 
 // Cache cache

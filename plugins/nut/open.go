@@ -2,14 +2,72 @@ package nut
 
 import (
 	"encoding/base64"
+	"fmt"
+	"time"
 
+	"github.com/garyburd/redigo/redis"
+	"github.com/go-pg/pg"
+	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 )
 
-// Open read config file and init beans
-func Open(f cli.ActionFunc) cli.ActionFunc {
+var (
+	_db       *pg.DB
+	_redis    *redis.Pool
+	_cache    *web.Cache
+	_security *web.Security
+	_settings *web.Settings
+)
+
+// DB db handle
+func DB() *pg.DB {
+	return _db
+}
+
+// CACHE cache handle
+func CACHE() *web.Cache {
+	return _cache
+}
+
+// SETTINGS settings handle
+func SETTINGS() *web.Settings {
+	return _settings
+}
+
+// SECURITY security handle
+func SECURITY() *web.Security {
+	return _security
+}
+
+// REDIS redis pool handle
+func REDIS() *redis.Pool {
+	return _redis
+}
+
+// -------------------------
+
+func openDB() (*pg.DB, error) {
+	args := viper.GetStringMap("postgresql")
+	opt, err := pg.ParseURL(fmt.Sprintf(
+		"postgres://%s:%s@%s:%d/%s?sslmode=%s",
+		args["user"],
+		args["password"],
+		args["host"],
+		args["port"],
+		args["dbname"],
+		args["sslmode"],
+	))
+	if err != nil {
+		return nil, err
+	}
+	db := pg.Connect(opt)
+	return db, nil
+}
+
+// Open read config file
+func Open(f cli.ActionFunc, beans bool) cli.ActionFunc {
 	viper.SetEnvPrefix("axe")
 	viper.BindEnv("env")
 
@@ -18,10 +76,46 @@ func Open(f cli.ActionFunc) cli.ActionFunc {
 	viper.AddConfigPath(".")
 
 	return func(c *cli.Context) error {
-		if err := viper.ReadInConfig(); err != nil {
+		err := viper.ReadInConfig()
+		if err != nil {
 			return err
 		}
 		log.Infof("read config from %s", viper.ConfigFileUsed())
+		if beans {
+			// ------------
+			_db, err = openDB()
+			if err != nil {
+				return err
+			}
+			// -------------
+			_redis = &redis.Pool{
+				MaxIdle:     3,
+				IdleTimeout: 240 * time.Second,
+				Dial: func() (redis.Conn, error) {
+					c, e := redis.Dial(
+						"tcp",
+						fmt.Sprintf(
+							"%s:%d",
+							viper.GetString("redis.host"),
+							viper.GetInt("redis.port"),
+						),
+					)
+					if e != nil {
+						return nil, e
+					}
+					if _, e = c.Do("SELECT", viper.GetInt("redis.db")); e != nil {
+						c.Close()
+						return nil, e
+					}
+					return c, nil
+				},
+				TestOnBorrow: func(c redis.Conn, t time.Time) error {
+					_, err := c.Do("PING")
+					return err
+				},
+			}
+			// ------------
+		}
 		return f(c)
 	}
 }

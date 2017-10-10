@@ -269,7 +269,7 @@ func init() {
 						Name: "https, s",
 					},
 				},
-				Action: Open(generateNginxConf),
+				Action: Open(generateNginxConf, true),
 			},
 			{
 				Name:    "openssl",
@@ -344,7 +344,7 @@ func init() {
 						fmt.Println(k)
 					}
 					return nil
-				}),
+				}, true),
 			},
 			{
 				Name:    "clear",
@@ -352,7 +352,7 @@ func init() {
 				Aliases: []string{"c"},
 				Action: Open(func(_ *cli.Context) error {
 					return CACHE().Flush()
-				}),
+				}, true),
 			},
 		},
 	})
@@ -366,37 +366,37 @@ func init() {
 				Name:    "example",
 				Usage:   "scripts example for create database and user",
 				Aliases: []string{"e"},
-				Action:  Open(databaseExample),
+				Action:  Open(databaseExample, false),
 			},
 			{
 				Name:    "migrate",
 				Usage:   "migrate the DB to the most recent version available",
 				Aliases: []string{"m"},
-				Action:  Open(runDatabase("up")),
+				Action:  Open(runDatabase("up"), true),
 			},
 			{
 				Name:    "rollback",
 				Usage:   "roll back the version by 1",
 				Aliases: []string{"r"},
-				Action:  Open(runDatabase("down")),
+				Action:  Open(runDatabase("down"), true),
 			},
 			{
 				Name:    "version",
 				Usage:   "dump the migration status for the current DB",
 				Aliases: []string{"v"},
-				Action:  Open(runDatabase("version")),
+				Action:  Open(runDatabase("version"), true),
 			},
 			{
 				Name:    "connect",
 				Usage:   "connect database",
 				Aliases: []string{"c"},
-				Action:  Open(connectDatabase),
+				Action:  Open(connectDatabase, false),
 			},
 			{
 				Name:    "create",
 				Usage:   "create database",
 				Aliases: []string{"n"},
-				Action:  Open(createDatabase),
+				Action:  Open(createDatabase, false),
 			},
 			{
 				Name:    "drop",
