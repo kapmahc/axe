@@ -31,7 +31,7 @@ type Settings struct {
 }
 
 // Set set
-func (p *Settings) Set(key string, obj interface{}, encode bool) error {
+func (p *Settings) Set(tx *pg.Tx, key string, obj interface{}, encode bool) error {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
 	err := enc.Encode(obj)
@@ -47,33 +47,24 @@ func (p *Settings) Set(key string, obj interface{}, encode bool) error {
 		val = buf.Bytes()
 	}
 
-	tx, err := p.db.Begin()
-	if err != nil {
-		return err
-	}
-
 	var it Setting
-	err = p.db.Model(&it).Column("id").Where("key = ?", key).Select()
+	now := time.Now()
+	err = tx.Model(&it).Column("id").Where("key = ?", key).Select()
 	if err == nil {
-		it.Updated = time.Now()
+		it.Updated = now
 		it.Value = val
 		it.Encode = encode
-		_, err = p.db.Model(&it).Column("value", "encode", "updated").Update()
+		_, err = tx.Model(&it).Column("value", "encode", "updated").Update()
 	} else if err == pg.ErrNoRows {
-		err = p.db.Insert(&Setting{
+		err = tx.Insert(&Setting{
 			Key:     key,
 			Value:   val,
 			Encode:  encode,
-			Updated: time.Now(),
-			Created: time.Now(),
+			Updated: now,
+			Created: now,
 		})
 	}
 
-	if err == nil {
-		err = tx.Commit()
-	} else {
-		err = tx.Rollback()
-	}
 	return err
 }
 
