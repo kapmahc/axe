@@ -1,0 +1,17 @@
+# Go
+/vendor/*/
+
+# Javascript
+/node_modules/
+
+# Build
+/dist
+/dist.tar.bz2
+
+# Editor
+.*.swp
+.*.un~
+
+# Test
+/tmp
+/config.toml
