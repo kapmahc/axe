@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	_ "github.com/kapmahc/axe/db/migrations"
 	_ "github.com/kapmahc/axe/plugins/erp"
 	_ "github.com/kapmahc/axe/plugins/forum"
 	_ "github.com/kapmahc/axe/plugins/mall"

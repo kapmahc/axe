@@ -1,27 +1,33 @@
 package nut
 
 import (
-	"crypto/rand"
 	"encoding/base64"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"github.com/urfave/cli"
 )
 
 // Open read config file and init beans
-func Open() error {
-	return nil
-}
+func Open(f cli.ActionFunc) cli.ActionFunc {
+	viper.SetEnvPrefix("axe")
+	viper.BindEnv("env")
 
-// RandomBytes random bytes
-func RandomBytes(l int) ([]byte, error) {
-	buf := make([]byte, l)
-	if _, err := rand.Read(buf); err != nil {
-		return nil, err
+	viper.SetConfigName("config")
+	viper.SetConfigType("toml")
+	viper.AddConfigPath(".")
+
+	return func(c *cli.Context) error {
+		if err := viper.ReadInConfig(); err != nil {
+			return err
+		}
+		log.Infof("read config from %s", viper.ConfigFileUsed())
+		return f(c)
 	}
-	return buf, nil
 }
 
 func init() {
+	viper.SetDefault("env", "development")
 	viper.SetDefault("aws", map[string]interface{}{
 		"access_key_id":     "change-me",
 		"secret_access_key": "change-me",
