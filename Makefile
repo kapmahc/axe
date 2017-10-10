@@ -1,5 +1,5 @@
 dist=dist
-pkg=github.com/kapmahc/axe/web
+pkg=github.com/kapmahc/axe/plugins/nut
 theme=moon
 
 VERSION=`git rev-parse --short HEAD`
@@ -14,8 +14,13 @@ backend:
 	-cp -r db locales templates themes package.json package-lock.json $(dist)/
 	tar jcf dist.tar.bz2 $(dist)
 
+
+
 init:
 	govendor sync
+	npm install
+
+
 
 clean:
 	-rm -r $(dist) $(dist).tar.bz2
