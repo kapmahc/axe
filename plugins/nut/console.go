@@ -336,7 +336,7 @@ func init() {
 				Usage:   "list all cache keys",
 				Aliases: []string{"l"},
 				Action: Open(func(_ *cli.Context) error {
-					keys, err := CacheKeys()
+					keys, err := CACHE().Keys()
 					if err != nil {
 						return err
 					}
@@ -351,7 +351,7 @@ func init() {
 				Usage:   "clear cache items",
 				Aliases: []string{"c"},
 				Action: Open(func(_ *cli.Context) error {
-					return CacheFlush()
+					return CACHE().Flush()
 				}),
 			},
 		},
