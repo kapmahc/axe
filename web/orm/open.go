@@ -4,6 +4,11 @@ import "database/sql"
 
 var _db *sql.DB
 
+// DB db
+func DB() *sql.DB {
+	return _db
+}
+
 // Tx transaction
 func Tx(f func(*sql.Tx) error) error {
 	tx, er := _db.Begin()
@@ -18,6 +23,14 @@ func Tx(f func(*sql.Tx) error) error {
 }
 
 // Open open database
-func Open(db *sql.DB) {
+func Open(driver, source string) error {
+	db, err := sql.Open(driver, source)
+	if err != nil {
+		return err
+	}
+	if err = db.Ping(); err != nil {
+		return err
+	}
 	_db = db
+	return nil
 }

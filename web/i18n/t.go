@@ -2,31 +2,10 @@ package i18n
 
 import (
 	"bytes"
-	"database/sql"
 	"errors"
 	"fmt"
 	"html/template"
-
-	"github.com/kapmahc/axe/web/orm"
 )
-
-// Languages languages
-func Languages(db *sql.DB) ([]string, error) {
-	rows, err := db.Query(orm.Q("i18n.languages"))
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []string
-	for rows.Next() {
-		var name string
-		if err = rows.Scan(&name); err != nil {
-			return nil, err
-		}
-		items = append(items, name)
-	}
-	return items, nil
-}
 
 // H html
 func H(lang, code string, obj interface{}) (string, error) {

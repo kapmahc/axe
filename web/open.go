@@ -1,7 +1,6 @@
 package web
 
 import (
-	"database/sql"
 	"fmt"
 	"time"
 
@@ -29,16 +28,4 @@ func OpenRedis(host string, port, db int) *redis.Pool {
 			return err
 		},
 	}
-}
-
-// OpenDB open database
-func OpenDB(driver, source string) (*sql.DB, error) {
-	db, err := sql.Open(driver, source)
-	if err != nil {
-		return nil, err
-	}
-	if err = db.Ping(); err != nil {
-		return nil, err
-	}
-	return db, nil
 }

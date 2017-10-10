@@ -1,7 +1,6 @@
 package i18n
 
 import (
-	"database/sql"
 	"os"
 	"path/filepath"
 
@@ -11,12 +10,16 @@ import (
 	"golang.org/x/text/language"
 )
 
+var (
+	_languages []language.Tag
+)
+
 // Open load locales from database, filesystem
-func Open(db *sql.DB, dir string) error {
+func Open(dir string) error {
 	if err := loadFromFileSystem(dir); err != nil {
 		return err
 	}
-	if err := loadFromDb(db); err != nil {
+	if err := loadFromDb(); err != nil {
 		return err
 	}
 	return nil
@@ -37,6 +40,7 @@ func loadFromFileSystem(dir string) error {
 		}
 		lang := tag.String()
 		log.Info("find locale ", lang)
+		_languages = append(_languages, tag)
 
 		cfg, err := ini.Load(path)
 		if err != nil {
@@ -54,8 +58,8 @@ func loadFromFileSystem(dir string) error {
 	})
 }
 
-func loadFromDb(db *sql.DB) error {
-	rows, err := db.Query(orm.Q("i18n.locales"))
+func loadFromDb() error {
+	rows, err := orm.DB().Query(orm.Q("i18n.locales"))
 	if err != nil {
 		return err
 	}

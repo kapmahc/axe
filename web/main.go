@@ -27,13 +27,7 @@ func Main() error {
 	app.Copyright = Copyright
 	app.Usage = Usage
 	app.EnableBashCompletion = true
-	app.Commands = make([]cli.Command, 0)
-
-	Loop(func(p Plugin) error {
-		items := p.Shell()
-		app.Commands = append(app.Commands, items...)
-		return nil
-	})
+	app.Commands = _commands
 
 	return app.Run(os.Args)
 
