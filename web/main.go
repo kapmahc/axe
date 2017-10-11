@@ -2,7 +2,7 @@ package web
 
 import (
 	"fmt"
-	"os"
+	"sort"
 	"time"
 
 	"github.com/urfave/cli"
@@ -16,10 +16,10 @@ func RegisterCommand(args ...cli.Command) {
 }
 
 // Main entry
-func Main() error {
+func Main(args ...string) error {
 
 	app := cli.NewApp()
-	app.Name = os.Args[0]
+	app.Name = args[0]
 	app.Version = fmt.Sprintf("%s (%s)", Version, BuildTime)
 	app.Authors = []cli.Author{
 		cli.Author{
@@ -36,6 +36,9 @@ func Main() error {
 	app.EnableBashCompletion = true
 	app.Commands = _commands
 
-	return app.Run(os.Args)
+	sort.Sort(cli.FlagsByName(app.Flags))
+	sort.Sort(cli.CommandsByName(app.Commands))
+
+	return app.Run(args)
 
 }

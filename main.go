@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	_ "github.com/kapmahc/axe/db/migrations"
 	_ "github.com/kapmahc/axe/plugins/erp"
@@ -17,7 +18,7 @@ import (
 )
 
 func main() {
-	if err := web.Main(); err != nil {
+	if err := web.Main(os.Args...); err != nil {
 		log.Fatal(err)
 	}
 }

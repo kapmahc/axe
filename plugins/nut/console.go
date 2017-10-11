@@ -405,5 +405,29 @@ func init() {
 		},
 	})
 
+	// --------------------
+	web.RegisterCommand(cli.Command{
+		Name:    "server",
+		Aliases: []string{"s"},
+		Usage:   "start the app server",
+		Action: Open(func(_ *cli.Context) error {
+			go func() {
+				// ----------
+				host, err := os.Hostname()
+				if err != nil {
+					log.Error(err)
+				}
+				for {
+					if err := JOBBER().Receive(host); err != nil {
+						log.Error(err)
+						time.Sleep(5 * time.Second)
+					}
+				}
+			}()
+			// -------
+			return listen()
+		}, true),
+	})
+	// --------------------
 	migrations.SetTableName("schema_migrations")
 }
