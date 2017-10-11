@@ -7,11 +7,13 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/go-pg/migrations"
 	"github.com/go-pg/pg"
+	"github.com/gorilla/mux"
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -422,6 +424,29 @@ func init() {
 			// -------
 			return listen()
 		}, true),
+	})
+
+	// --------------------
+	web.RegisterCommand(cli.Command{
+		Name:    "routes",
+		Aliases: []string{"rt"},
+		Usage:   "print out all defined routes",
+		Action: func(_ *cli.Context) error {
+			tpl := "%-7s %s\n"
+			fmt.Printf(tpl, "METHOD", "PATH")
+			return _router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+				pat, err := route.GetPathTemplate()
+				if err != nil {
+					return err
+				}
+				mtd, err := route.GetMethods()
+				if err != nil {
+					return err
+				}
+				fmt.Printf(tpl, strings.Join(mtd, ","), pat)
+				return nil
+			})
+		},
 	})
 	// --------------------
 	migrations.SetTableName("schema_migrations")
