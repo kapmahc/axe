@@ -105,6 +105,12 @@
 			"revisionTime": "2017-02-24T19:38:04Z"
 		},
 		{
+			"checksumSHA1": "dxwmtflRNX8Q+gtB5EchmMwFnpQ=",
+			"path": "github.com/gorilla/sessions",
+			"revision": "a3acf13e802c358d65f249324d14ed24aac11370",
+			"revisionTime": "2017-10-08T21:47:40Z"
+		},
+		{
 			"checksumSHA1": "Hp4nitbU8nyDAi+q3WwMqpOjFQw=",
 			"path": "github.com/hashicorp/hcl",
 			"revision": "42e33e2d55a0ff1d6263f738896ea8c13571a8d0",

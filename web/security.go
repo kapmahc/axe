@@ -4,18 +4,13 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"encoding/base64"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 // NewSecurity new security
-func NewSecurity(s string) (*Security, error) {
-	buf, err := base64.StdEncoding.DecodeString(s)
-	if err != nil {
-		return nil, err
-	}
-	cip, err := aes.NewCipher(buf)
+func NewSecurity(key []byte) (*Security, error) {
+	cip, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}

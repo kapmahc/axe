@@ -7,6 +7,7 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/go-pg/pg"
+	"github.com/gorilla/sessions"
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -14,13 +15,14 @@ import (
 )
 
 var (
-	_db       *pg.DB
-	_redis    *redis.Pool
-	_cache    *web.Cache
-	_security *web.Security
-	_settings *web.Settings
-	_jobber   *web.Jobber
-	_i18n     *web.I18n
+	_db           *pg.DB
+	_redis        *redis.Pool
+	_sessionStore sessions.Store
+	_cache        *web.Cache
+	_security     *web.Security
+	_settings     *web.Settings
+	_jobber       *web.Jobber
+	_i18n         *web.I18n
 )
 
 // DB db handle
@@ -143,10 +145,15 @@ func Open(f cli.ActionFunc, beans bool) cli.ActionFunc {
 			// -------------
 			openRedis()
 			// ------------
-			_security, err = web.NewSecurity(viper.GetString("secret"))
+			secret, err := base64.StdEncoding.DecodeString(viper.GetString("secret"))
 			if err != nil {
 				return err
 			}
+			_security, err = web.NewSecurity(secret)
+			if err != nil {
+				return err
+			}
+			_sessionStore = sessions.NewCookieStore(secret)
 			// ------------
 			_cache = web.NewCache(_redis, "cache://")
 			_settings = web.NewSettings(_db, _security)
