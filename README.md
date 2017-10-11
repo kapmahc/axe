@@ -34,7 +34,7 @@ make
 - go-plus
 - git-plus
 - file-icons
-- language-babel
+
 
 ## Notes
 

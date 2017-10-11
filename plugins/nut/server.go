@@ -17,18 +17,13 @@ import (
 	"github.com/urfave/negroni"
 )
 
-// Plugin plugin
-type Plugin interface {
-	Mount(*mux.Router)
-}
-
 var (
-	_plugins []Plugin
+	_router = mux.NewRouter()
 )
 
-// Register register plugin
-func Register(args ...Plugin) {
-	_plugins = append(_plugins, args...)
+// Mount web mount points
+func Mount(f func(*mux.Router)) {
+	f(_router)
 }
 
 func listen() error {
@@ -77,22 +72,20 @@ func listen() error {
 }
 
 func httpServer() http.Handler {
-	rt := mux.NewRouter()
-	for _, p := range _plugins {
-		p.Mount(rt)
-	}
 	for k, v := range map[string]string{
 		"3rd":    "node_modules",
 		"assets": path.Join("themes", viper.GetString("server.theme"), "assets"),
 	} {
 		pre := "/" + k + "/"
-		rt.PathPrefix(pre).Handler(http.StripPrefix(pre, http.FileServer(http.Dir(v)))).Methods(http.MethodGet)
+		_router.PathPrefix(pre).
+			Handler(http.StripPrefix(pre, http.FileServer(http.Dir(v)))).
+			Methods(http.MethodGet)
 	}
 
 	ng := negroni.New()
 	ng.Use(negroni.NewRecovery())
 	ng.UseFunc(web.LoggerMiddleware)
 	ng.UseFunc(I18N().Middleware())
-	ng.UseHandler(rt)
+	ng.UseHandler(_router)
 	return ng
 }
