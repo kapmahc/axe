@@ -34,7 +34,7 @@ func NewI18n(path string, db *pg.DB) (*I18n, error) {
 }
 
 // LOCALE locale context key
-const LOCALE = K("locale")
+const LOCALE = "locale"
 
 // Locale locale
 type Locale struct {
@@ -187,7 +187,7 @@ func (p *I18n) Middleware() negroni.HandlerFunc {
 				HttpOnly: false,
 			})
 		}
-		ctx := context.WithValue(req.Context(), LOCALE, lang)
+		ctx := context.WithValue(req.Context(), K(LOCALE), lang)
 		next(wrt, req.WithContext(ctx))
 	}
 }

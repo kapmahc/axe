@@ -28,7 +28,8 @@ func SetContext(secret []byte, views string, fm template.FuncMap, debug bool) {
 	})
 }
 
-func newContext(w http.ResponseWriter, r *http.Request) *Context {
+// NewContext create a context
+func NewContext(w http.ResponseWriter, r *http.Request) *Context {
 	return &Context{
 		Writer:  w,
 		Request: r,
@@ -54,11 +55,11 @@ func (p *Context) Abort(s int, e error) {
 }
 
 // Error render error page
-func (p *Context) Error(s int, l string, e error) {
+func (p *Context) Error(s int, l, t string, e error) {
 	p.HTML(
 		http.StatusOK,
 		l,
-		"error",
+		t,
 		H{"error": e.Error(), "created": time.Now(), "code": s},
 	)
 }
