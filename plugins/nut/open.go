@@ -211,6 +211,7 @@ func init() {
 	viper.SetDefault("elasticsearch", map[string]interface{}{
 		"host": "localhost",
 		"port": 9200,
+		"ssl":  false,
 	})
 
 }

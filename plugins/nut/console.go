@@ -55,7 +55,7 @@ func generateNginxConf(c *cli.Context) error {
 		Port:  viper.GetInt("server.port"),
 		Root:  pwd,
 		Theme: viper.GetString("server.theme"),
-		Ssl:   c.Bool("https"),
+		Ssl:   viper.GetBool("server.ssl"),
 	})
 }
 func generateSsl(c *cli.Context) error {
@@ -262,12 +262,7 @@ func init() {
 				Name:    "nginx",
 				Aliases: []string{"ng"},
 				Usage:   "generate nginx.conf",
-				Flags: []cli.Flag{
-					cli.BoolFlag{
-						Name: "https, s",
-					},
-				},
-				Action: Open(generateNginxConf, false),
+				Action:  Open(generateNginxConf, false),
 			},
 			{
 				Name:    "openssl",
