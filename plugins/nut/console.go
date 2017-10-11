@@ -12,18 +12,12 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/go-pg/migrations"
 	"github.com/go-pg/pg"
+	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 	"golang.org/x/text/language"
 )
-
-var _commands []cli.Command
-
-// RegisterCommand register conole command
-func RegisterCommand(args ...cli.Command) {
-	_commands = append(_commands, args...)
-}
 
 // --------------------------------------------
 
@@ -191,7 +185,11 @@ func databaseExample(_ *cli.Context) error {
 }
 func runDatabase(act string) cli.ActionFunc {
 	return func(_ *cli.Context) error {
-		return DB().RunInTransaction(func(tx *pg.Tx) error {
+		db, err := openDB()
+		if err != nil {
+			return err
+		}
+		return db.RunInTransaction(func(tx *pg.Tx) error {
 			if _, _, err := migrations.Run(tx, "init"); err != nil {
 				return err
 			}
@@ -242,7 +240,7 @@ func connectDatabase(_ *cli.Context) error {
 // --------------------------------
 
 func init() {
-	RegisterCommand(cli.Command{
+	web.RegisterCommand(cli.Command{
 		Name:    "generate",
 		Aliases: []string{"g"},
 		Usage:   "generate file template",
@@ -269,7 +267,7 @@ func init() {
 						Name: "https, s",
 					},
 				},
-				Action: Open(generateNginxConf, true),
+				Action: Open(generateNginxConf, false),
 			},
 			{
 				Name:    "openssl",
@@ -326,7 +324,7 @@ func init() {
 	})
 
 	// -----------------
-	RegisterCommand(cli.Command{
+	web.RegisterCommand(cli.Command{
 		Name:    "cache",
 		Aliases: []string{"c"},
 		Usage:   "cache operations",
@@ -357,7 +355,7 @@ func init() {
 		},
 	})
 	// ----------------
-	RegisterCommand(cli.Command{
+	web.RegisterCommand(cli.Command{
 		Name:    "database",
 		Aliases: []string{"db"},
 		Usage:   "database operations",
@@ -372,19 +370,19 @@ func init() {
 				Name:    "migrate",
 				Usage:   "migrate the DB to the most recent version available",
 				Aliases: []string{"m"},
-				Action:  Open(runDatabase("up"), true),
+				Action:  Open(runDatabase("up"), false),
 			},
 			{
 				Name:    "rollback",
 				Usage:   "roll back the version by 1",
 				Aliases: []string{"r"},
-				Action:  Open(runDatabase("down"), true),
+				Action:  Open(runDatabase("down"), false),
 			},
 			{
 				Name:    "version",
 				Usage:   "dump the migration status for the current DB",
 				Aliases: []string{"v"},
-				Action:  Open(runDatabase("version"), true),
+				Action:  Open(runDatabase("version"), false),
 			},
 			{
 				Name:    "connect",
@@ -402,7 +400,7 @@ func init() {
 				Name:    "drop",
 				Usage:   "drop database",
 				Aliases: []string{"d"},
-				Action:  dropDatabase,
+				Action:  Open(dropDatabase, false),
 			},
 		},
 	})

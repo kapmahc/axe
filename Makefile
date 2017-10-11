@@ -1,5 +1,5 @@
 dist=dist
-pkg=github.com/kapmahc/axe/plugins/nut
+pkg=github.com/kapmahc/axe/web
 theme=moon
 
 VERSION=`git rev-parse --short HEAD`

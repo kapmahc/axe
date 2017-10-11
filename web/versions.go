@@ -1,4 +1,4 @@
-package nut
+package web
 
 var (
 	// Version version

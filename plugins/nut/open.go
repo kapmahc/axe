@@ -19,6 +19,8 @@ var (
 	_cache    *web.Cache
 	_security *web.Security
 	_settings *web.Settings
+	_jobber   *web.Jobber
+	_i18n     *web.I18n
 )
 
 // DB db handle
@@ -46,6 +48,16 @@ func REDIS() *redis.Pool {
 	return _redis
 }
 
+// JOBBER jobber handle
+func JOBBER() *web.Jobber {
+	return _jobber
+}
+
+// I18N i18n handle
+func I18N() *web.I18n {
+	return _i18n
+}
+
 // -------------------------
 
 func openDB() (*pg.DB, error) {
@@ -64,6 +76,47 @@ func openDB() (*pg.DB, error) {
 	}
 	db := pg.Connect(opt)
 	return db, nil
+}
+
+func openJobber() (*web.Jobber, error) {
+	args := viper.GetStringMap("rabbitmq")
+	return web.NewJobber(fmt.Sprintf(
+		"amqp://%s:%s@%s:%d/%s",
+		args["user"],
+		args["password"],
+		args["host"],
+		args["port"],
+		args["virtual"],
+	), args["queue"].(string))
+}
+
+func openRedis() {
+	_redis = &redis.Pool{
+		MaxIdle:     3,
+		IdleTimeout: 240 * time.Second,
+		Dial: func() (redis.Conn, error) {
+			c, e := redis.Dial(
+				"tcp",
+				fmt.Sprintf(
+					"%s:%d",
+					viper.GetString("redis.host"),
+					viper.GetInt("redis.port"),
+				),
+			)
+			if e != nil {
+				return nil, e
+			}
+			if _, e = c.Do("SELECT", viper.GetInt("redis.db")); e != nil {
+				c.Close()
+				return nil, e
+			}
+			return c, nil
+		},
+		TestOnBorrow: func(c redis.Conn, t time.Time) error {
+			_, err := c.Do("PING")
+			return err
+		},
+	}
 }
 
 // Open read config file
@@ -88,31 +141,24 @@ func Open(f cli.ActionFunc, beans bool) cli.ActionFunc {
 				return err
 			}
 			// -------------
-			_redis = &redis.Pool{
-				MaxIdle:     3,
-				IdleTimeout: 240 * time.Second,
-				Dial: func() (redis.Conn, error) {
-					c, e := redis.Dial(
-						"tcp",
-						fmt.Sprintf(
-							"%s:%d",
-							viper.GetString("redis.host"),
-							viper.GetInt("redis.port"),
-						),
-					)
-					if e != nil {
-						return nil, e
-					}
-					if _, e = c.Do("SELECT", viper.GetInt("redis.db")); e != nil {
-						c.Close()
-						return nil, e
-					}
-					return c, nil
-				},
-				TestOnBorrow: func(c redis.Conn, t time.Time) error {
-					_, err := c.Do("PING")
-					return err
-				},
+			openRedis()
+			// ------------
+			_security, err = web.NewSecurity(viper.GetString("secret"))
+			if err != nil {
+				return err
+			}
+			// ------------
+			_cache = web.NewCache(_redis, "cache://")
+			_settings = web.NewSettings(_db, _security)
+			// ------------
+			_i18n, err = web.NewI18n("locales", _db)
+			if err != nil {
+				return err
+			}
+			// ------------
+			_jobber, err = openJobber()
+			if err != nil {
+				return err
 			}
 			// ------------
 		}
@@ -139,7 +185,7 @@ func init() {
 		"user":     "guest",
 		"password": "guest",
 		"host":     "localhost",
-		"port":     "5672",
+		"port":     5672,
 		"virtual":  "axe-dev",
 		"queue":    "tasks",
 	})
@@ -155,8 +201,9 @@ func init() {
 
 	secret, _ := RandomBytes(32)
 	viper.SetDefault("server", map[string]interface{}{
-		"port": 8080,
-		"name": "www.change-me.com",
+		"port":  8080,
+		"name":  "www.change-me.com",
+		"theme": "moon",
 	})
 
 	viper.SetDefault("secret", base64.StdEncoding.EncodeToString(secret))

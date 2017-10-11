@@ -60,7 +60,7 @@ func (p *I18n) Languages() []language.Tag {
 
 func (p *I18n) loadFromFileSystem(dir string) error {
 	const ext = ".ini"
-	return filepath.Walk("locales", func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -73,7 +73,7 @@ func (p *I18n) loadFromFileSystem(dir string) error {
 			return err
 		}
 		p.langs = append(p.langs, tag)
-		log.Info("find locale", tag)
+		log.Info("find locale ", tag)
 		lang := tag.String()
 
 		cfg, err := ini.Load(path)

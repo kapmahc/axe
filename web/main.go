@@ -1,4 +1,4 @@
-package nut
+package web
 
 import (
 	"fmt"
@@ -7,6 +7,13 @@ import (
 
 	"github.com/urfave/cli"
 )
+
+var _commands []cli.Command
+
+// RegisterCommand register conole command
+func RegisterCommand(args ...cli.Command) {
+	_commands = append(_commands, args...)
+}
 
 // Main entry
 func Main() error {
