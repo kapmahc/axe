@@ -443,6 +443,9 @@ func init() {
 				if err != nil {
 					return err
 				}
+				if len(mtd) == 0 {
+					return nil
+				}
 				fmt.Printf(tpl, strings.Join(mtd, ","), pat)
 				return nil
 			})
