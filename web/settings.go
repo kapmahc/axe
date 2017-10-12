@@ -20,8 +20,8 @@ type Setting struct {
 	Key       string
 	Value     []byte
 	Encode    bool
-	Updated   time.Time
-	Created   time.Time
+	UpdatedAt time.Time
+	CreatedAt time.Time
 }
 
 // Settings settings
@@ -51,17 +51,17 @@ func (p *Settings) Set(tx *pg.Tx, key string, obj interface{}, encode bool) erro
 	now := time.Now()
 	err = tx.Model(&it).Column("id").Where("key = ?", key).Select()
 	if err == nil {
-		it.Updated = now
+		it.UpdatedAt = now
 		it.Value = val
 		it.Encode = encode
 		_, err = tx.Model(&it).Column("value", "encode", "updated").Update()
 	} else if err == pg.ErrNoRows {
 		err = tx.Insert(&Setting{
-			Key:     key,
-			Value:   val,
-			Encode:  encode,
-			Updated: now,
-			Created: now,
+			Key:       key,
+			Value:     val,
+			Encode:    encode,
+			UpdatedAt: now,
+			CreatedAt: now,
 		})
 	}
 

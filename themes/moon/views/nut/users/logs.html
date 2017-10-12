@@ -4,14 +4,14 @@
         <table class="bordered highlight responsive-table">
             <thead>
             <tr>
-                <th>{{t .locale "attributes.created"}}</th>
+                <th>{{t .locale "attributes.createdAt"}}</th>
                 <th>{{t .locale "attributes.content"}}</th>
             </tr>
             </thead>
             <tbody>
             {{range .items}}
             <tr>
-                <td>{{dtf .created}}</td>
+                <td>{{dtf .createdAt}}</td>
                 <td>{{.message}}</td>
             </tr>
             {{end}}

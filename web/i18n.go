@@ -43,8 +43,8 @@ type Locale struct {
 	Lang      string
 	Code      string
 	Message   string
-	Updated   time.Time
-	Created   time.Time
+	UpdatedAt time.Time
+	CreatedAt time.Time
 }
 
 // I18n i18n
@@ -111,16 +111,16 @@ func (p *I18n) Set(tx *pg.Tx, lang, code, message string) error {
 	now := time.Now()
 	err := tx.Model(&it).Column("id").Where("lang = ? AND code = ?", lang, code).Select()
 	if err == nil {
-		it.Updated = now
+		it.UpdatedAt = now
 		it.Message = message
 		_, err = tx.Model(&it).Column("message").Update()
 	} else if err == pg.ErrNoRows {
 		err = tx.Insert(&Locale{
-			Lang:    lang,
-			Code:    code,
-			Message: message,
-			Updated: now,
-			Created: now,
+			Lang:      lang,
+			Code:      code,
+			Message:   message,
+			UpdatedAt: now,
+			CreatedAt: now,
 		})
 	}
 
