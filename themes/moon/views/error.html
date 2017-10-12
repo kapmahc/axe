@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/application/index}">
+<head>
+    <title th:text="${error}">title</title>
+</head>
+<body>
+<div layout:fragment="content" class="row justify-content-md-center">
+    <div class="col-md-6">
+        <div class="card">
+            <img class="card-img-top" th:src="@{/assets/fail.png}"/>
+            <div class="card-body">
+                <h4 class="card-title" th:text="${error}">title</h4>
+                <p class="card-text">
+                    [[${message}]]
+                    <br/>
+                    [[${timestamp}]]
+                </p>
+                <a href="/" class="btn btn-primary" th:text="#{nut.error.go-home}">go</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

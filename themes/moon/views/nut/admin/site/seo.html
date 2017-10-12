@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/dashboard/index}">
+<head>
+    <title th:text="#{nut.admin.site.seo.title}">title</title>
+</head>
+<body>
+
+<div layout:fragment="content" class="section">
+    <div th:replace="layouts/dashboard/flash :: main">flash</div>
+    <div class="row">
+        <h2 th:text="#{nut.admin.site.seo.title}">title</h2>
+        <form method="post" th:object="${seoForm}" class="col m12">
+            <div class="row">
+                <div class="input-field col m6">
+                    <input th:field="*{googleVerifyCode}" type="text" class="validate">
+                    <label for="googleVerifyCode" th:text="#{nut.forms.site.seo.googleVerifyCode}">label</label>
+                </div>
+                <div class="input-field col m6">
+                    <input th:field="*{baiduVerifyCode}" type="text" class="validate">
+                    <label for="baiduVerifyCode" th:text="#{nut.forms.site.seo.baiduVerifyCode}">label</label>
+                </div>
+            </div>
+            <div th:replace="layouts/dashboard/form :: buttons">buttons</div>
+        </form>
+    </div>
+    <ul class="collection">
+        <li class="collection-item"  th:each="it : ${links}">
+            <a th:text="${it}" th:href="${it}" target="_blank">label</a>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

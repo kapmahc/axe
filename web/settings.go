@@ -69,7 +69,7 @@ func (p *Settings) Set(tx *pg.Tx, key string, obj interface{}, encode bool) erro
 }
 
 // Get get
-func (p *Settings) Get(key string, obj string) error {
+func (p *Settings) Get(key string, obj interface{}) error {
 	var it Setting
 	if err := p.db.Model(&it).
 		Column("value", "encode").

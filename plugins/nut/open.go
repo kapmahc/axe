@@ -158,6 +158,15 @@ func Open(f cli.ActionFunc, beans bool) cli.ActionFunc {
 				path.Join("themes", viper.GetString("server.theme"), "views"),
 				template.FuncMap{
 					"fmt": fmt.Sprintf,
+					"t": func(lang, code string, args ...interface{}) string {
+						return I18N().T(lang, code, args...)
+					},
+					"assets_css": func(u string) template.HTML {
+						return template.HTML(fmt.Sprintf(`<link type="text/css" rel="stylesheet" href="%s">`, u))
+					},
+					"assets_js": func(u string) template.HTML {
+						return template.HTML(fmt.Sprintf(`<script src="%s"></script>`, u))
+					},
 				},
 				viper.GetString("env") != "production",
 			)

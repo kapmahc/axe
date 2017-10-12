@@ -3,6 +3,7 @@ package nut
 import (
 	"net/http"
 
+	"github.com/gorilla/csrf"
 	"github.com/kapmahc/axe/web"
 )
 
@@ -63,12 +64,12 @@ func Form(sto, fto string, fm interface{}, fn func(string, interface{}, *web.Con
 
 // Application application layout
 func Application(tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
-	return renderLayout("layouts/application/", tpl, fn)
+	return renderLayout("layouts/application/index", tpl, fn)
 }
 
 // Dashboard dashboard layout
 func Dashboard(tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
-	return renderLayout("layouts/dashboard/", tpl, fn)
+	return renderLayout("layouts/dashboard/index", tpl, fn)
 }
 
 func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
@@ -82,16 +83,29 @@ func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) h
 			flashes[n] = ss.Flashes(n)
 		}
 
+		var favicon string
+		if err := SETTINGS().Get("site.favicon", &favicon); err != nil {
+			favicon = "/assets/favicon.png"
+		}
+		var author map[string]interface{}
+		if err := SETTINGS().Get("site.author", &author); err != nil {
+			author = web.H{}
+		}
+
 		data := web.H{
-			"locale":    lang,
-			"languages": I18N().Languages(),
-			"flashes":   flashes,
+			"locale":         lang,
+			"favicon":        favicon,
+			"author":         author,
+			"languages":      I18N().Languages(),
+			"flashes":        flashes,
+			csrf.TemplateTag: csrf.TemplateField(req),
+			"_csrf_token":    csrf.Token(req),
 		}
 
 		if err := fn(lang, data, ctx); err == nil {
-			ctx.HTML(http.StatusOK, lyt+"index", tpl, data)
+			ctx.HTML(http.StatusOK, lyt, tpl, data)
 		} else {
-			ctx.Error(http.StatusInternalServerError, lyt+"index", lyt+"error", err)
+			ctx.Error(http.StatusInternalServerError, "layouts/application/index", "error", err)
 		}
 	}
 }

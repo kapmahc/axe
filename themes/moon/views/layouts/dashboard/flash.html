@@ -1,0 +1,23 @@
+<div class="row">
+  {{if .flashes.notice}}
+  <div class="card-panel teal lighten-2">
+    {{range .flash.notices}}
+    {{.}}<br/>
+    {{end}}
+  </div>
+  {{end}}
+  {{if .flashes.warning}}
+  <div class="card-panel lime accent-2">
+    {{range .flashes.warning}}
+    {{.}}<br/>
+    {{end}}
+  </div>
+  {{end}}
+  {{if .flashes.error}}
+  <div class="card-panel deep-orange accent-4">
+    {{range .flashes.error}}
+    {{.}}<br/>
+    {{end}}
+  </div>
+  {{end}}
+</div>
