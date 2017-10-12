@@ -1,32 +1,21 @@
-<!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layouts/dashboard/index}">
-<head>
-    <title th:text="#{nut.users.logs.title}">title</title>
-</head>
-<body>
-
-<div layout:fragment="content" class="section">
+<div class="section">
     <div class="row">
-        <h2 th:text="#{nut.users.logs.title}">title</h2>
+        <h2>{{.title}}</h2>
         <table class="bordered highlight responsive-table">
             <thead>
             <tr>
-                <th th:text="#{attributes.createdAt}">label</th>
-                <th th:text="#{attributes.content}">label</th>
+                <th>{{t .locale "attributes.created"}}</th>
+                <th>{{t .locale "attributes.content"}}</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="it : ${user.logs}">
-                <td th:text="${it.createdAt}">value</td>
-                <td th:text="${it.message}">value</td>
+            {{range .items}}
+            <tr>
+                <td>{{dtf .created}}</td>
+                <td>{{.message}}</td>
             </tr>
+            {{end}}
             </tbody>
         </table>
     </div>
 </div>
-
-</body>
-</html>

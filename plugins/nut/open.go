@@ -2,6 +2,7 @@ package nut
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 	"html/template"
 	"path"
@@ -158,6 +159,26 @@ func Open(f cli.ActionFunc, beans bool) cli.ActionFunc {
 				path.Join("themes", viper.GetString("server.theme"), "views"),
 				template.FuncMap{
 					"fmt": fmt.Sprintf,
+					"dtf": func(t time.Time) string {
+						return t.Format(time.RFC822)
+					},
+					"eq": func(a interface{}, b interface{}) bool {
+						return a == b
+					},
+					"dict": func(values ...interface{}) (map[string]interface{}, error) {
+						if len(values)%2 != 0 {
+							return nil, errors.New("invalid dict call")
+						}
+						dict := make(map[string]interface{}, len(values)/2)
+						for i := 0; i < len(values); i += 2 {
+							key, ok := values[i].(string)
+							if !ok {
+								return nil, errors.New("dict keys must be strings")
+							}
+							dict[key] = values[i+1]
+						}
+						return dict, nil
+					},
 					"t": func(lang, code string, args ...interface{}) string {
 						return I18N().T(lang, code, args...)
 					},

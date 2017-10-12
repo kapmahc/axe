@@ -1,37 +1,38 @@
-<!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layouts/dashboard/index}">
-<head>
-    <title th:text="#{nut.admin.site.seo.title}">title</title>
-</head>
-<body>
-
-<div layout:fragment="content" class="section">
-    <div th:replace="layouts/dashboard/flash :: main">flash</div>
+<div class="section">
+    {{template "layouts/dashboard/flash" .}}
     <div class="row">
-        <h2 th:text="#{nut.admin.site.seo.title}">title</h2>
-        <form method="post" th:object="${seoForm}" class="col m12">
+        <h2>{{.title}}</h2>
+        <form method="post" class="col m12">
             <div class="row">
                 <div class="input-field col m6">
-                    <input th:field="*{googleVerifyCode}" type="text" class="validate">
-                    <label for="googleVerifyCode" th:text="#{nut.forms.site.seo.googleVerifyCode}">label</label>
+                    <input id="googleVerifyCode" name="googleVerifyCode" value="{{.form.googleVerifyCode}}" type="text" class="validate">
+                    <label for="googleVerifyCode">{{t .locale "nut.forms.site.seo.googleVerifyCode"}}</label>
                 </div>
                 <div class="input-field col m6">
-                    <input th:field="*{baiduVerifyCode}" type="text" class="validate">
-                    <label for="baiduVerifyCode" th:text="#{nut.forms.site.seo.baiduVerifyCode}">label</label>
+                    <input id="baiduVerifyCode" name="baiduVerifyCode" value="{{.form.baiduVerifyCode}}" type="text" class="validate">
+                    <label for="baiduVerifyCode">{{t .locale "nut.forms.site.seo.baiduVerifyCode"}}</label>
                 </div>
             </div>
-            <div th:replace="layouts/dashboard/form :: buttons">buttons</div>
+            {{template "layouts/dashboard/form-buttons" .}}
         </form>
     </div>
     <ul class="collection">
-        <li class="collection-item"  th:each="it : ${links}">
-            <a th:text="${it}" th:href="${it}" target="_blank">label</a>
+        <li class="collection-item">
+            <a href="/robots.txt" target="_blank">/robots.txt</a>
         </li>
+        <li class="collection-item">
+            <a href="/sitemap.xml.gz" target="_blank">/sitemap.xml.gz</a>
+        </li>
+        <li class="collection-item">
+            <a href="/google{{.form.googleVerifyCode}}.html" target="_blank">/google{{.form.googleVerifyCode}}.html</a>
+        </li>
+        <li class="collection-item">
+            <a href="/baidu_verify_{{.form.baiduVerifyCode}}.html" target="_blank">/baidu_verify_{{.form.baiduVerifyCode}}.html</a>
+        </li>
+        {{range .languages}}
+        <li class="collection-item">
+            <a href="/rss-{{.}}.atom" target="_blank">{{t $.locale (fmt "languages.%s" .)}}</a>
+        </li>
+        {{end}}
     </ul>
 </div>
-
-</body>
-</html>

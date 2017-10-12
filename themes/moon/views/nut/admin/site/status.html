@@ -1,43 +1,33 @@
-<!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layouts/dashboard/index}">
-<head>
-    <title th:text="#{nut.admin.site.status.title}">title</title>
-</head>
-<body>
-
-<li th:fragment="show">
+{{define "nut-admin-site-status-item"}}
+<li>
     <div class="collapsible-header">
-        <i class="material-icons">[[${icon}]]</i>
-        [[${title}]]
+        <i class="material-icons">{{.icon}}</i>
+        {{t .locale (fmt "nut.admin.site.status.%s" .title)}}
     </div>
     <div class="collapsible-body">
         <table class="bordered highlight responsive-table">
             <tbody>
-            <tr th:each="it : ${items}">
-                <td th:text="${it.key}">key</td>
-                <td th:text="${it.value}"><pre>value</pre></td>
+            {{range $k, $v := .items}}
+            <tr>
+                <td>{{$k}}</td>
+                <td><pre>{{$v}}</pre></td>
             </tr>
+            {{end}}
             </tbody>
         </table>
     </div>
 </li>
+{{end}}
 
-<div layout:fragment="content" class="section">
+<div class="section">
     <div class="row">
-        <h2 th:text="#{nut.admin.site.status.title}">title</h2>
+        <h2>{{.title}}</h2>
         <ul class="collapsible" data-collapsible="accordion">
-            <li th:replace="::show (title=#{nut.admin.site.status.os},icon='cloud',items=${os})"></li>
-            <li th:replace="::show (title=#{nut.admin.site.status.network},icon='wifi_tethering',items=${network})"></li>
-            <li th:replace="::show (title=#{nut.admin.site.status.java},icon='android',items=${java})"></li>
-            <li th:replace="::show (title=#{nut.admin.site.status.redis},icon='autorenew',items=${redis})"></li>
-            <li th:replace="::show (title=#{nut.admin.site.status.rabbitmq},icon='speaker_phone',items=${rabbitmq})"></li>
-            <li th:replace="::show (title=#{nut.admin.site.status.database},icon='storage',items=${database})"></li>
+            {{template "nut-admin-site-status-item" dict "locale" .locale "title" "os" "icon" "cloud" "items" .os}}
+            {{template "nut-admin-site-status-item" dict "locale" .locale "title" "network" "wifi_tethering" "cloud" "items" .network}}
+            {{template "nut-admin-site-status-item" dict "locale" .locale "title" "redis" "icon" "autorenew" "items" .redis}}
+            {{template "nut-admin-site-status-item" dict "locale" .locale "title" "rabbitmq" "icon" "speaker_phone" "items" .rabbitmq}}
+            {{template "nut-admin-site-status-item" dict "locale" .locale "title" "database" "icon" "storage" "items" .database}}
         </ul>
     </div>
 </div>
-
-</body>
-</html>

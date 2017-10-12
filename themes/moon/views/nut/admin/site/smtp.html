@@ -1,48 +1,35 @@
-<!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layouts/dashboard/index}">
-<head>
-    <title th:text="#{nut.admin.site.smtp.title}">title</title>
-</head>
-<body>
-
-<div layout:fragment="content" class="section">
-    <div th:replace="layouts/dashboard/flash :: main">flash</div>
+<div class="section">
+    {{template "layouts/dashboard/flash" .}}
     <div class="row">
-        <h2 th:text="#{nut.admin.site.smtp.title}">title</h2>
-        <form method="post" th:object="${smtpForm}" class="col m12">
+        <h2>{{.title}}</h2>
+        <form method="post" class="col m12">
             <div class="row">
                 <div class="input-field col m6">
-                    <input th:field="*{host}" type="text" class="validate">
-                    <label for="host" th:text="#{attributes.host}">label</label>
+                    <input id="host" name="host" value="{{.form.host}}" type="text" class="validate">
+                    <label for="host">{{t .locale "attributes.host"}}</label>
                 </div>
                 <div class="input-field col m6">
-                    <select th:field="*{port}">
-                        <option value="25">25</option>
-                        <option value="465">465</option>
-                        <option value="587">587</option>
+                    <select id="port" name="port">
+                        {{range .ports}}
+                        <option {{if eq . $.form.port}}selected{{end}} value="{{.}}">{{.}}</option>
+                        {{end}}
                     </select>
-                    <label for="port" th:text="#{attributes.port}">label</label>
+                    <label for="port">{{t .locale "attributes.port"}}</label>
                 </div>
                 <div class="input-field col m6">
-                    <input th:field="*{username}" type="email" class="validate">
-                    <label for="username" th:text="#{attributes.email}">label</label>
+                    <input id="username" name="username" value="{{.form.username}}" type="email" class="validate">
+                    <label for="username">{{t .locale "nut.admin.site.smtp.sender"}}</label>
                 </div>
                 <div class="input-field col m6">
-                    <input th:field="*{password}" type="password" class="validate">
-                    <label for="password" th:text="#{attributes.password}">label</label>
+                    <input id="password" name="password" type="password" class="validate">
+                    <label for="password">{{t .locale "attributes.password"}}</label>
                 </div>
                 <div class="input-field col m6">
-                    <input th:field="*{passwordConfirmation}" type="password" class="validate">
-                    <label for="passwordConfirmation" th:text="#{attributes.passwordConfirmation}">label</label>
+                    <input id="passwordConfirmation" name="passwordConfirmation" type="password" class="validate">
+                    <label for="passwordConfirmation">{{t .locale "attributes.passwordConfirmation"}}</label>
                 </div>
             </div>
-            <div th:replace="layouts/dashboard/form :: buttons">buttons</div>
+            {{template "layouts/dashboard/form-buttons" .}}
         </form>
     </div>
 </div>
-
-</body>
-</html>

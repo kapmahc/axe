@@ -1,46 +1,34 @@
-<!DOCTYPE html>
-<html
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layouts/application/index}">
-<head>
-    <title th:text="#{nut.users.sign-up.title}">title</title>
-</head>
-<body>
-
-<div layout:fragment="content" class="row justify-content-md-center">
+<div class="row justify-content-md-center">
     <div class="col-md-6">
-        <div th:replace="layouts/application/flash :: main">flash</div>
-        <h2 th:text="#{nut.users.sign-up.title}">title</h2>
+        {{template "layouts/application/flash" .}}
+        <h2>{{.title}}</h2>
         <hr/>
-        <form method="post" th:object="${signUpForm}">
+        <form method="post">
             <div class="form-group">
-                <label th:text="#{attributes.username}">label</label>
-                <input th:field="*{name}" type="text" class="form-control"/>
+                <label for="name">{{t .locale "attributes.username"}}</label>
+                <input id="name" name="name" type="text" class="form-control"/>
             </div>
             <div class="form-group">
-                <label th:text="#{attributes.email}">label</label>
-                <input th:field="*{email}" type="email" class="form-control" aria-describedby="emailHelp">
-                <small th:text="#{helpers.email}" id="emailHelp" class="form-text text-muted">
+                <label for="email">{{t .locale "attributes.email"}}</label>
+                <input id="email" name="email" type="email" class="form-control" aria-describedby="emailHelp">
+                <small id="emailHelp" class="form-text text-muted">
+                  {{t .locale "helpers.email"}}
                 </small>
             </div>
             <div class="form-group">
-                <label th:text="#{attributes.password}">label</label>
-                <input th:field="*{password}" type="password" class="form-control" aria-describedby="passwordHelp">
-                <small th:text="#{helpers.password}" id="passwordHelp" class="form-text text-muted">
+                <label for="password">{{t .locale "attributes.password"}}</label>
+                <input id="password" name="password" type="password" class="form-control" aria-describedby="passwordHelp">
+                <small id="passwordHelp" class="form-text text-muted">
+                  {{t .locale "helpers.password"}}
                 </small>
             </div>
             <div class="form-group">
-                <label th:text="#{attributes.passwordConfirmation}">label</label>
-                <input th:field="*{passwordConfirmation}" type="password" class="form-control">
+                <label for="passwordConfirmation">{{t .locale "attributes.passwordConfirmation"}}</label>
+                <input id="passwordConfirmation" name="passwordConfirmation" type="password" class="form-control">
             </div>
-            <div th:replace="layouts/application/form :: buttons">buttons</div>
+            {{template "layouts/application/form-buttons" .}}
         </form>
         <br/>
-        <div th:replace="nut/users/shared-links :: main">links</div>
+        {{template "nut/users/shared-links" .}}
     </div>
 </div>
-
-
-</body>
-</html>

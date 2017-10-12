@@ -105,7 +105,7 @@ func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) h
 		if err := fn(lang, data, ctx); err == nil {
 			ctx.HTML(http.StatusOK, lyt, tpl, data)
 		} else {
-			ctx.Error(http.StatusInternalServerError, "layouts/application/index", "error", err)
+			ctx.Error(http.StatusInternalServerError, "layouts/application/index", "nut/error", err)
 		}
 	}
 }

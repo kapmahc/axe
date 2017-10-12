@@ -1,32 +1,26 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-<div class="list-group" th:fragment="main">
+<div class="list-group">
     <a class="list-group-item list-group-item-action" href="/users/sign-in">
         <i class="fa fa-sign-in" aria-hidden="true"></i>
-        [[#{nut.users.sign-in.title}]]
+        {{t .locale "nut.users.sign-in.title"}}
     </a>
     <a class="list-group-item list-group-item-action" href="/users/sign-up">
         <i class="fa fa-user-plus" aria-hidden="true"></i>
-        [[#{nut.users.sign-up.title}]]
+        {{t .locale "nut.users.sign-up.title"}}
     </a>
     <a class="list-group-item list-group-item-action" href="/users/confirm">
         <i class="fa fa-check-square" aria-hidden="true"></i>
-        [[#{nut.users.confirm.title}]]
+        {{t .locale "nut.users.confirm.title"}}
     </a>
     <a class="list-group-item list-group-item-action" href="/users/unlock">
         <i class="fa fa-unlock" aria-hidden="true"></i>
-        [[#{nut.users.unlock.title}]]
+        {{t .locale "nut.users.unlock.title"}}
     </a>
     <a class="list-group-item list-group-item-action" href="/users/forgot-password">
         <i class="fa fa-key" aria-hidden="true"></i>
-        [[#{nut.users.forgot-password.title}]]
+        {{t .locale "nut.users.forgot-password.title"}}
     </a>
     <a class="list-group-item list-group-item-action" href="/leave-words/new">
         <i class="fa fa-commenting" aria-hidden="true"></i>
-        [[#{nut.leave-words.new.title}]]
+        {{t .locale "nut.leave-words.new.title"}}
     </a>
 </div>
-
-</body>
-</html>
