@@ -1,10 +1,12 @@
 package nut
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/csrf"
 	"github.com/kapmahc/axe/web"
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 const (
@@ -14,6 +16,9 @@ const (
 	WARNING = "warning"
 	// ERROR error
 	ERROR = "error"
+
+	// TITLE title
+	TITLE = "title"
 )
 
 // JSON render json
@@ -55,7 +60,13 @@ func Form(sto, fto string, fm interface{}, fn func(string, interface{}, *web.Con
 			ctx.Redirect(http.StatusFound, sto)
 		} else {
 			ss := ctx.Session()
-			ss.AddFlash(err.Error(), ERROR)
+			if ve, ok := err.(validator.ValidationErrors); ok {
+				for _, er := range ve {
+					ss.AddFlash(fmt.Sprintf("Validation for '%s' failed on the '%s' tag", er.Field(), er.Tag()), ERROR)
+				}
+			} else {
+				ss.AddFlash(err.Error(), ERROR)
+			}
 			ctx.Save(ss)
 			ctx.Redirect(http.StatusFound, fto)
 		}
@@ -82,6 +93,7 @@ func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) h
 		for _, n := range []string{NOTICE, WARNING, ERROR} {
 			flashes[n] = ss.Flashes(n)
 		}
+		ctx.Save(ss)
 
 		var favicon string
 		if err := SETTINGS().Get("site.favicon", &favicon); err != nil {
