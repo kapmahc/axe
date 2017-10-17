@@ -34,7 +34,8 @@ make
 - go-plus
 - git-plus
 - file-icons
-
+- atom-beautify
+- language-babel
 
 ## Notes
 
@@ -104,3 +105,5 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 - [gvm](https://github.com/moovweb/gvm)
 
 - [nvm](https://github.com/creationix/nvm)
+
+- [ant design](https://ant.design/docs/react/introduce)
