@@ -103,12 +103,16 @@ func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) h
 		if err := SETTINGS().Get("site.author", &author); err != nil {
 			author = web.H{}
 		}
+		langs, err := I18N().Languages()
+		if err != nil {
+			langs = make([]string, 0)
+		}
 
 		data := web.H{
 			"locale":         lang,
 			"favicon":        favicon,
 			"author":         author,
-			"languages":      I18N().Languages(),
+			"languages":      langs,
 			"flashes":        flashes,
 			csrf.TemplateTag: csrf.TemplateField(req),
 			"_csrf_token":    csrf.Token(req),

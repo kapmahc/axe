@@ -225,6 +225,12 @@
 			"revisionTime": "2017-08-22T13:27:46Z"
 		},
 		{
+			"checksumSHA1": "Xl1z9/GxSKSXE0qSr4h7Fdusp3I=",
+			"path": "github.com/sirupsen/logrus/hooks/syslog",
+			"revision": "89742aefa4b206dcf400792f3bd35b542998eb3b",
+			"revisionTime": "2017-08-22T13:27:46Z"
+		},
+		{
 			"checksumSHA1": "dpgjfd8/xOlsGzT5RGtZ0SZiySU=",
 			"path": "github.com/spf13/afero",
 			"revision": "e67d870304c4bca21331b02f414f970df13aa694",

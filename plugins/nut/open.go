@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"log/syslog"
 	"path"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
+	logrus_syslog "github.com/sirupsen/logrus/hooks/syslog"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 )
@@ -78,6 +80,15 @@ func openDB() (*pg.DB, error) {
 		return nil, err
 	}
 	db := pg.Connect(opt)
+
+	db.OnQueryProcessed(func(evt *pg.QueryProcessedEvent) {
+		query, err := evt.FormattedQuery()
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		log.Debugf("%s %s", time.Since(evt.StartTime), query)
+	})
 	return db, nil
 }
 
@@ -132,12 +143,24 @@ func Open(f cli.ActionFunc, beans bool) cli.ActionFunc {
 	viper.AddConfigPath(".")
 
 	return func(c *cli.Context) error {
-		err := viper.ReadInConfig()
-		if err != nil {
+		if err := viper.ReadInConfig(); err != nil {
 			return err
 		}
+		if viper.GetString("env") == web.PRODUCTION {
+			// ----------
+			log.SetLevel(log.InfoLevel)
+			wrt, err := syslog.New(syslog.LOG_INFO, viper.GetString("server.name"))
+			if err != nil {
+				return err
+			}
+			log.AddHook(&logrus_syslog.SyslogHook{Writer: wrt})
+		} else {
+			log.SetLevel(log.DebugLevel)
+		}
+
 		log.Infof("read config from %s", viper.ConfigFileUsed())
 		if beans {
+			var err error
 			// ------------
 			_db, err = openDB()
 			if err != nil {

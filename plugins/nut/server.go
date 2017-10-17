@@ -33,6 +33,10 @@ func listen() error {
 		"application starting on http://localhost:%d",
 		port,
 	)
+	hnd, err := httpServer()
+	if err != nil {
+		return err
+	}
 	srv := &http.Server{
 		Addr: addr,
 		Handler: csrf.Protect(
@@ -41,10 +45,10 @@ func listen() error {
 			csrf.RequestHeader("Authenticity-Token"),
 			csrf.FieldName("authenticity_token"),
 			csrf.Secure(viper.GetBool("server.ssl")),
-		)(httpServer()),
+		)(hnd),
 	}
 
-	if viper.GetString("env") != "production" {
+	if viper.GetString("env") != web.PRODUCTION {
 		return srv.ListenAndServe()
 	}
 
@@ -71,7 +75,7 @@ func listen() error {
 	return nil
 }
 
-func httpServer() http.Handler {
+func httpServer() (http.Handler, error) {
 	for k, v := range map[string]string{
 		"3rd":    "node_modules",
 		"assets": path.Join("themes", viper.GetString("server.theme"), "assets"),
@@ -85,7 +89,11 @@ func httpServer() http.Handler {
 	ng := negroni.New()
 	ng.Use(negroni.NewRecovery())
 	ng.UseFunc(web.LoggerMiddleware)
-	ng.UseFunc(I18N().Middleware())
+	i18n, err := I18N().Middleware()
+	if err != nil {
+		return nil, err
+	}
+	ng.UseFunc(i18n)
 	ng.UseHandler(_router)
-	return ng
+	return ng, nil
 }

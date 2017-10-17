@@ -21,8 +21,8 @@ import (
 // NewI18n create i18n
 func NewI18n(path string, db *pg.DB) (*I18n, error) {
 	it := I18n{
+		db:    db,
 		items: make(map[string]string),
-		langs: make([]language.Tag, 0),
 	}
 	if err := it.loadFromFileSystem(path); err != nil {
 		return nil, err
@@ -49,13 +49,20 @@ type Locale struct {
 
 // I18n i18n
 type I18n struct {
+	db    *pg.DB
 	items map[string]string
-	langs []language.Tag
 }
 
 // Languages language tags
-func (p *I18n) Languages() []language.Tag {
-	return p.langs[:]
+func (p *I18n) Languages() ([]string, error) {
+	var langs []string
+	if err := p.db.Model(&Locale{}).ColumnExpr("DISTINCT lang").Select(&langs); err != nil {
+		return nil, err
+	}
+	if len(langs) == 0 {
+		langs = append(langs, language.AmericanEnglish.String())
+	}
+	return langs, nil
 }
 
 func (p *I18n) loadFromFileSystem(dir string) error {
@@ -72,7 +79,6 @@ func (p *I18n) loadFromFileSystem(dir string) error {
 		if err != nil {
 			return err
 		}
-		p.langs = append(p.langs, tag)
 		log.Info("find locale ", tag)
 		lang := tag.String()
 
@@ -132,10 +138,9 @@ func (p *I18n) Set(tx *pg.Tx, lang, code, message string) error {
 
 // H html
 func (p *I18n) H(lang, code string, obj interface{}) (string, error) {
-	k := lang + "." + code
-	msg, ok := p.items[k]
-	if !ok {
-		return k, nil
+	msg, err := p.get(lang, code)
+	if err != nil {
+		return "", err
 	}
 	tpl, err := template.New("").Parse(msg)
 	if err != nil {
@@ -148,28 +153,51 @@ func (p *I18n) H(lang, code string, obj interface{}) (string, error) {
 
 //E error
 func (p *I18n) E(lang, code string, args ...interface{}) error {
-	k := lang + "." + code
-	msg, ok := p.items[k]
-	if !ok {
-		return errors.New(k)
+	msg, err := p.get(lang, code)
+	if err != nil {
+		return err
 	}
 	return fmt.Errorf(msg, args...)
 }
 
 //T text
 func (p *I18n) T(lang, code string, args ...interface{}) string {
-	k := lang + "." + code
-	msg, ok := p.items[k]
-	if !ok {
-		return k
+	msg, err := p.get(lang, code)
+	if err != nil {
+		return err.Error()
 	}
 	return fmt.Sprintf(msg, args...)
 }
 
+func (p *I18n) get(lang, code string) (string, error) {
+	var it Locale
+	if err := p.db.Model(&it).Column("id").Where("lang = ? AND code = ?", lang, code).Select(); err == nil {
+		return it.Message, nil
+	}
+	key := lang + "." + code
+	if msg, ok := p.items[key]; ok {
+		return msg, nil
+	}
+	return "", errors.New(key)
+}
+
 // Middleware parse locales
-func (p *I18n) Middleware() negroni.HandlerFunc {
+func (p *I18n) Middleware() (negroni.HandlerFunc, error) {
 	name := string(LOCALE)
-	matcher := language.NewMatcher(p.langs)
+	langs, err := p.Languages()
+	if err != nil {
+		return nil, err
+	}
+	var tags []language.Tag
+	for _, l := range langs {
+		t, e := language.Parse(l)
+		if e != nil {
+			return nil, e
+		}
+		tags = append(tags, t)
+	}
+	matcher := language.NewMatcher(tags)
+
 	return func(wrt http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
 
 		lang, written := p.detect(req, name)
@@ -189,7 +217,7 @@ func (p *I18n) Middleware() negroni.HandlerFunc {
 		}
 		ctx := context.WithValue(req.Context(), K(LOCALE), lang)
 		next(wrt, req.WithContext(ctx))
-	}
+	}, nil
 }
 
 func (p *I18n) detect(r *http.Request, k string) (string, bool) {
