@@ -195,18 +195,6 @@
 			"revisionTime": "2017-01-02T12:52:26Z"
 		},
 		{
-			"checksumSHA1": "/mlelB9eP/TxbND7uBtxVrLF1Ik=",
-			"path": "github.com/lib/pq",
-			"revision": "b77235e3890a962fe8a6f8c4c7198679ca7814e7",
-			"revisionTime": "2017-09-22T17:26:34Z"
-		},
-		{
-			"checksumSHA1": "AU3fA8Sm33Vj9PBoRPSeYfxLRuE=",
-			"path": "github.com/lib/pq/oid",
-			"revision": "b77235e3890a962fe8a6f8c4c7198679ca7814e7",
-			"revisionTime": "2017-09-22T17:26:34Z"
-		},
-		{
 			"checksumSHA1": "0KIENyxWPSq17W94xV/WXK8b4DU=",
 			"path": "github.com/magiconair/properties",
 			"revision": "8d7837e64d3c1ee4e54a880c5a920ab4316fc90a",
