@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:8080",
+  "homepage": "/my",
   "dependencies": {
     "antd": "^2.13.6",
     "axios": "^0.16.2",

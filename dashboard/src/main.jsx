@@ -16,7 +16,7 @@ import {get as detectLocale} from './locales'
 const user = detectLocale()
 addLocaleData(user.data)
 
-const history = createHistory()
+const history = createHistory({basename: '/my'})
 const middleware = routerMiddleware(history)
 const store = createStore(combineReducers({
   ...reducers,
