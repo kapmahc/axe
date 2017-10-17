@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/kapmahc/axe.git"
   },
-  "author": "",
+  "author": "Jeremy Zheng",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kapmahc/axe/issues"
