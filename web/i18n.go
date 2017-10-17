@@ -27,9 +27,6 @@ func NewI18n(path string, db *pg.DB) (*I18n, error) {
 	if err := it.loadFromFileSystem(path); err != nil {
 		return nil, err
 	}
-	if err := it.loadFromDb(db); err != nil {
-		return nil, err
-	}
 	return &it, nil
 }
 
@@ -96,19 +93,6 @@ func (p *I18n) loadFromFileSystem(dir string) error {
 
 		return nil
 	})
-}
-
-func (p *I18n) loadFromDb(db *pg.DB) error {
-	var items []Locale
-	if err := db.Model(&items).
-		Column("lang", "code", "message").
-		Select(); err != nil {
-		return err
-	}
-	for _, it := range items {
-		p.items[it.Lang+"."+it.Code] = it.Message
-	}
-	return nil
 }
 
 // Set set
