@@ -1,11 +1,13 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
+
+import Layout from '../../layout'
 
 class Widget extends Component {
   render() {
     return (
-      <div>
+      <Layout breads={[]}>
         home
-      </div>
+      </Layout>
     );
   }
 }
