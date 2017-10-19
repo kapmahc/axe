@@ -99,7 +99,10 @@ func (p *I18n) loadFromFileSystem(dir string) error {
 func (p *I18n) Set(tx *pg.Tx, lang, code, message string) error {
 	var it Locale
 	now := time.Now()
-	err := tx.Model(&it).Column("id").Where("lang = ? AND code = ?", lang, code).Select()
+	err := tx.Model(&it).
+		Column("id").
+		Where("lang = ? AND code = ?", lang, code).
+		First()
 	if err == nil {
 		it.UpdatedAt = now
 		it.Message = message
@@ -155,7 +158,10 @@ func (p *I18n) T(lang, code string, args ...interface{}) string {
 
 func (p *I18n) get(lang, code string) (string, error) {
 	var it Locale
-	if err := p.db.Model(&it).Column("id").Where("lang = ? AND code = ?", lang, code).Select(); err == nil {
+	if err := p.db.Model(&it).
+		Column("id").
+		Where("lang = ? AND code = ?", lang, code).
+		First(); err == nil {
 		return it.Message, nil
 	}
 	key := lang + "." + code

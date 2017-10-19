@@ -7,6 +7,27 @@ import (
 	"github.com/kapmahc/axe/web"
 )
 
+func getAPISiteInfo(l string, c *web.Context) (interface{}, error) {
+	i18n := I18N()
+	// -----------
+	langs, err := i18n.Languages()
+	if err != nil {
+		return nil, err
+	}
+	data := web.H{"locale": l, "languages": langs}
+	// -----------
+	for _, k := range []string{"title", "subhead", "keywords", "description", "copyright"} {
+		data[k] = i18n.T(l, "site."+k)
+	}
+	// -----------
+	author := web.H{}
+	for _, k := range []string{"name", "email"} {
+		author[k] = i18n.T(l, "site.author."+k)
+	}
+	data["author"] = author
+	return data, nil
+}
+
 func getInstall(l string, h web.H, c *web.Context) error {
 	h[TITLE] = I18N().T(l, "nut.install.title")
 	return nil
@@ -44,5 +65,8 @@ func init() {
 	Mount(func(rt *mux.Router) {
 		rt.HandleFunc("/install", Application("nut/install", getInstall)).Methods(http.MethodGet)
 		rt.HandleFunc("/install", Form("/users/sign-in", "/install", &fmInstall{}, postInstall)).Methods(http.MethodPost)
+
+		api := rt.PathPrefix("/api").Subrouter()
+		api.HandleFunc("/site/info", JSON(getAPISiteInfo)).Methods(http.MethodGet)
 	})
 }
