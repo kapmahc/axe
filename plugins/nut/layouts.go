@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/csrf"
 	"github.com/kapmahc/axe/web"
 	validator "gopkg.in/go-playground/validator.v9"
 )
@@ -109,13 +108,13 @@ func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) h
 		}
 
 		data := web.H{
-			"locale":         lang,
-			"favicon":        favicon,
-			"author":         author,
-			"languages":      langs,
-			"flashes":        flashes,
-			csrf.TemplateTag: csrf.TemplateField(req),
-			"_csrf_token":    csrf.Token(req),
+			"locale":    lang,
+			"favicon":   favicon,
+			"author":    author,
+			"languages": langs,
+			"flashes":   flashes,
+			// csrf.TemplateTag: csrf.TemplateField(req),
+			// "_csrf_token":    csrf.Token(req),
 		}
 
 		if err := fn(lang, data, ctx); err == nil {

@@ -1,5 +1,8 @@
 {
   "buttons.submit": "Submit",
   "nut.users.sign-in.title": "Sign In",
-  "nut.users.sign-up.title": "Sign Up"
+  "nut.users.sign-up.title": "Sign Up",
+  "nut.users.confirm.title": "Didn't receive confirmation instructions?",
+  "nut.users.unlock.title": "Didn't receive unlock instructions?",
+  "nut.users.forgot-password.title": "Forgot your password?"
 }

@@ -1,17 +1,9 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {
-  Layout,
-  Menu,
-  Breadcrumb,
-  Icon,
-  Modal,
-  message
-} from 'antd'
-import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
+import {Layout} from 'antd'
+import {injectIntl, intlShape} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
-import {Link} from 'react-router-dom'
 
 import Footer from './Footer'
 import NavPanel from './NavPanel'

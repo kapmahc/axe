@@ -9,7 +9,6 @@ import (
 	"path"
 	"time"
 
-	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
@@ -38,14 +37,15 @@ func listen() error {
 		return err
 	}
 	srv := &http.Server{
-		Addr: addr,
-		Handler: csrf.Protect(
-			[]byte(viper.GetString("secret")),
-			csrf.CookieName("csrf"),
-			csrf.RequestHeader("Authenticity-Token"),
-			csrf.FieldName("authenticity_token"),
-			csrf.Secure(viper.GetBool("server.ssl")),
-		)(hnd),
+		Addr:    addr,
+		Handler: hnd,
+		// Handler: csrf.Protect(
+		// 	[]byte(viper.GetString("secret")),
+		// 	csrf.CookieName("csrf"),
+		// 	csrf.RequestHeader("Authenticity-Token"),
+		// 	csrf.FieldName("authenticity_token"),
+		// 	csrf.Secure(viper.GetBool("server.ssl")),
+		// )(hnd),
 	}
 
 	if viper.GetString("env") != web.PRODUCTION {
