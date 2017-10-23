@@ -102,7 +102,7 @@ func (p *I18n) Set(tx *pg.Tx, lang, code, message string) error {
 	err := tx.Model(&it).
 		Column("id").
 		Where("lang = ? AND code = ?", lang, code).
-		First()
+		Limit(1).Select()
 	if err == nil {
 		it.UpdatedAt = now
 		it.Message = message
@@ -161,7 +161,7 @@ func (p *I18n) get(lang, code string) (string, error) {
 	if err := p.db.Model(&it).
 		Column("id").
 		Where("lang = ? AND code = ?", lang, code).
-		First(); err == nil {
+		Limit(1).Select(); err == nil {
 		return it.Message, nil
 	}
 	key := lang + "." + code

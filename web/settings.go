@@ -49,7 +49,7 @@ func (p *Settings) Set(tx *pg.Tx, key string, obj interface{}, encode bool) erro
 
 	var it Setting
 	now := time.Now()
-	err = tx.Model(&it).Column("id").Where("key = ?", key).First()
+	err = tx.Model(&it).Column("id").Where("key = ?", key).Limit(1).Select()
 	if err == nil {
 		it.UpdatedAt = now
 		it.Value = val
@@ -74,7 +74,7 @@ func (p *Settings) Get(key string, obj interface{}) error {
 	if err := p.db.Model(&it).
 		Column("value", "encode").
 		Where("key = ?", key).
-		First(); err != nil {
+		Limit(1).Select(); err != nil {
 		return err
 	}
 
