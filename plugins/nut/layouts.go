@@ -1,11 +1,9 @@
 package nut
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/kapmahc/axe/web"
-	validator "gopkg.in/go-playground/validator.v9"
 )
 
 const (
@@ -47,39 +45,34 @@ func XML(fn func(string, *web.Context) (interface{}, error)) http.HandlerFunc {
 }
 
 // Form form handle
-func Form(sto, fto string, fm interface{}, fn func(string, interface{}, *web.Context) error) http.HandlerFunc {
-	return func(wrt http.ResponseWriter, req *http.Request) {
-		ctx := web.NewContext(wrt, req)
-		lang := ctx.Get(web.LOCALE).(string)
-		err := ctx.Bind(fm)
-		if err == nil {
-			err = fn(lang, fm, ctx)
-		}
-		if err == nil {
-			ctx.Redirect(http.StatusFound, sto)
-		} else {
-			ss := ctx.Session()
-			if ve, ok := err.(validator.ValidationErrors); ok {
-				for _, er := range ve {
-					ss.AddFlash(fmt.Sprintf("Validation for '%s' failed on the '%s' tag", er.Field(), er.Tag()), ERROR)
-				}
-			} else {
-				ss.AddFlash(err.Error(), ERROR)
-			}
-			ctx.Save(ss)
-			ctx.Redirect(http.StatusFound, fto)
-		}
-	}
-}
+// func Form(sto, fto string, fm interface{}, fn func(string, interface{}, *web.Context) error) http.HandlerFunc {
+// 	return func(wrt http.ResponseWriter, req *http.Request) {
+// 		ctx := web.NewContext(wrt, req)
+// 		lang := ctx.Get(web.LOCALE).(string)
+// 		err := ctx.Bind(fm)
+// 		if err == nil {
+// 			err = fn(lang, fm, ctx)
+// 		}
+// 		if err == nil {
+// 			ctx.Redirect(http.StatusFound, sto)
+// 		} else {
+// 			ss := ctx.Session()
+// 			if ve, ok := err.(validator.ValidationErrors); ok {
+// 				for _, er := range ve {
+// 					ss.AddFlash(fmt.Sprintf("Validation for '%s' failed on the '%s' tag", er.Field(), er.Tag()), ERROR)
+// 				}
+// 			} else {
+// 				ss.AddFlash(err.Error(), ERROR)
+// 			}
+// 			ctx.Save(ss)
+// 			ctx.Redirect(http.StatusFound, fto)
+// 		}
+// 	}
+// }
 
 // Application application layout
 func Application(tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
 	return renderLayout("layouts/application/index", tpl, fn)
-}
-
-// Dashboard dashboard layout
-func Dashboard(tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
-	return renderLayout("layouts/dashboard/index", tpl, fn)
 }
 
 func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {

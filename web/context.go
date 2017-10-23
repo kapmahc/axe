@@ -14,6 +14,13 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
+// Wrap wrap handler func
+func Wrap(hf HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		hf(NewContext(w, r))
+	}
+}
+
 // HandlerFunc handler func
 type HandlerFunc func(*Context)
 

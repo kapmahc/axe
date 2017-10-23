@@ -28,6 +28,21 @@ var (
 	_i18n     *web.I18n
 )
 
+// Tx database transaction
+func Tx(f func(*pg.Tx) error) error {
+	tx, err := DB().Begin()
+	if err != nil {
+		return err
+	}
+	err = f(tx)
+	if err == nil {
+		err = tx.Commit()
+	} else {
+		err = tx.Rollback()
+	}
+	return err
+}
+
 // DB db handle
 func DB() *pg.DB {
 	return _db

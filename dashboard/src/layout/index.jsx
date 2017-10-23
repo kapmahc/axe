@@ -7,13 +7,14 @@ import {push} from 'react-router-redux'
 
 import Footer from './Footer'
 import NavPanel from './NavPanel'
+import NavBar from './NavBar'
 import {signIn, signOut, refresh} from '../actions'
 
 const {Header, Content, Sider} = Layout
 
 class Widget extends Component {
   render() {
-    const {children, user} = this.props
+    const {children, user, breads} = this.props
 
     return user.uid
     // is sign in ?
@@ -36,8 +37,9 @@ class Widget extends Component {
               padding: 0
             }}/>
             <Content style={{
-              margin: '24px 16px 0'
+              margin: '0 16px'
             }}>
+              <NavBar items={breads}/>
               <div style={{
                 padding: 24,
                 background: '#fff',

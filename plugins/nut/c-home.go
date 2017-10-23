@@ -3,6 +3,7 @@ package nut
 import (
 	"net/http"
 
+	"github.com/go-pg/pg"
 	"github.com/gorilla/mux"
 	"github.com/kapmahc/axe/web"
 )
@@ -28,11 +29,6 @@ func getAPISiteInfo(l string, c *web.Context) (interface{}, error) {
 	return data, nil
 }
 
-func getInstall(l string, h web.H, c *web.Context) error {
-	h[TITLE] = I18N().T(l, "nut.install.title")
-	return nil
-}
-
 type fmInstall struct {
 	Title                string `form:"title" validate:"required"`
 	Subhead              string `form:"subhead" validate:"required"`
@@ -42,31 +38,31 @@ type fmInstall struct {
 	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
-func postInstall(l string, o interface{}, c *web.Context) error {
-	fm := o.(*fmInstall)
-	tx, err := DB().Begin()
-	if err != nil {
-		return err
+func postInstall(l string, c *web.Context) (interface{}, error) {
+	var fm fmInstall
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
 	}
 
 	i18n := I18N()
-	err = i18n.Set(tx, l, "site.title", fm.Title)
-	if err == nil {
-		err = i18n.Set(tx, l, "site.subhead", fm.Subhead)
+	if err := Tx(func(tx *pg.Tx) error {
+		if err := i18n.Set(tx, l, "site.title", fm.Title); err != nil {
+			return err
+		}
+		if err := i18n.Set(tx, l, "site.subhead", fm.Subhead); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return nil, err
 	}
-
-	if err == nil {
-		return tx.Commit()
-	}
-	return tx.Rollback()
+	return web.H{}, nil
 }
 
 func init() {
 	Mount(func(rt *mux.Router) {
-		rt.HandleFunc("/install", Application("nut/install", getInstall)).Methods(http.MethodGet)
-		rt.HandleFunc("/install", Form("/users/sign-in", "/install", &fmInstall{}, postInstall)).Methods(http.MethodPost)
-
 		api := rt.PathPrefix("/api").Subrouter()
 		api.HandleFunc("/site/info", JSON(getAPISiteInfo)).Methods(http.MethodGet)
+		api.HandleFunc("/install", JSON(postInstall)).Methods(http.MethodPost)
 	})
 }
