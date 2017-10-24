@@ -37,11 +37,17 @@ type Jobber struct {
 }
 
 // Register register handler
-func (p *Jobber) Register(queue string, hnd Consumer) {
-	if _, ok := p.consumers[queue]; ok {
-		log.Warn("handler for queue ", queue, " already exists, will override it")
+func (p *Jobber) Register(_type string, hnd Consumer) {
+	if p == nil {
+		log.Error(fuck)
 	}
-	p.consumers[queue] = hnd
+	if p.consumers == nil {
+		log.Error("fuck")
+	}
+	if _, ok := p.consumers[_type]; ok {
+		log.Warn("handler for ", _type, " already exists, will override it")
+	}
+	p.consumers[_type] = hnd
 }
 
 // Receive receive

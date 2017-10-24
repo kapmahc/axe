@@ -26,6 +26,7 @@ var (
 	_settings *web.Settings
 	_jobber   *web.Jobber
 	_i18n     *web.I18n
+	_jwt      *web.Jwt
 )
 
 // Tx database transaction
@@ -77,6 +78,11 @@ func JOBBER() *web.Jobber {
 // I18N i18n handle
 func I18N() *web.I18n {
 	return _i18n
+}
+
+// JWT jwt handle
+func JWT() *web.Jwt {
+	return _jwt
 }
 
 // -------------------------
@@ -193,6 +199,8 @@ func Open(f cli.ActionFunc, beans bool) cli.ActionFunc {
 			if err != nil {
 				return err
 			}
+			_jwt = web.NewJwt(secret)
+			// ------------
 			web.SetContext(
 				secret,
 				path.Join("themes", viper.GetString("server.theme"), "views"),

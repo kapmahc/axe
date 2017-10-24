@@ -57,6 +57,11 @@ type Context struct {
 	Writer  http.ResponseWriter
 }
 
+// Home home url
+func (p *Context) Home() string {
+	return p.Request.URL.Scheme + "://" + p.Request.Host
+}
+
 // Abort render error text
 func (p *Context) Abort(s int, e error) {
 	_render.Text(p.Writer, s, e.Error())
