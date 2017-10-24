@@ -7,7 +7,7 @@ import {push} from 'react-router-redux'
 import axios from 'axios'
 
 import Layout from '../../layout'
-import FormSubmit from '../../components/FormSubmit'
+import {Submit, formItemLayout} from '../../components/form'
 
 const FormItem = Form.Item
 
@@ -41,11 +41,11 @@ class Widget extends Component {
       ]}>
         <Row>
           <Col md={{
-            span: 8,
+            span: 12,
             offset: 2
           }}>
             <Form onSubmit={this.handleSubmit}>
-              <FormItem label={< FormattedMessage id = "nut.attributes.site.title" />} hasFeedback>
+              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.site.title" />} hasFeedback>
                 {getFieldDecorator('title', {
                   rules: [
                     {
@@ -55,7 +55,7 @@ class Widget extends Component {
                   ]
                 })(<Input/>)}
               </FormItem>
-              <FormItem label={< FormattedMessage id = "nut.attributes.site.subhead" />} hasFeedback>
+              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.site.subhead" />} hasFeedback>
                 {getFieldDecorator('subhead', {
                   rules: [
                     {
@@ -65,7 +65,7 @@ class Widget extends Component {
                   ]
                 })(<Input/>)}
               </FormItem>
-              <FormItem label={< FormattedMessage id = "attributes.username" />} hasFeedback>
+              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.username" />} hasFeedback>
                 {getFieldDecorator('name', {
                   rules: [
                     {
@@ -75,7 +75,7 @@ class Widget extends Component {
                   ]
                 })(<Input/>)}
               </FormItem>
-              <FormItem label={< FormattedMessage id = "attributes.email" />} hasFeedback>
+              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.email" />} hasFeedback>
                 {getFieldDecorator('email', {
                   rules: [
                     {
@@ -88,7 +88,7 @@ class Widget extends Component {
                   ]
                 })(<Input/>)}
               </FormItem>
-              <FormItem label={< FormattedMessage id = "attributes.password" />} hasFeedback>
+              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password" />} hasFeedback>
                 {getFieldDecorator('password', {
                   rules: [
                     {
@@ -100,7 +100,7 @@ class Widget extends Component {
                   ]
                 })(<Input type="password"/>)}
               </FormItem>
-              <FormItem label={< FormattedMessage id = "attributes.password-confirmation" />} hasFeedback>
+              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password-confirmation" />} hasFeedback>
                 {getFieldDecorator('passwordConfirmation', {
                   rules: [
                     {
@@ -112,7 +112,7 @@ class Widget extends Component {
                   ]
                 })(<Input type="password"/>)}
               </FormItem>
-              <FormSubmit/>
+              <Submit/>
             </Form>
           </Col>
         </Row>
