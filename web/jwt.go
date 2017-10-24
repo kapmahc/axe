@@ -10,8 +10,8 @@ import (
 )
 
 // NewJwt new jwt
-func NewJwt(key []byte) *Jwt {
-	return &Jwt{key: key, method: crypto.SigningMethodHS512}
+func NewJwt(key []byte, method crypto.SigningMethod) *Jwt {
+	return &Jwt{key: key, method: method}
 }
 
 // Jwt jwt

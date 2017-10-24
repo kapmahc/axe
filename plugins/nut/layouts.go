@@ -19,24 +19,28 @@ const (
 	TITLE = "title"
 )
 
+// Layout layout
+type Layout struct {
+	Wrapper  *web.Wrapper  `inject:""`
+	Settings *web.Settings `inject:""`
+	I18n     *web.I18n     `inject:""`
+}
+
 // JSON render json
-func JSON(fn func(string, *web.Context) (interface{}, error)) http.HandlerFunc {
-	return func(wrt http.ResponseWriter, req *http.Request) {
-		ctx := web.NewContext(wrt, req)
+func (p *Layout) JSON(fn func(string, *web.Context) (interface{}, error)) http.HandlerFunc {
+	return p.Wrapper.HTTP(func(ctx *web.Context) {
 		lang := ctx.Get(web.LOCALE).(string)
 		if val, err := fn(lang, ctx); err == nil {
 			ctx.JSON(http.StatusOK, val)
 		} else {
-			log.Error(err)
 			ctx.Abort(http.StatusInternalServerError, err)
 		}
-	}
+	})
 }
 
 // XML render xml
-func XML(fn func(string, *web.Context) (interface{}, error)) http.HandlerFunc {
-	return func(wrt http.ResponseWriter, req *http.Request) {
-		ctx := web.NewContext(wrt, req)
+func (p *Layout) XML(fn func(string, *web.Context) (interface{}, error)) http.HandlerFunc {
+	return p.Wrapper.HTTP(func(ctx *web.Context) {
 		lang := ctx.Get(web.LOCALE).(string)
 		if val, err := fn(lang, ctx); err == nil {
 			ctx.XML(http.StatusOK, val)
@@ -44,7 +48,7 @@ func XML(fn func(string, *web.Context) (interface{}, error)) http.HandlerFunc {
 			log.Error(err)
 			ctx.Abort(http.StatusInternalServerError, err)
 		}
-	}
+	})
 }
 
 // Form form handle
@@ -74,13 +78,12 @@ func XML(fn func(string, *web.Context) (interface{}, error)) http.HandlerFunc {
 // }
 
 // Application application layout
-func Application(tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
-	return renderLayout("layouts/application/index", tpl, fn)
+func (p *Layout) Application(tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
+	return p.renderLayout("layouts/application/index", tpl, fn)
 }
 
-func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
-	return func(wrt http.ResponseWriter, req *http.Request) {
-		ctx := web.NewContext(wrt, req)
+func (p *Layout) renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
+	return p.Wrapper.HTTP(func(ctx *web.Context) {
 		lang := ctx.Get(web.LOCALE).(string)
 
 		flashes := web.H{}
@@ -91,14 +94,14 @@ func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) h
 		ctx.Save(ss)
 
 		var favicon string
-		if err := SETTINGS().Get("site.favicon", &favicon); err != nil {
+		if err := p.Settings.Get("site.favicon", &favicon); err != nil {
 			favicon = "/assets/favicon.png"
 		}
 		var author map[string]interface{}
-		if err := SETTINGS().Get("site.author", &author); err != nil {
+		if err := p.Settings.Get("site.author", &author); err != nil {
 			author = web.H{}
 		}
-		langs, err := I18N().Languages()
+		langs, err := p.I18n.Languages()
 		if err != nil {
 			langs = make([]string, 0)
 		}
@@ -118,5 +121,5 @@ func renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) h
 		} else {
 			ctx.Error(http.StatusInternalServerError, "layouts/application/index", "nut/error", err)
 		}
-	}
+	})
 }

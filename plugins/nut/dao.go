@@ -5,18 +5,21 @@ import (
 	"time"
 
 	"github.com/go-pg/pg"
+	"github.com/kapmahc/axe/web"
 )
 
 // Dao dao
 type Dao struct {
-	DB *pg.DB
+	DB       *pg.DB        `inject:""`
+	I18n     *web.I18n     `inject:""`
+	Security *web.Security `inject:""`
 }
 
 // Allow allow
-func Allow(tx *pg.Tx, user uint, name, rty string, rid uint, years, months, days int) error {
+func (p *Dao) Allow(tx *pg.Tx, user uint, name, rty string, rid uint, years, months, days int) error {
 	now := time.Now()
 	end := now.AddDate(years, months, days)
-	role, err := getRole(tx, name, rty, rid)
+	role, err := p.getRole(tx, name, rty, rid)
 	if err != nil {
 		if err != pg.ErrNoRows {
 			return err
@@ -33,27 +36,27 @@ func Allow(tx *pg.Tx, user uint, name, rty string, rid uint, years, months, days
 		return err
 	}
 
-	var p Policy
-	err = tx.Model(&p).
+	var it Policy
+	err = tx.Model(&it).
 		Where("role_id = ? AND user_id = ?", role.ID, user).Limit(1).Select()
 
 	if err == nil {
-		p.UpdatedAt = now
-		p.Begin = now
-		p.End = end
-		_, err = tx.Model(&p).Column("_begin", "_end", "updated_at").Update()
+		it.UpdatedAt = now
+		it.Begin = now
+		it.End = end
+		_, err = tx.Model(&it).Column("_begin", "_end", "updated_at").Update()
 	} else if err == pg.ErrNoRows {
-		p.RoleID = role.ID
-		p.UserID = user
-		p.UpdatedAt = now
-		p.Begin = now
-		p.End = end
-		err = tx.Insert(&p)
+		it.RoleID = role.ID
+		it.UserID = user
+		it.UpdatedAt = now
+		it.Begin = now
+		it.End = end
+		err = tx.Insert(&it)
 	}
 	return err
 }
 
-func getRole(tx *pg.Tx, name, rty string, rid uint) (*Role, error) {
+func (p *Dao) getRole(tx *pg.Tx, name, rty string, rid uint) (*Role, error) {
 	var it Role
 	if err := tx.Model(&it).Column("id").
 		Where("name = ? AND resource_type = ? AND resource_id = ?", name, rty, rid).
@@ -64,8 +67,8 @@ func getRole(tx *pg.Tx, name, rty string, rid uint) (*Role, error) {
 }
 
 // Deny deny
-func Deny(tx *pg.Tx, user uint, name, rty string, rid uint) error {
-	role, err := getRole(tx, name, rty, rid)
+func (p *Dao) Deny(tx *pg.Tx, user uint, name, rty string, rid uint) error {
+	role, err := p.getRole(tx, name, rty, rid)
 	if err != nil {
 		return err
 	}
@@ -79,17 +82,16 @@ func Deny(tx *pg.Tx, user uint, name, rty string, rid uint) error {
 }
 
 // Can can?
-func Can(user uint, name, rty string, rid uint) bool {
-	db := DB()
+func (p *Dao) Can(user uint, name, rty string, rid uint) bool {
 	var role Role
-	if err := db.Model(&role).
+	if err := p.DB.Model(&role).
 		Column("id").
 		Where("name = ? AND resource_type = ? AND resource_id = ?", name, rty, rid).
 		Limit(1).Select(); err != nil {
 		return false
 	}
 	var it Policy
-	if err := db.Model(&it).
+	if err := p.DB.Model(&it).
 		Column("_begin", "_end").
 		Where("user_id = ? AND role_id = ?", user, role.ID).
 		Limit(1).Select(); err != nil {
@@ -100,12 +102,12 @@ func Can(user uint, name, rty string, rid uint) bool {
 }
 
 // Is is role?
-func Is(user uint, role string) bool {
-	return Can(user, role, DefaultResourceType, DefaultResourceID)
+func (p *Dao) Is(user uint, role string) bool {
+	return p.Can(user, role, DefaultResourceType, DefaultResourceID)
 }
 
 // AddLog add log
-func AddLog(tx *pg.Tx, user uint, ip, message string) error {
+func (p *Dao) AddLog(tx *pg.Tx, user uint, ip, message string) error {
 	return tx.Insert(&Log{
 		UserID:  user,
 		IP:      ip,
@@ -114,7 +116,7 @@ func AddLog(tx *pg.Tx, user uint, ip, message string) error {
 }
 
 // AddEmailUser add email user
-func AddEmailUser(tx *pg.Tx, name, email, password string) (*User, error) {
+func (p *Dao) AddEmailUser(tx *pg.Tx, name, email, password string) (*User, error) {
 	now := time.Now()
 	cnt, err := tx.Model(&User{}).
 		Where("provider_type = ? AND provider_id = ?", UserTypeEmail, email).
@@ -136,7 +138,7 @@ func AddEmailUser(tx *pg.Tx, name, email, password string) (*User, error) {
 	}
 	user.SetUID()
 	user.SetGravatarLogo()
-	if user.Password, err = SECURITY().Hash([]byte(password)); err != nil {
+	if user.Password, err = p.Security.Hash([]byte(password)); err != nil {
 		return nil, err
 	}
 

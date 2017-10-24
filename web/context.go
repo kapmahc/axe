@@ -2,7 +2,6 @@ package web
 
 import (
 	"encoding/json"
-	"html/template"
 	"net"
 	"net/http"
 	"strings"
@@ -15,46 +14,14 @@ import (
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-// Wrap wrap handler func
-func Wrap(hf HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		hf(NewContext(w, r))
-	}
-}
-
-// HandlerFunc handler func
-type HandlerFunc func(*Context)
-
-// SetContext set context
-func SetContext(secret []byte, views string, fm template.FuncMap, debug bool) {
-	_sessionStore = sessions.NewCookieStore(secret)
-	_render = render.New(render.Options{
-		Directory:     views,
-		Extensions:    []string{".html"},
-		Funcs:         []template.FuncMap{fm},
-		IsDevelopment: debug,
-	})
-}
-
-// NewContext create a context
-func NewContext(w http.ResponseWriter, r *http.Request) *Context {
-	return &Context{
-		Writer:  w,
-		Request: r,
-	}
-}
-
-var (
-	_decoder      = form.NewDecoder()
-	_validate     = validator.New()
-	_render       *render.Render
-	_sessionStore sessions.Store
-)
-
 // Context http context
 type Context struct {
-	Request *http.Request
-	Writer  http.ResponseWriter
+	Request  *http.Request
+	Writer   http.ResponseWriter
+	render   *render.Render
+	store    sessions.Store
+	decoder  *form.Decoder
+	validate *validator.Validate
 }
 
 // Home home url
@@ -64,11 +31,13 @@ func (p *Context) Home() string {
 
 // Abort render error text
 func (p *Context) Abort(s int, e error) {
-	_render.Text(p.Writer, s, e.Error())
+	log.Error(e)
+	p.render.Text(p.Writer, s, e.Error())
 }
 
 // Error render error page
 func (p *Context) Error(s int, l, t string, e error) {
+	log.Error(e)
 	p.HTML(
 		http.StatusOK,
 		l,
@@ -79,27 +48,27 @@ func (p *Context) Error(s int, l, t string, e error) {
 
 // HTML render html
 func (p *Context) HTML(s int, l, t string, v interface{}) {
-	_render.HTML(p.Writer, http.StatusOK, t, v, render.HTMLOptions{Layout: l})
+	p.render.HTML(p.Writer, http.StatusOK, t, v, render.HTMLOptions{Layout: l})
 }
 
 // Text render text
 func (p *Context) Text(s int, v string) {
-	_render.Text(p.Writer, http.StatusOK, v)
+	p.render.Text(p.Writer, http.StatusOK, v)
 }
 
 // JSON render json
 func (p *Context) JSON(s int, v interface{}) {
-	_render.JSON(p.Writer, http.StatusOK, v)
+	p.render.JSON(p.Writer, http.StatusOK, v)
 }
 
 // XML render xml
 func (p *Context) XML(s int, v interface{}) {
-	_render.XML(p.Writer, http.StatusOK, v)
+	p.render.XML(p.Writer, http.StatusOK, v)
 }
 
 // Session get session
 func (p *Context) Session() *sessions.Session {
-	ss, er := _sessionStore.Get(p.Request, "_session_")
+	ss, er := p.store.Get(p.Request, "_session_")
 	if er != nil {
 		log.Error(er)
 	}
@@ -160,7 +129,7 @@ func (p *Context) Bind(fm interface{}) error {
 	if err := dec.Decode(fm); err != nil {
 		return err
 	}
-	return _validate.Struct(fm)
+	return p.validate.Struct(fm)
 }
 
 // Form bind http form and validate
@@ -168,10 +137,10 @@ func (p *Context) Form(fm interface{}) error {
 	if err := p.Request.ParseForm(); err != nil {
 		return err
 	}
-	if err := _decoder.Decode(fm, p.Request.Form); err != nil {
+	if err := p.decoder.Decode(fm, p.Request.Form); err != nil {
 		return err
 	}
-	return _validate.Struct(fm)
+	return p.validate.Struct(fm)
 }
 
 // Redirect redirect
