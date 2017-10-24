@@ -258,7 +258,7 @@ func Open(f cli.ActionFunc, beans bool) cli.ActionFunc {
 }
 
 func init() {
-	viper.SetDefault("env", "development")
+
 	viper.SetDefault("aws", map[string]interface{}{
 		"access_key_id":     "change-me",
 		"secret_access_key": "change-me",

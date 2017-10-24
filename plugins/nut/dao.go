@@ -7,6 +7,11 @@ import (
 	"github.com/go-pg/pg"
 )
 
+// Dao dao
+type Dao struct {
+	DB *pg.DB
+}
+
 // Allow allow
 func Allow(tx *pg.Tx, user uint, name, rty string, rid uint, years, months, days int) error {
 	now := time.Now()

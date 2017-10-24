@@ -1,4 +1,4 @@
-package nut
+package pos
 
 import (
 	"github.com/facebookgo/inject"
@@ -6,25 +6,25 @@ import (
 	"github.com/urfave/cli"
 )
 
-// AdminPlugin admin plugin
-type AdminPlugin struct {
+// Plugin plugin
+type Plugin struct {
 }
 
 // Init init beans
-func (p *AdminPlugin) Init(*inject.Graph) error {
+func (p *Plugin) Init(*inject.Graph) error {
 	return nil
 }
 
 // Shell console commands
-func (p *AdminPlugin) Shell() []cli.Command {
+func (p *Plugin) Shell() []cli.Command {
 	return []cli.Command{}
 }
 
 // Mount register
-func (p *AdminPlugin) Mount() error {
+func (p *Plugin) Mount() error {
 	return nil
 }
 
 func init() {
-	web.Register(&AdminPlugin{})
+	web.Register(&Plugin{})
 }

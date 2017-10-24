@@ -38,12 +38,6 @@ type Jobber struct {
 
 // Register register handler
 func (p *Jobber) Register(_type string, hnd Consumer) {
-	if p == nil {
-		log.Error(fuck)
-	}
-	if p.consumers == nil {
-		log.Error("fuck")
-	}
 	if _, ok := p.consumers[_type]; ok {
 		log.Warn("handler for ", _type, " already exists, will override it")
 	}
