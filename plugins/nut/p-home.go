@@ -61,7 +61,7 @@ func init() {
 	viper.SetDefault("server", map[string]interface{}{
 		"port":  8080,
 		"name":  "www.change-me.com",
-		"theme": "bootstrap",
+		"theme": "moon",
 	})
 
 	viper.SetDefault("secret", base64.StdEncoding.EncodeToString(secret))
@@ -69,7 +69,6 @@ func init() {
 	viper.SetDefault("elasticsearch", map[string]interface{}{
 		"host": "localhost",
 		"port": 9200,
-		"ssl":  false,
 	})
 }
 
