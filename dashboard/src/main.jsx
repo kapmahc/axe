@@ -6,12 +6,17 @@ import createHistory from 'history/createBrowserHistory'
 import {Switch} from 'react-router-dom'
 import {ConnectedRouter, routerReducer, routerMiddleware} from 'react-router-redux'
 import {addLocaleData, IntlProvider} from 'react-intl'
-import {LocaleProvider} from 'antd'
+import {LocaleProvider, message} from 'antd'
+import axios from 'axios'
 
 import './main.css'
 import reducers from './reducers'
 import plugins from './plugins'
 import {get as detectLocale} from './locales'
+
+axios.interceptors.response.use(null, (err) => {
+  message.error(err.response.data)
+})
 
 const user = detectLocale()
 addLocaleData(user.data)

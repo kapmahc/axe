@@ -54,14 +54,13 @@ func (p *Settings) Set(tx *pg.Tx, key string, obj interface{}, encode bool) erro
 		it.UpdatedAt = now
 		it.Value = val
 		it.Encode = encode
-		_, err = tx.Model(&it).Column("value", "encode", "updated").Update()
+		_, err = tx.Model(&it).Column("value", "encode", "updated_at").Update()
 	} else if err == pg.ErrNoRows {
 		err = tx.Insert(&Setting{
 			Key:       key,
 			Value:     val,
 			Encode:    encode,
 			UpdatedAt: now,
-			CreatedAt: now,
 		})
 	}
 

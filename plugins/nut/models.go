@@ -34,7 +34,6 @@ type User struct {
 	Password        []byte
 	ProviderID      string
 	ProviderType    string
-	Home            string
 	Logo            string
 	SignInCount     uint
 	LastSignInAt    *time.Time
@@ -99,9 +98,9 @@ type Log struct {
 	tableName struct{} `sql:"logs"`
 	ID        uint
 	Message   string
-	Type      string
 	IP        string
-	User      User
+	User      *User
+	UserID    uint
 	CreatedAt time.Time
 }
 
@@ -113,10 +112,12 @@ func (p Log) String() string {
 type Policy struct {
 	tableName struct{} `sql:"policies"`
 	ID        uint
-	Begin     time.Time
-	End       time.Time
-	User      User
-	Role      Role
+	Begin     time.Time `sql:"_begin"`
+	End       time.Time `sql:"_end"`
+	User      *User
+	UserID    uint
+	Role      *Role
+	RoleID    uint
 	UpdatedAt time.Time
 	CreatedAt time.Time
 }

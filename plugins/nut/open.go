@@ -36,9 +36,10 @@ func Tx(f func(*pg.Tx) error) error {
 	}
 	err = f(tx)
 	if err == nil {
-		err = tx.Commit()
+		tx.Commit()
 	} else {
-		err = tx.Rollback()
+		log.Error(err)
+		tx.Rollback()
 	}
 	return err
 }

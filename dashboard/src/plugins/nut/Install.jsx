@@ -4,6 +4,7 @@ import {Form, Row, Col, Input} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
+import axios from 'axios'
 
 import Layout from '../../layout'
 import FormSubmit from '../../components/FormSubmit'
@@ -12,17 +13,19 @@ const FormItem = Form.Item
 
 class Widget extends Component {
   handleSubmit = (e) => {
+    const {push} = this.props
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        axios.post('/api/install', values).then(() => push('/users/sign-in'));
       }
     });
   }
   checkPassword = (rule, value, callback) => {
-    const {form} = this.props;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
+    const {formatMessage} = this.props.intl
+    const {getFieldValue} = this.props.form;
+    if (value && value !== getFieldValue('password')) {
+      callback(formatMessage({id: "errors.passwords-not-match"}));
     } else {
       callback();
     }
@@ -41,7 +44,27 @@ class Widget extends Component {
             span: 8,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit} className="login-form">
+            <Form onSubmit={this.handleSubmit}>
+              <FormItem label={< FormattedMessage id = "nut.attributes.site.title" />} hasFeedback>
+                {getFieldDecorator('title', {
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({id: "errors.empty"})
+                    }
+                  ]
+                })(<Input/>)}
+              </FormItem>
+              <FormItem label={< FormattedMessage id = "nut.attributes.site.subhead" />} hasFeedback>
+                {getFieldDecorator('subhead', {
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({id: "errors.empty"})
+                    }
+                  ]
+                })(<Input/>)}
+              </FormItem>
               <FormItem label={< FormattedMessage id = "attributes.username" />} hasFeedback>
                 {getFieldDecorator('name', {
                   rules: [
@@ -78,11 +101,11 @@ class Widget extends Component {
                 })(<Input type="password"/>)}
               </FormItem>
               <FormItem label={< FormattedMessage id = "attributes.password-confirmation" />} hasFeedback>
-                {getFieldDecorator('confirmConfirmation', {
+                {getFieldDecorator('passwordConfirmation', {
                   rules: [
                     {
                       required: true,
-                      message: formatMessage({id: "errors.passwords-not-match"})
+                      message: formatMessage({id: "errors.empty"})
                     }, {
                       validator: this.checkPassword
                     }

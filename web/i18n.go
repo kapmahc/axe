@@ -106,14 +106,13 @@ func (p *I18n) Set(tx *pg.Tx, lang, code, message string) error {
 	if err == nil {
 		it.UpdatedAt = now
 		it.Message = message
-		_, err = tx.Model(&it).Column("message").Update()
+		_, err = tx.Model(&it).Column("message", "updated_at").Update()
 	} else if err == pg.ErrNoRows {
 		err = tx.Insert(&Locale{
 			Lang:      lang,
 			Code:      code,
 			Message:   message,
 			UpdatedAt: now,
-			CreatedAt: now,
 		})
 	}
 

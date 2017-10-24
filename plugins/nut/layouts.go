@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/kapmahc/axe/web"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -26,6 +27,7 @@ func JSON(fn func(string, *web.Context) (interface{}, error)) http.HandlerFunc {
 		if val, err := fn(lang, ctx); err == nil {
 			ctx.JSON(http.StatusOK, val)
 		} else {
+			log.Error(err)
 			ctx.Abort(http.StatusInternalServerError, err)
 		}
 	}
@@ -39,6 +41,7 @@ func XML(fn func(string, *web.Context) (interface{}, error)) http.HandlerFunc {
 		if val, err := fn(lang, ctx); err == nil {
 			ctx.XML(http.StatusOK, val)
 		} else {
+			log.Error(err)
 			ctx.Abort(http.StatusInternalServerError, err)
 		}
 	}

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"html/template"
 	"net"
 	"net/http"
@@ -148,8 +149,17 @@ func (p *Context) ClientIP() string {
 	return ""
 }
 
-// Bind bind http form and validate
+// Bind bind http request json body and validate
 func (p *Context) Bind(fm interface{}) error {
+	dec := json.NewDecoder(p.Request.Body)
+	if err := dec.Decode(fm); err != nil {
+		return err
+	}
+	return _validate.Struct(fm)
+}
+
+// Form bind http form and validate
+func (p *Context) Form(fm interface{}) error {
 	if err := p.Request.ParseForm(); err != nil {
 		return err
 	}
