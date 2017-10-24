@@ -5,7 +5,6 @@ import (
 
 	"github.com/SermoDigital/jose/crypto"
 	"github.com/facebookgo/inject"
-	"github.com/gorilla/mux"
 	"github.com/kapmahc/axe/web"
 	"github.com/spf13/viper"
 )
@@ -42,7 +41,7 @@ func (p *HomePlugin) Init(g *inject.Graph) error {
 		&inject.Object{Value: security},
 		&inject.Object{Value: i18n},
 		&inject.Object{Value: jobber},
-		&inject.Object{Value: mux.NewRouter()},
+		&inject.Object{Value: web.NewRouter()},
 		&inject.Object{Value: web.NewCache(redis, "cache://")},
 		&inject.Object{Value: web.NewSettings(db, security)},
 		&inject.Object{Value: web.NewJwt(secret, crypto.SigningMethodHS512)},

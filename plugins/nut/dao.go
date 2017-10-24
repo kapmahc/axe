@@ -107,11 +107,11 @@ func (p *Dao) Is(user uint, role string) bool {
 }
 
 // AddLog add log
-func (p *Dao) AddLog(tx *pg.Tx, user uint, ip, message string) error {
+func (p *Dao) AddLog(tx *pg.Tx, user uint, ip, lang, format string, args ...interface{}) error {
 	return tx.Insert(&Log{
 		UserID:  user,
 		IP:      ip,
-		Message: message,
+		Message: p.I18n.T(lang, format, args...),
 	})
 }
 

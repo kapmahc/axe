@@ -74,6 +74,11 @@ func InjectAction(f cli.ActionFunc) cli.ActionFunc {
 		if err := gh.Populate(); err != nil {
 			return err
 		}
+		for _, p := range plugins {
+			if err := p.Mount(); err != nil {
+				return err
+			}
+		}
 		return f(c)
 	})
 }

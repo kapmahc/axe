@@ -616,10 +616,7 @@ func (p *HomePlugin) httpServer() (http.Handler, error) {
 		"3rd":    "node_modules",
 		"assets": path.Join("themes", viper.GetString("server.theme"), "assets"),
 	} {
-		pre := "/" + k + "/"
-		p.Router.PathPrefix(pre).
-			Handler(http.StripPrefix(pre, http.FileServer(http.Dir(v)))).
-			Methods(http.MethodGet)
+		p.Router.Static("/"+k+"/", v)
 	}
 
 	ng := negroni.New()
@@ -630,6 +627,6 @@ func (p *HomePlugin) httpServer() (http.Handler, error) {
 		return nil, err
 	}
 	ng.UseFunc(i18n)
-	ng.UseHandler(p.Router)
+	ng.UseHandler(p.Router.Handler())
 	return ng, nil
 }
