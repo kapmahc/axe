@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Form, Row, Col, Input} from 'antd'
+import {Form, Row, Col, Input, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
@@ -14,16 +14,20 @@ const FormItem = Form.Item
 class Widget extends Component {
   handleSubmit = (e) => {
     const {push} = this.props
+    const {formatMessage} = this.props.intl
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        axios.post('/api/users/sign-up', values).then(() => push('/users/sign-in'));
+        axios.post('/api/users/sign-up', values).then(() => {
+          message.info(formatMessage({id: "nut.users.confirm.notice"}))
+          push('/users/sign-in')
+        });
       }
     });
   }
   checkPassword = (rule, value, callback) => {
     const {formatMessage} = this.props.intl
-    const {getFieldValue} = this.props.form;
+    const {getFieldValue} = this.props.form
     if (value && value !== getFieldValue('password')) {
       callback(formatMessage({id: "errors.passwords-not-match"}));
     } else {

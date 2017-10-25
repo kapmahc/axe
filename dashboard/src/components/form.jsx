@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
-import {Form, Button} from 'antd'
+import {Form, Button, message} from 'antd'
 import {FormattedMessage} from 'react-intl'
 
 const FormItem = Form.Item
+
+export const fail = (err) => message.error(err.response.data)
 
 export const formItemLayout = {
   labelCol: {
@@ -29,8 +31,8 @@ export const tailFormItemLayout = {
       offset: 0
     },
     sm: {
-      span: 14,
-      offset: 6
+      span: 16,
+      offset: 8
     }
   }
 };

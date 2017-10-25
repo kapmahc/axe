@@ -57,7 +57,7 @@ func (p *Jobber) Receive(consumer string) error {
 		}
 		for d := range msgs {
 			d.Ack(false)
-			log.Info("receive message ", d.MessageId, " @ ", d.Type)
+			log.Info("receive message ", d.MessageId, "@", d.Type)
 			now := time.Now()
 			hnd, ok := p.consumers[d.Type]
 			if !ok {

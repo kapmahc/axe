@@ -1,35 +1,38 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Form, Row, Col, Input} from 'antd'
+import {Form, Row, Col, Input, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 import axios from 'axios'
 
 import Layout from '../../../layout'
-import {Submit, formItemLayout} from '../../../components/form'
+import {Submit, formItemLayout, fail} from '../../../components/form'
 
 const FormItem = Form.Item
 
 class Widget extends Component {
   handleSubmit = (e) => {
-    const {push} = this.props
+    const {push, action} = this.props
+    const {formatMessage} = this.props.intl
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        axios.post('/api/users/sign-in', values).then(() => {
-          push('/')
-        });
+        axios.post(`/api/users/${action}`, values).then(() => {
+          message.info(formatMessage({id: `nut.users.${action}.notice`}))
+          push('/users/sign-in')
+        }, fail);
       }
     });
   }
   render() {
+    const {action} = this.props
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
     return (
       <Layout breads={[{
-          href: "/users/sign-in",
-          label: <FormattedMessage id={"nut.users.sign-in.title"}/>
+          href: `/users/${action}`,
+          label: <FormattedMessage id={`nut.users.${action}.title`}/>
         }
       ]}>
         <Row>
@@ -51,16 +54,6 @@ class Widget extends Component {
                   ]
                 })(<Input/>)}
               </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password" />} hasFeedback>
-                {getFieldDecorator('password', {
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({id: "errors.empty-password"})
-                    }
-                  ]
-                })(<Input type="password"/>)}
-              </FormItem>
               <Submit/>
             </Form>
           </Col>
@@ -72,6 +65,7 @@ class Widget extends Component {
 
 Widget.propTypes = {
   intl: intlShape.isRequired,
+  action: PropTypes.string.isRequired,
   push: PropTypes.func.isRequired
 }
 

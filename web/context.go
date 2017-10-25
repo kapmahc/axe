@@ -26,7 +26,11 @@ type Context struct {
 
 // Home home url
 func (p *Context) Home() string {
-	return p.Request.URL.Scheme + "://" + p.Request.Host
+	scheme := "http"
+	if p.Request.TLS != nil {
+		scheme += "s"
+	}
+	return scheme + "://" + p.Request.Host
 }
 
 // Abort render error text
