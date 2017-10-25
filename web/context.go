@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -22,6 +23,18 @@ type Context struct {
 	store    sessions.Store
 	decoder  *form.Decoder
 	validate *validator.Validate
+	query    url.Values
+	params   map[string]string
+}
+
+// Param http request url param
+func (p *Context) Param(key string) string {
+	return p.params[key]
+}
+
+// Query http request query param
+func (p *Context) Query(key string) string {
+	return p.query.Get(key)
 }
 
 // Home home url

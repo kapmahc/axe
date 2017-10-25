@@ -54,6 +54,45 @@ type fmUsersEmail struct {
 	Email string `json:"email" validate:"email"`
 }
 
+func (p *UsersPlugin) getUsersConfirmToken(l string, c *web.Context) error {
+	// cm, err := p.Jwt.Validate([]byte(c.Param("token")))
+	// if err != nil {
+	// 	return err
+	// }
+	// if cm.Get("act").(string) != actConfirm {
+	// 	return p.I18n.E(l, "errors.bad-action")
+	// }
+	// var user User
+	// if err = p.DB.Model(&user).
+	// 	Column("id", "confirmed_at").
+	// 	Where("uid = ?").
+	// 	Limit(1).Select(); err != nil {
+	// 	return err
+	// }
+	// if user.IsConfirm() {
+	// 	return p.I18n.E(l, "nut.errors.user-already-confirm")
+	// }
+	//
+	// now := time.Now()
+	// if err = web.Tx(p.DB, func(tx *pg.Tx) error {
+	// 	user.ConfirmedAt = &now
+	// 	user.UpdatedAt = now
+	// 	if _, err = tx.Model(user).Column("confirmed_at", "updated_at").Update(); err != nil {
+	// 		return err
+	// 	}
+	// 	if err = p.Dao.AddLog(tx, user.ID, c.ClientIP(), l, "nut.logs.confirm"); err != nil {
+	// 		return err
+	// 	}
+	// 	return nil
+	// }); err != nil {
+	// 	return err
+	// }
+	ss := c.Session()
+	ss.AddFlash(p.I18n.T(l, "nut.users.confirm.success"), NOTICE)
+	c.Save(ss)
+	return nil
+}
+
 func (p *UsersPlugin) postUsersConfirm(l string, c *web.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-playground/form"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/unrolled/render"
 	validator "gopkg.in/go-playground/validator.v9"
@@ -45,6 +46,8 @@ func (p *Wrapper) Context(w http.ResponseWriter, r *http.Request) *Context {
 		store:    p.store,
 		decoder:  p.decoder,
 		validate: p.validate,
+		query:    r.URL.Query(),
+		params:   mux.Vars(r),
 	}
 }
 

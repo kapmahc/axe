@@ -15,7 +15,6 @@
   "nut.users.sign-in.title": "Sign In",
   "nut.users.sign-up.title": "Sign Up",
   "nut.users.confirm.title": "Didn't receive confirmation instructions?",
-  "nut.users.confirm.success": "Your account has been successfully confirmed.",
   "nut.users.confirm.notice": "You will receive an email with instructions for how to confirm your email address in a few minutes.",
   "nut.users.unlock.title": "Didn't receive unlock instructions?",
   "nut.users.unlock.success": "Your account has been unlocked successfully. Please sign in to continue.",

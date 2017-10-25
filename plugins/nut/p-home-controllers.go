@@ -7,6 +7,10 @@ import (
 	"github.com/kapmahc/axe/web"
 )
 
+func (p *HomePlugin) getHome(l string, d web.H, c *web.Context) error {
+	return nil
+}
+
 func (p *HomePlugin) getAPISiteInfo(l string, c *web.Context) (interface{}, error) {
 	// -----------
 	langs, err := p.I18n.Languages()
@@ -69,6 +73,9 @@ func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) 
 		user.ConfirmedAt = &now
 		user.UpdatedAt = now
 		if _, err = tx.Model(user).Column("confirmed_at", "updated_at").Update(); err != nil {
+			return err
+		}
+		if err = p.Dao.AddLog(tx, user.ID, ip, l, "nut.logs.confirm"); err != nil {
 			return err
 		}
 		for _, rn := range []string{RoleRoot, RoleAdmin} {
