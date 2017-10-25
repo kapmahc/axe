@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import {createStore, combineReducers, applyMiddleware} from 'redux'
 import {Provider} from 'react-redux'
 import createHistory from 'history/createBrowserHistory'
@@ -8,7 +7,7 @@ import {ConnectedRouter, routerReducer, routerMiddleware} from 'react-router-red
 import {addLocaleData, IntlProvider} from 'react-intl'
 import {LocaleProvider} from 'antd'
 
-import './main.css'
+import './App.css'
 import reducers from './reducers'
 import plugins from './plugins'
 import {get as detectLocale} from './locales'
@@ -27,20 +26,18 @@ const store = createStore(combineReducers({
   router: routerReducer
 }), applyMiddleware(middleware))
 
-const main = (id) => {
-  ReactDOM.render((
-    <LocaleProvider locale={user.antd}>
-      <IntlProvider locale={user.locale} messages={user.messages}>
-        <Provider store={store}>
-          <ConnectedRouter history={history}>
-            <Switch>
-              {plugins.routes}
-            </Switch>
-          </ConnectedRouter>
-        </Provider>
-      </IntlProvider>
-    </LocaleProvider>
-  ), document.getElementById(id))
-}
+const Widget = () => (
+  <LocaleProvider locale={user.antd}>
+    <IntlProvider locale={user.locale} messages={user.messages}>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <Switch>
+            {plugins.routes}
+          </Switch>
+        </ConnectedRouter>
+      </Provider>
+    </IntlProvider>
+  </LocaleProvider>
+)
 
-export default main
+export default Widget

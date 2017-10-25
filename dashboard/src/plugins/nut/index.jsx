@@ -4,10 +4,13 @@ import {Route} from 'react-router'
 import Home from './Home'
 import Install from './Install'
 import NoMatch from './NoMatch'
+
 import UsersSignIn from './users/SignIn'
 import UsersSignUp from './users/SignUp'
 import UsersEmailForm from './users/EmailForm'
 import UsersResetPassword from './users/ResetPassword'
+
+import NewLeaveWord from './leave-words/New'
 
 const UsersConfirm = () => (<UsersEmailForm action="confirm"/>)
 const UsersUnlock = () => (<UsersEmailForm action="unlock"/>)
@@ -37,6 +40,10 @@ const routes = [
   } />),
   (< Route key = "nut.users.reset-password" path = "/users/reset-password/:token" component = {
     UsersResetPassword
+  } />),
+
+  (< Route key = "nut.leave-words.new" path = "/leave-words/new" component = {
+    NewLeaveWord
   } />),
 
   (<Route key="nut.no-match" component={NoMatch}/>)

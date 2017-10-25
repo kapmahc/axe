@@ -42,6 +42,10 @@ class Widget extends Component {
           icon: "unlock",
           label: "nut.users.unlock.title",
           key: "/users/unlock"
+        }, {
+          icon: "message",
+          label: "nut.leave-words.new.title",
+          key: "/leave-words/new"
         }
       ]
     return (

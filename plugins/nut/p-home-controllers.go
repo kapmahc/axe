@@ -11,7 +11,7 @@ func (p *HomePlugin) getHome(l string, d web.H, c *web.Context) error {
 	return nil
 }
 
-func (p *HomePlugin) getAPISiteInfo(l string, c *web.Context) (interface{}, error) {
+func (p *HomePlugin) getSiteInfo(l string, c *web.Context) (interface{}, error) {
 	// -----------
 	langs, err := p.I18n.Languages()
 	if err != nil {
@@ -87,6 +87,27 @@ func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) 
 			}
 		}
 		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return web.H{}, nil
+}
+
+type fmLeaveWord struct {
+	Body string `json:"body" validate:"required"`
+	Type string `json:"type" validate:"required"`
+}
+
+func (p *HomePlugin) createLeaveWord(l string, c *web.Context) (interface{}, error) {
+	var fm fmLeaveWord
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+	if err := web.Tx(p.DB, func(tx *pg.Tx) error {
+		return tx.Insert(&LeaveWord{
+			Body: fm.Body,
+			Type: fm.Type,
+		})
 	}); err != nil {
 		return nil, err
 	}

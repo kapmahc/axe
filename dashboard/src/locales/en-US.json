@@ -4,11 +4,13 @@
   "attributes.password": "Password",
   "attributes.username": "Username",
   "attributes.password-confirmation": "Confirm Password",
+  "attributes.content": "Content",
   "errors.not-valid-email": "The input is not valid E-mail!",
   "errors.empty-email": "Please input your E-mail!",
   "errors.empty-password": "Please input your password!",
   "errors.empty": "Required!",
   "errors.passwords-not-match": "Two passwords that you enter is inconsistent!",
+  "messages.success": "Success",
   "nut.attributes.site.title": "Title",
   "nut.attributes.site.subhead": "Subhead",
   "nut.install.title": "Install",
@@ -21,5 +23,7 @@
   "nut.users.forgot-password.title": "Forgot your password?",
   "nut.users.forgot-password.notice": "You will receive an email with instructions on how to reset your password in a few minutes.",
   "nut.users.reset-password.title": "Reset your password",
-  "nut.users.reset-password.success": "Your password has been changed successfully. Please sign in to continue."
+  "nut.users.reset-password.success": "Your password has been changed successfully. Please sign in to continue.",
+  "nut.leave-words.new.title": "Leave me a message",
+  "nut.leave-words.new.help": "Please leave your email or phone for reply."
 }

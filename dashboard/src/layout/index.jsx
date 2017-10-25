@@ -6,52 +6,45 @@ import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
 import Footer from './Footer'
-import NavPanel from './NavPanel'
-import NavBar from './NavBar'
+import LeftNavPanel from './LeftNavPanel'
+import TopNavBar from './TopNavBar'
 import {signIn, signOut, refresh} from '../actions'
 
 const {Header, Content, Sider} = Layout
 
 class Widget extends Component {
   render() {
-    const {children, user, breads} = this.props
+    const {children, breads} = this.props
 
-    return user.uid
-    // is sign in ?
-      ? (
-        <div>
-          <div>{children}</div>
-        </div>
-      )
-      : (
+    return (
+      <Layout>
+        <Sider breakpoint="lg" collapsedWidth="0" onCollapse={(collapsed, type) => {
+          console.log(collapsed, type);
+        }}>
+          <div className="logo"/>
+          <LeftNavPanel/>
+        </Sider>
         <Layout>
-          <Sider breakpoint="lg" collapsedWidth="0" onCollapse={(collapsed, type) => {
-            console.log(collapsed, type);
+          <Header style={{
+            background: '#fff',
+            padding: 0
+          }}/>
+          <Content style={{
+            margin: '0 16px'
           }}>
-            <div className="logo"/>
-            <NavPanel/>
-          </Sider>
-          <Layout>
-            <Header style={{
+            <TopNavBar items={breads}/>
+            <div style={{
+              padding: 24,
               background: '#fff',
-              padding: 0
-            }}/>
-            <Content style={{
-              margin: '0 16px'
+              minHeight: 360
             }}>
-              <NavBar items={breads}/>
-              <div style={{
-                padding: 24,
-                background: '#fff',
-                minHeight: 360
-              }}>
-                {children}
-              </div>
-            </Content>
-            <Footer/>
-          </Layout>
+              {children}
+            </div>
+          </Content>
+          <Footer/>
         </Layout>
-      );
+      </Layout>
+    );
   }
 }
 
