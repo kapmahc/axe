@@ -90,6 +90,7 @@ func (p *Context) Session() *sessions.Session {
 		log.Error(er)
 	}
 	ss.Options = &sessions.Options{
+		Path:     "/",
 		MaxAge:   0,
 		HttpOnly: true,
 		Secure:   p.Request.TLS != nil,

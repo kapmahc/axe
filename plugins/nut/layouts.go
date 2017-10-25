@@ -72,14 +72,19 @@ func (p *Layout) Application(tpl string, fn func(string, web.H, *web.Context) er
 
 func (p *Layout) renderLayout(lyt, tpl string, fn func(string, web.H, *web.Context) error) http.HandlerFunc {
 	return p.Wrapper.HTTP(func(ctx *web.Context) {
-		lang := ctx.Get(web.LOCALE).(string)
-
 		flashes := web.H{}
 		ss := ctx.Session()
 		for _, n := range []string{NOTICE, WARNING, ERROR} {
 			flashes[n] = ss.Flashes(n)
 		}
 		ctx.Save(ss)
+		lang := ctx.Get(web.LOCALE).(string)
+		data := web.H{}
+
+		if err := fn(lang, data, ctx); err != nil {
+			ctx.Error(http.StatusInternalServerError, "layouts/application/index", "nut/error", err)
+			return
+		}
 
 		var favicon string
 		if err := p.Settings.Get("site.favicon", &favicon); err != nil {
@@ -91,19 +96,15 @@ func (p *Layout) renderLayout(lyt, tpl string, fn func(string, web.H, *web.Conte
 			langs = make([]string, 0)
 		}
 
-		data := web.H{
-			"locale":    lang,
-			"favicon":   favicon,
-			"languages": langs,
-			"flashes":   flashes,
-			// csrf.TemplateTag: csrf.TemplateField(req),
-			// "_csrf_token":    csrf.Token(req),
-		}
-		log.Debugf("data: %v", data)
-		if err := fn(lang, data, ctx); err == nil {
-			ctx.HTML(http.StatusOK, lyt, tpl, data)
-		} else {
-			ctx.Error(http.StatusInternalServerError, "layouts/application/index", "nut/error", err)
-		}
+		// csrf.TemplateTag: csrf.TemplateField(req),
+		// "_csrf_token":    csrf.Token(req),
+
+		data["locale"] = lang
+		data["favicon"] = favicon
+		data["languages"] = langs
+		data["flashes"] = flashes
+
+		// log.Debugf("%+v", data)
+		ctx.HTML(http.StatusOK, lyt, tpl, data)
 	})
 }
