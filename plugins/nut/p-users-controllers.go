@@ -65,7 +65,7 @@ func (p *UsersPlugin) getUsersConfirmToken(l string, c *web.Context) error {
 	var user User
 	if err = p.DB.Model(&user).
 		Column("id", "confirmed_at").
-		Where("uid = ?").
+		Where("uid = ?", cm.Get("uid")).
 		Limit(1).Select(); err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (p *UsersPlugin) getUsersConfirmToken(l string, c *web.Context) error {
 	if err = web.Tx(p.DB, func(tx *pg.Tx) error {
 		user.ConfirmedAt = &now
 		user.UpdatedAt = now
-		if _, err = tx.Model(user).Column("confirmed_at", "updated_at").Update(); err != nil {
+		if _, err = tx.Model(&user).Column("confirmed_at", "updated_at").Update(); err != nil {
 			return err
 		}
 		if err = p.Dao.AddLog(tx, user.ID, c.ClientIP(), l, "nut.logs.confirm"); err != nil {
@@ -115,6 +115,46 @@ func (p *UsersPlugin) postUsersConfirm(l string, c *web.Context) (interface{}, e
 	}
 
 	return web.H{}, nil
+}
+
+func (p *UsersPlugin) getUsersUnlockToken(l string, c *web.Context) error {
+	cm, err := p.Jwt.Validate([]byte(c.Param("token")))
+	if err != nil {
+		return err
+	}
+	if cm.Get("act").(string) != actUnlock {
+		return p.I18n.E(l, "errors.bad-action")
+	}
+	var user User
+	if err = p.DB.Model(&user).
+		Column("id", "locked_at").
+		Where("uid = ?", cm.Get("uid")).
+		Limit(1).Select(); err != nil {
+		return err
+	}
+	if !user.IsLock() {
+		return p.I18n.E(l, "nut.errors.user-not-lock")
+	}
+
+	now := time.Now()
+	if err = web.Tx(p.DB, func(tx *pg.Tx) error {
+		user.LockedAt = nil
+		user.UpdatedAt = now
+		if _, err = tx.Model(&user).Column("locked_at", "updated_at").Update(); err != nil {
+			return err
+		}
+		if err = p.Dao.AddLog(tx, user.ID, c.ClientIP(), l, "nut.logs.unlock"); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	ss := c.Session()
+	ss.AddFlash(p.I18n.T(l, "nut.users.unlock.success"), NOTICE)
+	c.Save(ss)
+
+	return nil
 }
 
 func (p *UsersPlugin) postUsersUnlock(l string, c *web.Context) (interface{}, error) {

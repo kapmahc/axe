@@ -17,7 +17,6 @@
   "nut.users.confirm.title": "Didn't receive confirmation instructions?",
   "nut.users.confirm.notice": "You will receive an email with instructions for how to confirm your email address in a few minutes.",
   "nut.users.unlock.title": "Didn't receive unlock instructions?",
-  "nut.users.unlock.success": "Your account has been unlocked successfully. Please sign in to continue.",
   "nut.users.unlock.notice": "You will receive an email with instructions for how to unlock your account in a few minutes.",
   "nut.users.forgot-password.title": "Forgot your password?",
   "nut.users.forgot-password.notice": "You will receive an email with instructions on how to reset your password in a few minutes.",
