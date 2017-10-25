@@ -49,7 +49,7 @@ func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) 
 	now := time.Now()
 	ip := c.ClientIP()
 
-	if err := web.Tx(p.DB, func(tx *pg.Tx) error {
+	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
 		cnt, err := tx.Model(&User{}).Count()
 		if err != nil {
 			return err
@@ -103,7 +103,7 @@ func (p *HomePlugin) createLeaveWord(l string, c *web.Context) (interface{}, err
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
 	}
-	if err := web.Tx(p.DB, func(tx *pg.Tx) error {
+	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
 		return tx.Insert(&LeaveWord{
 			Body: fm.Body,
 			Type: fm.Type,

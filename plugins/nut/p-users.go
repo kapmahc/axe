@@ -92,7 +92,7 @@ func (p *UsersPlugin) Shell() []cli.Command {
 							cli.ShowSubcommandHelp(c)
 							return nil
 						}
-						return web.Tx(p.DB, func(tx *pg.Tx) error {
+						return p.DB.RunInTransaction(func(tx *pg.Tx) error {
 							var user User
 							if err := tx.Model(&user).
 								Column("id").

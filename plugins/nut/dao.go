@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
+	log "github.com/sirupsen/logrus"
 )
 
 // Dao dao
@@ -13,6 +14,51 @@ type Dao struct {
 	DB       *pg.DB        `inject:""`
 	I18n     *web.I18n     `inject:""`
 	Security *web.Security `inject:""`
+}
+
+// SignIn sign in
+func (p *Dao) SignIn(lang, ip, email, password string) (*User, error) {
+	var it User
+	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		if err := tx.Model(&it).
+			Where("provider_type = ? AND provider_id = ?", UserTypeEmail, email).
+			Limit(1).Select(); err != nil {
+			return err
+		}
+		if !p.Security.Check(it.Password, []byte(password)) {
+			if err := p.DB.Insert(&Log{UserID: it.ID, IP: ip, Message: p.I18n.T(lang, "nut.logs.sign-in-fail")}); err != nil {
+				log.Error(err)
+			}
+			return p.I18n.E(lang, "nut.errors.user-bad-password")
+		}
+		if !it.IsConfirm() {
+			return p.I18n.E(lang, "nut.errors.user-not-confirm")
+		}
+		if it.IsLock() {
+			return p.I18n.E(lang, "nut.errors.user-is-lock")
+		}
+		now := time.Now()
+		it.LastSignInAt = it.CurrentSignInAt
+		it.LastSignInIP = it.CurrentSignInIP
+		it.CurrentSignInAt = &now
+		it.CurrentSignInIP = ip
+		it.SignInCount++
+		it.UpdatedAt = now
+		if _, err := tx.Model(&it).Column(
+			"last_sign_in_at", "last_sign_in_ip",
+			"current_sign_in_at", "current_sign_in_ip",
+			"sign_in_count",
+			"updated_at").Update(); err != nil {
+			return err
+		}
+		if err := p.AddLog(tx, it.ID, ip, lang, "nut.logs.sign-in-success"); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return &it, nil
 }
 
 // Allow allow

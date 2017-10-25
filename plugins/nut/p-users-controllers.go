@@ -11,10 +11,29 @@ import (
 )
 
 type fmUsersSignIn struct {
+	Email    string `json:"email" validate:"email"`
+	Password string `json:"password" validate:"required"`
 }
 
 func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) {
-	return web.H{}, nil
+	now := time.Now()
+	var fm fmUsersSignIn
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+	user, err := p.Dao.SignIn(l, c.ClientIP(), fm.Email, fm.Password)
+	if err != nil {
+		return nil, err
+	}
+	cm := jws.Claims{}
+	cm["uid"] = user.UID
+	cm["admin"] = p.Dao.Is(user.ID, RoleAdmin)
+	tkn, err := p.Jwt.Sum(cm, time.Hour*24)
+	if err != nil {
+		return nil, err
+	}
+	log.Debug("spent time: ", time.Now().Sub(now))
+	return web.H{"token": string(tkn), "name": user.Name}, nil
 }
 
 type fmUsersSignUp struct {
@@ -31,7 +50,7 @@ func (p *UsersPlugin) postSignUp(l string, c *web.Context) (interface{}, error) 
 	}
 
 	ip := c.ClientIP()
-	if err := web.Tx(p.DB, func(tx *pg.Tx) error {
+	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
 		user, err := p.Dao.AddEmailUser(tx, fm.Name, fm.Email, fm.Password)
 		if err != nil {
 			return err
@@ -74,7 +93,7 @@ func (p *UsersPlugin) getConfirmToken(l string, c *web.Context) error {
 	}
 
 	now := time.Now()
-	if err = web.Tx(p.DB, func(tx *pg.Tx) error {
+	if err = p.DB.RunInTransaction(func(tx *pg.Tx) error {
 		user.ConfirmedAt = &now
 		user.UpdatedAt = now
 		if _, err = tx.Model(&user).Column("confirmed_at", "updated_at").Update(); err != nil {
@@ -137,7 +156,7 @@ func (p *UsersPlugin) getUnlockToken(l string, c *web.Context) error {
 	}
 
 	now := time.Now()
-	if err = web.Tx(p.DB, func(tx *pg.Tx) error {
+	if err = p.DB.RunInTransaction(func(tx *pg.Tx) error {
 		user.LockedAt = nil
 		user.UpdatedAt = now
 		if _, err = tx.Model(&user).Column("locked_at", "updated_at").Update(); err != nil {
@@ -211,7 +230,7 @@ func (p *UsersPlugin) postResetPassword(l string, c *web.Context) (interface{}, 
 		return nil, err
 	}
 	user.UpdatedAt = now
-	if err = web.Tx(p.DB, func(tx *pg.Tx) error {
+	if err = p.DB.RunInTransaction(func(tx *pg.Tx) error {
 		if _, err = tx.Model(&user).Column("password", "updated_at").Update(); err != nil {
 			return err
 		}
