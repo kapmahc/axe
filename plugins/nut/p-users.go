@@ -18,6 +18,7 @@ type UsersPlugin struct {
 	Jobber   *web.Jobber   `inject:""`
 	Wrapper  *web.Wrapper  `inject:""`
 	Settings *web.Settings `inject:""`
+	Security *web.Security `inject:""`
 	Jwt      *web.Jwt      `inject:""`
 	DB       *pg.DB        `inject:""`
 	Dao      *Dao          `inject:""`

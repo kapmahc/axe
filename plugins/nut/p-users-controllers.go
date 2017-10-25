@@ -13,7 +13,7 @@ import (
 type fmUsersSignIn struct {
 }
 
-func (p *UsersPlugin) postUsersSignIn(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) {
 	return web.H{}, nil
 }
 
@@ -24,7 +24,7 @@ type fmUsersSignUp struct {
 	PasswordConfirmation string `json:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
-func (p *UsersPlugin) postUsersSignUp(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postSignUp(l string, c *web.Context) (interface{}, error) {
 	var fm fmUsersSignUp
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ type fmUsersEmail struct {
 	Email string `json:"email" validate:"email"`
 }
 
-func (p *UsersPlugin) getUsersConfirmToken(l string, c *web.Context) error {
+func (p *UsersPlugin) getConfirmToken(l string, c *web.Context) error {
 	cm, err := p.Jwt.Validate([]byte(c.Param("token")))
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func (p *UsersPlugin) getUsersConfirmToken(l string, c *web.Context) error {
 	return nil
 }
 
-func (p *UsersPlugin) postUsersConfirm(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postConfirm(l string, c *web.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -117,7 +117,7 @@ func (p *UsersPlugin) postUsersConfirm(l string, c *web.Context) (interface{}, e
 	return web.H{}, nil
 }
 
-func (p *UsersPlugin) getUsersUnlockToken(l string, c *web.Context) error {
+func (p *UsersPlugin) getUnlockToken(l string, c *web.Context) error {
 	cm, err := p.Jwt.Validate([]byte(c.Param("token")))
 	if err != nil {
 		return err
@@ -157,7 +157,7 @@ func (p *UsersPlugin) getUsersUnlockToken(l string, c *web.Context) error {
 	return nil
 }
 
-func (p *UsersPlugin) postUsersUnlock(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postUnlock(l string, c *web.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -180,7 +180,51 @@ func (p *UsersPlugin) postUsersUnlock(l string, c *web.Context) (interface{}, er
 	return web.H{}, nil
 }
 
-func (p *UsersPlugin) postUsersForgotPassword(l string, c *web.Context) (interface{}, error) {
+type fmUsersResetPassword struct {
+	Token                string `json:"token" validate:"required"`
+	Password             string `json:"password" validate:"required"`
+	PasswordConfirmation string `json:"passwordConfirmation" validate:"eqfield=Password"`
+}
+
+func (p *UsersPlugin) postResetPassword(l string, c *web.Context) (interface{}, error) {
+	var fm fmUsersResetPassword
+	if err := c.Bind(&fm); err != nil {
+		return nil, err
+	}
+
+	cm, err := p.Jwt.Validate([]byte(fm.Token))
+	if err != nil {
+		return nil, err
+	}
+	if cm.Get("act").(string) != actResetPassword {
+		return nil, p.I18n.E(l, "errors.bad-action")
+	}
+	var user User
+	if err = p.DB.Model(&user).
+		Column("id", "locked_at").
+		Where("uid = ?", cm.Get("uid")).
+		Limit(1).Select(); err != nil {
+		return nil, err
+	}
+	now := time.Now()
+	if user.Password, err = p.Security.Hash([]byte(fm.Password)); err != nil {
+		return nil, err
+	}
+	user.UpdatedAt = now
+	if err = web.Tx(p.DB, func(tx *pg.Tx) error {
+		if _, err = tx.Model(&user).Column("password", "updated_at").Update(); err != nil {
+			return err
+		}
+		if err = p.Dao.AddLog(tx, user.ID, c.ClientIP(), l, "nut.logs.reset-password"); err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return web.H{}, nil
+}
+func (p *UsersPlugin) postForgotPassword(l string, c *web.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {
 		return nil, err

@@ -66,7 +66,7 @@ func (p *Jobber) Receive(consumer string) error {
 			if err := hnd(d.MessageId, d.Body); err != nil {
 				return err
 			}
-			log.Info("done", d.MessageId, time.Now().Sub(now))
+			log.Infof("done %s %s", d.MessageId, time.Now().Sub(now))
 		}
 		return nil
 	})

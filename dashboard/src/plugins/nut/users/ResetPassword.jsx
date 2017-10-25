@@ -13,13 +13,14 @@ const FormItem = Form.Item
 
 class Widget extends Component {
   handleSubmit = (e) => {
-    const {push} = this.props
+    const {push, match} = this.props
     const {formatMessage} = this.props.intl
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        axios.post('/api/users/sign-up', values).then(() => {
-          message.info(formatMessage({id: "nut.users.confirm.notice"}))
+        values.token = match.params.token
+        axios.post('/api/users/reset-password', values).then(() => {
+          message.info(formatMessage({id: "nut.users.reset-password.success"}))
           push('/users/sign-in')
         }, fail);
       }
@@ -39,8 +40,8 @@ class Widget extends Component {
     const {getFieldDecorator} = this.props.form
     return (
       <Layout breads={[{
-          href: "/users/sign-up",
-          label: <FormattedMessage id={"nut.users.sign-up.title"}/>
+          href: "/users/reset-password",
+          label: <FormattedMessage id={"nut.users.reset-password.title"}/>
         }
       ]}>
         <Row>
@@ -49,29 +50,6 @@ class Widget extends Component {
             offset: 2
           }}>
             <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.username" />} hasFeedback>
-                {getFieldDecorator('name', {
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({id: "errors.empty"})
-                    }
-                  ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.email" />} hasFeedback>
-                {getFieldDecorator('email', {
-                  rules: [
-                    {
-                      type: 'email',
-                      message: formatMessage({id: "errors.not-valid-email"})
-                    }, {
-                      required: true,
-                      message: formatMessage({id: "errors.empty-email"})
-                    }
-                  ]
-                })(<Input/>)}
-              </FormItem>
               <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password" />} hasFeedback>
                 {getFieldDecorator('password', {
                   rules: [

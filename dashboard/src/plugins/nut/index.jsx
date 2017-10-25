@@ -7,6 +7,7 @@ import NoMatch from './NoMatch'
 import UsersSignIn from './users/SignIn'
 import UsersSignUp from './users/SignUp'
 import UsersEmailForm from './users/EmailForm'
+import UsersResetPassword from './users/ResetPassword'
 
 const UsersConfirm = () => (<UsersEmailForm action="confirm"/>)
 const UsersUnlock = () => (<UsersEmailForm action="unlock"/>)
@@ -33,6 +34,9 @@ const routes = [
   } />),
   (< Route key = "nut.users.forgot-password" path = "/users/forgot-password" component = {
     UsersForgotPassword
+  } />),
+  (< Route key = "nut.users.reset-password" path = "/users/reset-password/:token" component = {
+    UsersResetPassword
   } />),
 
   (<Route key="nut.no-match" component={NoMatch}/>)

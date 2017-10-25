@@ -13,15 +13,16 @@ import (
 // Mount register
 func (p *UsersPlugin) Mount() error {
 	htm := p.Router.Group("/users")
-	htm.GET("/confirm/{token}", p.Layout.Redirect("/", p.getUsersConfirmToken))
-	htm.GET("/unlock/{token}", p.Layout.Redirect("/", p.getUsersUnlockToken))
+	htm.GET("/confirm/{token}", p.Layout.Redirect("/", p.getConfirmToken))
+	htm.GET("/unlock/{token}", p.Layout.Redirect("/", p.getUnlockToken))
 
 	api := p.Router.Group("/api/users")
-	api.POST("/sign-in", p.Layout.JSON(p.postUsersSignIn))
-	api.POST("/sign-up", p.Layout.JSON(p.postUsersSignUp))
-	api.POST("/confirm", p.Layout.JSON(p.postUsersConfirm))
-	api.POST("/unlock", p.Layout.JSON(p.postUsersUnlock))
-	api.POST("/forgot-password", p.Layout.JSON(p.postUsersForgotPassword))
+	api.POST("/sign-in", p.Layout.JSON(p.postSignIn))
+	api.POST("/sign-up", p.Layout.JSON(p.postSignUp))
+	api.POST("/confirm", p.Layout.JSON(p.postConfirm))
+	api.POST("/unlock", p.Layout.JSON(p.postUnlock))
+	api.POST("/forgot-password", p.Layout.JSON(p.postForgotPassword))
+	api.POST("/reset-password", p.Layout.JSON(p.postResetPassword))
 
 	p.Jobber.Register(SendEmailJob, func(id string, payload []byte) error {
 		var buf bytes.Buffer

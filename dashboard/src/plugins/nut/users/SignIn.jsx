@@ -7,7 +7,7 @@ import {push} from 'react-router-redux'
 import axios from 'axios'
 
 import Layout from '../../../layout'
-import {Submit, formItemLayout} from '../../../components/form'
+import {Submit, formItemLayout, fail} from '../../../components/form'
 
 const FormItem = Form.Item
 
@@ -19,7 +19,7 @@ class Widget extends Component {
       if (!err) {
         axios.post('/api/users/sign-in', values).then(() => {
           push('/')
-        });
+        }, fail);
       }
     });
   }
