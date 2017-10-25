@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -19,9 +20,9 @@ const (
 	UserTypeEmail = "email"
 
 	// DefaultResourceType default resource type
-	DefaultResourceType = "-"
+	DefaultResourceType = "null"
 	// DefaultResourceID default resourc id
-	DefaultResourceID = 0
+	DefaultResourceID = math.MaxUint32
 )
 
 // User user
