@@ -13,8 +13,8 @@ import (
 // Mount register
 func (p *UsersPlugin) Mount() error {
 	htm := p.Router.Group("/users")
-	htm.GET("/confirm/{token}", p.Layout.Redirect("/", p.getConfirmToken))
-	htm.GET("/unlock/{token}", p.Layout.Redirect("/", p.getUnlockToken))
+	htm.GET("/confirm/:token", p.Layout.Redirect("/", p.getConfirmToken))
+	htm.GET("/unlock/:token", p.Layout.Redirect("/", p.getUnlockToken))
 
 	api := p.Router.Group("/api/users")
 	api.POST("/sign-in", p.Layout.JSON(p.postSignIn))

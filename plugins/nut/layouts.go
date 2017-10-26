@@ -118,10 +118,10 @@ func (p *Layout) XML(fn func(string, *gin.Context) (interface{}, error)) gin.Han
 
 // Application application layout
 func (p *Layout) Application(tpl string, fn func(string, gin.H, *gin.Context) error) gin.HandlerFunc {
-	return p.renderLayout("layouts/application/index", tpl, fn)
+	return p.renderLayout(tpl, fn)
 }
 
-func (p *Layout) renderLayout(lyt, tpl string, fn func(string, gin.H, *gin.Context) error) gin.HandlerFunc {
+func (p *Layout) renderLayout(tpl string, fn func(string, gin.H, *gin.Context) error) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		flashes := gin.H{}
 		ss := sessions.Default(c)
@@ -134,7 +134,7 @@ func (p *Layout) renderLayout(lyt, tpl string, fn func(string, gin.H, *gin.Conte
 
 		if err := fn(lang, data, c); err != nil {
 			log.Error(err)
-			c.HTML(http.StatusInternalServerError, "nut/error.html", gin.H{"error": err.Error()})
+			c.HTML(http.StatusInternalServerError, "nut-error.html", gin.H{"error": err.Error()})
 			return
 		}
 

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/base64"
 	"log/syslog"
 	"reflect"
 
@@ -20,6 +21,11 @@ const (
 // MODE run mode
 func MODE() string {
 	return viper.GetString("env")
+}
+
+// SECRET secret key 32-bits
+func SECRET() ([]byte, error) {
+	return base64.StdEncoding.DecodeString(viper.GetString("secret"))
 }
 
 type injectLogger struct {

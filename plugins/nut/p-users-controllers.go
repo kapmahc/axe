@@ -26,8 +26,8 @@ func (p *UsersPlugin) getLogs(l string, c *gin.Context) (interface{}, error) {
 }
 
 type fmUsersSignIn struct {
-	Email    string `json:"email" validate:"email"`
-	Password string `json:"password" validate:"required"`
+	Email    string `json:"email" binding:"email"`
+	Password string `json:"password" binding:"required"`
 }
 
 func (p *UsersPlugin) postSignIn(l string, c *gin.Context) (interface{}, error) {
@@ -51,10 +51,10 @@ func (p *UsersPlugin) postSignIn(l string, c *gin.Context) (interface{}, error) 
 }
 
 type fmUsersSignUp struct {
-	Name                 string `json:"name" validate:"required"`
-	Email                string `json:"email" validate:"email"`
-	Password             string `json:"password" validate:"required"`
-	PasswordConfirmation string `json:"passwordConfirmation" validate:"eqfield=Password"`
+	Name                 string `json:"name" binding:"required"`
+	Email                string `json:"email" binding:"email"`
+	Password             string `json:"password" binding:"required"`
+	PasswordConfirmation string `json:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
 func (p *UsersPlugin) postSignUp(l string, c *gin.Context) (interface{}, error) {
@@ -84,7 +84,7 @@ func (p *UsersPlugin) postSignUp(l string, c *gin.Context) (interface{}, error) 
 }
 
 type fmUsersEmail struct {
-	Email string `json:"email" validate:"email"`
+	Email string `json:"email" binding:"email"`
 }
 
 func (p *UsersPlugin) getConfirmToken(l string, c *gin.Context) error {
@@ -214,9 +214,9 @@ func (p *UsersPlugin) postUnlock(l string, c *gin.Context) (interface{}, error) 
 }
 
 type fmUsersResetPassword struct {
-	Token                string `json:"token" validate:"required"`
-	Password             string `json:"password" validate:"required"`
-	PasswordConfirmation string `json:"passwordConfirmation" validate:"eqfield=Password"`
+	Token                string `json:"token" binding:"required"`
+	Password             string `json:"password" binding:"required"`
+	PasswordConfirmation string `json:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
 func (p *UsersPlugin) postResetPassword(l string, c *gin.Context) (interface{}, error) {

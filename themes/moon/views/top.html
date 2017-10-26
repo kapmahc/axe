@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="{{.locale}}">
 <head>
-    {{template "layouts/meta" .}}
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="{{t .locale "site.description"}}">
+    <meta name="keywords" content="{{t .locale "site.keywords"}}">
+    <meta name="author" content="{{.author.name}}&lt;{{.author.email}}&gt;">
+    <title>{{.title}}|{{t .locale "site.subhead"}}|{{t .locale "site.title"}}</title>
+    <link rel="icon" type="image/png" href="{{.favicon}}"/>
     {{assets_css "/3rd/bootstrap/dist/css/bootstrap.min.css"}}
     {{assets_css "/3rd/font-awesome/css/font-awesome.min.css"}}
     {{assets_css "/assets/application.css"}}
@@ -10,13 +16,7 @@
     {{assets_js "/3rd/jquery/dist/jquery.min.js"}}
     {{assets_js "/3rd/popper.js/dist/umd/popper.min.js"}}
     {{assets_js "/3rd/bootstrap/dist/js/bootstrap.min.js"}}
-    {{assets_js "/3rd/marked/marked.min.js"}}    
+    {{assets_js "/3rd/marked/marked.min.js"}}
 </head>
 <body>
-{{template "layouts/application/header" .}}
-<div class="container">
-    {{yield}}
-    {{template "layouts/application/footer" .}}
-</div>
-</body>
-</html>
+{{template "header.html" .}}

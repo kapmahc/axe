@@ -1,7 +1,6 @@
 package nut
 
 import (
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"html/template"
@@ -11,6 +10,7 @@ import (
 	"github.com/SermoDigital/jose/crypto"
 	"github.com/facebookgo/inject"
 	"github.com/garyburd/redigo/redis"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
@@ -57,13 +57,12 @@ func (p *HomePlugin) openJobber() (*web.Jobber, error) {
 	), args["queue"].(string))
 }
 
-func (p *HomePlugin) openRouter(secret []byte) *gin.Engine {
+func (p *HomePlugin) openRouter(secret []byte, i18n *web.I18n, lyt *Layout) (*gin.Engine, error) {
 	if web.MODE() == web.PRODUCTION {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
 	rt := gin.Default()
-	rt.LoadHTMLGlob(path.Join("themes", viper.GetString("server.theme"), "views") + "/**/*")
 	rt.SetFuncMap(template.FuncMap{
 		"fmt": fmt.Sprintf,
 		"dtf": func(t time.Time) string {
@@ -97,7 +96,34 @@ func (p *HomePlugin) openRouter(secret []byte) *gin.Engine {
 		},
 	})
 
-	return rt
+	rt.LoadHTMLGlob(path.Join("themes", viper.GetString("server.theme"), "views", "*.html"))
+
+	for k, v := range map[string]string{
+		"3rd":    "node_modules",
+		"assets": path.Join("themes", viper.GetString("server.theme"), "assets"),
+	} {
+		rt.Static("/"+k+"/", v)
+	}
+
+	i18m, err := i18n.Middleware()
+	if err != nil {
+		return nil, err
+	}
+
+	store := sessions.NewCookieStore(secret)
+	store.Options(sessions.Options{
+		Path:     "/",
+		MaxAge:   0,
+		Secure:   false,
+		HttpOnly: true,
+	})
+	rt.Use(
+		sessions.Sessions("_session_", store),
+		i18m,
+		lyt.CurrentUserMiddleware,
+	)
+
+	return rt, nil
 }
 
 func (p *HomePlugin) openRedis() *redis.Pool {
@@ -136,7 +162,7 @@ func (p *HomePlugin) Init(g *inject.Graph) error {
 	if err != nil {
 		return err
 	}
-	secret, err := base64.StdEncoding.DecodeString(viper.GetString("secret"))
+	secret, err := web.SECRET()
 	if err != nil {
 		return err
 	}
@@ -155,17 +181,23 @@ func (p *HomePlugin) Init(g *inject.Graph) error {
 		return err
 	}
 	redis := p.openRedis()
+	var lyt Layout
+
+	rt, err := p.openRouter(secret, i18n, &lyt)
+	if err != nil {
+		return err
+	}
 
 	return g.Provide(
+		&inject.Object{Value: &lyt},
 		&inject.Object{Value: db},
 		&inject.Object{Value: redis},
 		&inject.Object{Value: security},
 		&inject.Object{Value: i18n},
 		&inject.Object{Value: jobber},
-		&inject.Object{Value: gin.Default()},
 		&inject.Object{Value: web.NewCache(redis, "cache://")},
 		&inject.Object{Value: web.NewSettings(db, security)},
 		&inject.Object{Value: web.NewJwt(secret, crypto.SigningMethodHS512)},
-		&inject.Object{Value: p.openRouter(secret)},
+		&inject.Object{Value: rt},
 	)
 }

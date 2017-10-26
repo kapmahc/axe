@@ -444,13 +444,10 @@ func (p *HomePlugin) listen() error {
 		"application starting on http://localhost:%d",
 		port,
 	)
-	hnd, err := p.httpServer()
-	if err != nil {
-		return err
-	}
+
 	srv := &http.Server{
 		Addr:    addr,
-		Handler: hnd,
+		Handler: p.Router,
 		// Handler: csrf.Protect(
 		// 	[]byte(viper.GetString("secret")),
 		// 	csrf.CookieName("csrf"),
@@ -485,21 +482,4 @@ func (p *HomePlugin) listen() error {
 	}
 	log.Warn("server exiting")
 	return nil
-}
-
-func (p *HomePlugin) httpServer() (http.Handler, error) {
-	for k, v := range map[string]string{
-		"3rd":    "node_modules",
-		"assets": path.Join("themes", viper.GetString("server.theme"), "assets"),
-	} {
-		p.Router.Static("/"+k+"/", v)
-	}
-
-	i18n, err := p.I18n.Middleware()
-	if err != nil {
-		return nil, err
-	}
-	p.Router.Use(i18n, p.Layout.CurrentUserMiddleware)
-
-	return p.Router, nil
 }

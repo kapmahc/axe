@@ -32,12 +32,12 @@ func (p *HomePlugin) getSiteInfo(l string, c *gin.Context) (interface{}, error) 
 }
 
 type fmInstall struct {
-	Title                string `json:"title" validate:"required"`
-	Subhead              string `json:"subhead" validate:"required"`
-	Name                 string `json:"name" validate:"required"`
-	Email                string `json:"email" validate:"email"`
-	Password             string `json:"password" validate:"required"`
-	PasswordConfirmation string `json:"passwordConfirmation" validate:"eqfield=Password"`
+	Title                string `json:"title" binding:"required"`
+	Subhead              string `json:"subhead" binding:"required"`
+	Name                 string `json:"name" binding:"required"`
+	Email                string `json:"email" binding:"email"`
+	Password             string `json:"password" binding:"required"`
+	PasswordConfirmation string `json:"passwordConfirmation" binding:"eqfield=Password"`
 }
 
 func (p *HomePlugin) postInstall(l string, c *gin.Context) (interface{}, error) {
@@ -94,8 +94,8 @@ func (p *HomePlugin) postInstall(l string, c *gin.Context) (interface{}, error) 
 }
 
 type fmLeaveWord struct {
-	Body string `json:"body" validate:"required"`
-	Type string `json:"type" validate:"required"`
+	Body string `json:"body" binding:"required"`
+	Type string `json:"type" binding:"required"`
 }
 
 func (p *HomePlugin) createLeaveWord(l string, c *gin.Context) (interface{}, error) {
