@@ -10,13 +10,25 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func (p *UsersPlugin) getLogs(l string, c *web.Context) (interface{}, error) {
+	user := c.Get(CurrentUser).(*User)
+	var items []Log
+	if err := p.DB.Model(&items).
+		Column("ip", "message", "created_at").
+		Where("id = ?", user.ID).
+		Order("created_at DESC").
+		Select(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 type fmUsersSignIn struct {
 	Email    string `json:"email" validate:"email"`
 	Password string `json:"password" validate:"required"`
 }
 
 func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) {
-	now := time.Now()
 	var fm fmUsersSignIn
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -26,14 +38,14 @@ func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) 
 		return nil, err
 	}
 	cm := jws.Claims{}
+	cm["name"] = user.Name
 	cm["uid"] = user.UID
 	cm["admin"] = p.Dao.Is(user.ID, RoleAdmin)
 	tkn, err := p.Jwt.Sum(cm, time.Hour*24)
 	if err != nil {
 		return nil, err
 	}
-	log.Debug("spent time: ", time.Now().Sub(now))
-	return web.H{"token": string(tkn), "name": user.Name}, nil
+	return web.H{"token": string(tkn)}, nil
 }
 
 type fmUsersSignUp struct {

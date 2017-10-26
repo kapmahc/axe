@@ -7,6 +7,8 @@ import {push} from 'react-router-redux'
 
 import {signOut} from '../actions'
 
+const SubMenu = Menu.SubMenu
+
 class Widget extends Component {
   handleMenu = ({key}) => {
     const {push} = this.props
@@ -20,7 +22,25 @@ class Widget extends Component {
   render() {
     const {user} = this.props
     var items = user.uid
-      ? []
+      ? [
+        {
+          icon: "user",
+          label: "nut.personal.title",
+          key: "personal",
+          items: [
+            {
+              label: "nut.users.logs.title",
+              key: "/users/logs"
+            }, {
+              label: "nut.users.profile.title",
+              key: "/users/profile"
+            }, {
+              label: "nut.users.change-password.title",
+              key: "/users/change-password"
+            }
+          ]
+        }
+      ]
       : [
         {
           icon: "user",
@@ -50,12 +70,22 @@ class Widget extends Component {
       ]
     return (
       <Menu theme="dark" mode="inline" defaultSelectedKeys={[]} onClick={this.handleMenu}>
-        {items.map((it) => (
-          <Menu.Item key={it.key}>
-            <Icon type={it.icon}/>
-            <FormattedMessage id={it.label}/>
-          </Menu.Item>
-        ))}
+        {items.map((it) => it.items
+          ? (
+            <SubMenu key={it.key} title={< span > <Icon type={it.icon}/> < FormattedMessage id = {
+              it.label
+            } />< /span>}>
+              {it.items.map(l => (
+                <Menu.Item key={l.key}><FormattedMessage id={l.label}/></Menu.Item>
+              ))}
+            </SubMenu>
+          )
+          : (
+            <Menu.Item key={it.key}>
+              <Icon type={it.icon}/>
+              <FormattedMessage id={it.label}/>
+            </Menu.Item>
+          ))}
       </Menu>
     )
 

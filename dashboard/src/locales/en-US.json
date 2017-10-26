@@ -14,6 +14,7 @@
   "nut.attributes.site.title": "Title",
   "nut.attributes.site.subhead": "Subhead",
   "nut.install.title": "Install",
+  "nut.personal.title": "Personal",
   "nut.users.sign-in.title": "Sign In",
   "nut.users.sign-up.title": "Sign Up",
   "nut.users.confirm.title": "Didn't receive confirmation instructions?",
@@ -24,6 +25,11 @@
   "nut.users.forgot-password.notice": "You will receive an email with instructions on how to reset your password in a few minutes.",
   "nut.users.reset-password.title": "Reset your password",
   "nut.users.reset-password.success": "Your password has been changed successfully. Please sign in to continue.",
+  "nut.users.logs.title": "Logs",
+  "nut.users.profile.title": "Profile",
+  "nut.users.change-password.title": "Change password",
   "nut.leave-words.new.title": "Leave me a message",
   "nut.leave-words.new.help": "Please leave your email or phone for reply."
+
+
 }

@@ -622,6 +622,7 @@ func (p *HomePlugin) httpServer() (http.Handler, error) {
 	ng := negroni.New()
 	ng.Use(negroni.NewRecovery())
 	ng.UseFunc(web.LoggerMiddleware)
+	ng.UseFunc(p.Layout.CurrentUserMiddleware)
 	i18n, err := p.I18n.Middleware()
 	if err != nil {
 		return nil, err

@@ -9,6 +9,9 @@ import UsersSignIn from './users/SignIn'
 import UsersSignUp from './users/SignUp'
 import UsersEmailForm from './users/EmailForm'
 import UsersResetPassword from './users/ResetPassword'
+import UsersLogs from './users/Logs'
+import UsersProfile from './users/Profile'
+import UsersChangePassword from './users/ChangePassword'
 
 import NewLeaveWord from './leave-words/New'
 
@@ -40,6 +43,15 @@ const routes = [
   } />),
   (< Route key = "nut.users.reset-password" path = "/users/reset-password/:token" component = {
     UsersResetPassword
+  } />),
+  (< Route key = "nut.users.logs" path = "/users/logs" component = {
+    UsersLogs
+  } />),
+  (< Route key = "nut.users.profile" path = "/users/profile" component = {
+    UsersProfile
+  } />),
+  (< Route key = "nut.users.change-password" path = "/users/change-password" component = {
+    UsersChangePassword
   } />),
 
   (< Route key = "nut.leave-words.new" path = "/leave-words/new" component = {

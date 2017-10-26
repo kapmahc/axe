@@ -12,17 +12,18 @@ import (
 
 // UsersPlugin admin plugin
 type UsersPlugin struct {
-	I18n     *web.I18n     `inject:""`
-	Cache    *web.Cache    `inject:""`
-	Router   *web.Router   `inject:""`
-	Jobber   *web.Jobber   `inject:""`
-	Wrapper  *web.Wrapper  `inject:""`
-	Settings *web.Settings `inject:""`
-	Security *web.Security `inject:""`
-	Jwt      *web.Jwt      `inject:""`
-	DB       *pg.DB        `inject:""`
-	Dao      *Dao          `inject:""`
-	Layout   *Layout       `inject:""`
+	I18n                 *web.I18n             `inject:""`
+	Cache                *web.Cache            `inject:""`
+	Router               *web.Router           `inject:""`
+	Jobber               *web.Jobber           `inject:""`
+	Wrapper              *web.Wrapper          `inject:""`
+	Settings             *web.Settings         `inject:""`
+	Security             *web.Security         `inject:""`
+	Jwt                  *web.Jwt              `inject:""`
+	DB                   *pg.DB                `inject:""`
+	Dao                  *Dao                  `inject:""`
+	Layout               *Layout               `inject:""`
+	MustSignInMiddleware *MustSignInMiddleware `inject:""`
 }
 
 // Init init beans
