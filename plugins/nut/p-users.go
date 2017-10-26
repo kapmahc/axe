@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/facebookgo/inject"
+	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
 	"github.com/urfave/cli"
@@ -12,18 +13,16 @@ import (
 
 // UsersPlugin admin plugin
 type UsersPlugin struct {
-	I18n                 *web.I18n             `inject:""`
-	Cache                *web.Cache            `inject:""`
-	Router               *web.Router           `inject:""`
-	Jobber               *web.Jobber           `inject:""`
-	Wrapper              *web.Wrapper          `inject:""`
-	Settings             *web.Settings         `inject:""`
-	Security             *web.Security         `inject:""`
-	Jwt                  *web.Jwt              `inject:""`
-	DB                   *pg.DB                `inject:""`
-	Dao                  *Dao                  `inject:""`
-	Layout               *Layout               `inject:""`
-	MustSignInMiddleware *MustSignInMiddleware `inject:""`
+	I18n     *web.I18n     `inject:""`
+	Cache    *web.Cache    `inject:""`
+	Router   *gin.Engine   `inject:""`
+	Jobber   *web.Jobber   `inject:""`
+	Settings *web.Settings `inject:""`
+	Security *web.Security `inject:""`
+	Jwt      *web.Jwt      `inject:""`
+	DB       *pg.DB        `inject:""`
+	Dao      *Dao          `inject:""`
+	Layout   *Layout       `inject:""`
 }
 
 // Init init beans

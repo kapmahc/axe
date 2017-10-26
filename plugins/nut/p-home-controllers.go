@@ -3,21 +3,21 @@ package nut
 import (
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
-	"github.com/kapmahc/axe/web"
 )
 
-func (p *HomePlugin) getHome(l string, d web.H, c *web.Context) error {
+func (p *HomePlugin) getHome(l string, d gin.H, c *gin.Context) error {
 	return nil
 }
 
-func (p *HomePlugin) getSiteInfo(l string, c *web.Context) (interface{}, error) {
+func (p *HomePlugin) getSiteInfo(l string, c *gin.Context) (interface{}, error) {
 	// -----------
 	langs, err := p.I18n.Languages()
 	if err != nil {
 		return nil, err
 	}
-	data := web.H{"locale": l, "languages": langs}
+	data := gin.H{"locale": l, "languages": langs}
 	// -----------
 	for _, k := range []string{"title", "subhead", "keywords", "description", "copyright"} {
 		data[k] = p.I18n.T(l, "site."+k)
@@ -25,7 +25,7 @@ func (p *HomePlugin) getSiteInfo(l string, c *web.Context) (interface{}, error) 
 	// -----------
 	var author map[string]interface{}
 	if err := p.Settings.Get("site.author", &author); err != nil {
-		author = web.H{}
+		author = gin.H{}
 	}
 	data["author"] = author
 	return data, nil
@@ -40,7 +40,7 @@ type fmInstall struct {
 	PasswordConfirmation string `json:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
-func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) {
+func (p *HomePlugin) postInstall(l string, c *gin.Context) (interface{}, error) {
 	var fm fmInstall
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) 
 	}); err != nil {
 		return nil, err
 	}
-	return web.H{}, nil
+	return gin.H{}, nil
 }
 
 type fmLeaveWord struct {
@@ -98,7 +98,7 @@ type fmLeaveWord struct {
 	Type string `json:"type" validate:"required"`
 }
 
-func (p *HomePlugin) createLeaveWord(l string, c *web.Context) (interface{}, error) {
+func (p *HomePlugin) createLeaveWord(l string, c *gin.Context) (interface{}, error) {
 	var fm fmLeaveWord
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -111,5 +111,5 @@ func (p *HomePlugin) createLeaveWord(l string, c *web.Context) (interface{}, err
 	}); err != nil {
 		return nil, err
 	}
-	return web.H{}, nil
+	return gin.H{}, nil
 }

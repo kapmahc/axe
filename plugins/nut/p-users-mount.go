@@ -7,7 +7,6 @@ import (
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"github.com/urfave/negroni"
 	gomail "gopkg.in/gomail.v2"
 )
 
@@ -24,7 +23,7 @@ func (p *UsersPlugin) Mount() error {
 	api.POST("/unlock", p.Layout.JSON(p.postUnlock))
 	api.POST("/forgot-password", p.Layout.JSON(p.postForgotPassword))
 	api.POST("/reset-password", p.Layout.JSON(p.postResetPassword))
-	api.GET("/logs", negroni.New(p.MustSignInMiddleware, negroni.WrapFunc(p.Layout.JSON(p.getLogs))).ServeHTTP)
+	api.GET("/logs", p.Layout.MustSignInMiddleware, p.Layout.JSON(p.getLogs))
 
 	p.Jobber.Register(SendEmailJob, func(id string, payload []byte) error {
 		var buf bytes.Buffer

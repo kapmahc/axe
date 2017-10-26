@@ -2,16 +2,18 @@ package nut
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/SermoDigital/jose/jws"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
-	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 )
 
-func (p *UsersPlugin) getLogs(l string, c *web.Context) (interface{}, error) {
-	user := c.Get(CurrentUser).(*User)
+func (p *UsersPlugin) getLogs(l string, c *gin.Context) (interface{}, error) {
+	user := c.MustGet(CurrentUser).(*User)
 	var items []Log
 	if err := p.DB.Model(&items).
 		Column("ip", "message", "created_at").
@@ -28,7 +30,7 @@ type fmUsersSignIn struct {
 	Password string `json:"password" validate:"required"`
 }
 
-func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postSignIn(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersSignIn
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -45,7 +47,7 @@ func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) 
 	if err != nil {
 		return nil, err
 	}
-	return web.H{"token": string(tkn)}, nil
+	return gin.H{"token": string(tkn)}, nil
 }
 
 type fmUsersSignUp struct {
@@ -55,7 +57,7 @@ type fmUsersSignUp struct {
 	PasswordConfirmation string `json:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
-func (p *UsersPlugin) postSignUp(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postSignUp(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersSignUp
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -70,7 +72,7 @@ func (p *UsersPlugin) postSignUp(l string, c *web.Context) (interface{}, error) 
 		if err = p.Dao.AddLog(tx, user.ID, ip, l, "nut.logs.sign-up"); err != nil {
 			return err
 		}
-		if err = p.sendEmail(c, user, actConfirm); err != nil {
+		if err = p.sendEmail(c.Request, l, user, actConfirm); err != nil {
 			log.Error(err)
 		}
 		return nil
@@ -78,14 +80,14 @@ func (p *UsersPlugin) postSignUp(l string, c *web.Context) (interface{}, error) 
 		return nil, err
 	}
 
-	return web.H{}, nil
+	return gin.H{}, nil
 }
 
 type fmUsersEmail struct {
 	Email string `json:"email" validate:"email"`
 }
 
-func (p *UsersPlugin) getConfirmToken(l string, c *web.Context) error {
+func (p *UsersPlugin) getConfirmToken(l string, c *gin.Context) error {
 	cm, err := p.Jwt.Validate([]byte(c.Param("token")))
 	if err != nil {
 		return err
@@ -118,14 +120,14 @@ func (p *UsersPlugin) getConfirmToken(l string, c *web.Context) error {
 	}); err != nil {
 		return err
 	}
-	ss := c.Session()
+	ss := sessions.Default(c)
 	ss.AddFlash(p.I18n.T(l, "nut.users.confirm.success"), NOTICE)
-	c.Save(ss)
+	ss.Save()
 
 	return nil
 }
 
-func (p *UsersPlugin) postConfirm(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postConfirm(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -141,14 +143,14 @@ func (p *UsersPlugin) postConfirm(l string, c *web.Context) (interface{}, error)
 	if user.IsConfirm() {
 		return nil, p.I18n.E(l, "nut.errors.user-already-confirm")
 	}
-	if err := p.sendEmail(c, &user, actConfirm); err != nil {
+	if err := p.sendEmail(c.Request, l, &user, actConfirm); err != nil {
 		log.Error(err)
 	}
 
-	return web.H{}, nil
+	return gin.H{}, nil
 }
 
-func (p *UsersPlugin) getUnlockToken(l string, c *web.Context) error {
+func (p *UsersPlugin) getUnlockToken(l string, c *gin.Context) error {
 	cm, err := p.Jwt.Validate([]byte(c.Param("token")))
 	if err != nil {
 		return err
@@ -181,14 +183,14 @@ func (p *UsersPlugin) getUnlockToken(l string, c *web.Context) error {
 	}); err != nil {
 		return err
 	}
-	ss := c.Session()
+	ss := sessions.Default(c)
 	ss.AddFlash(p.I18n.T(l, "nut.users.unlock.success"), NOTICE)
-	c.Save(ss)
+	ss.Save()
 
 	return nil
 }
 
-func (p *UsersPlugin) postUnlock(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postUnlock(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -204,11 +206,11 @@ func (p *UsersPlugin) postUnlock(l string, c *web.Context) (interface{}, error) 
 	if !user.IsLock() {
 		return nil, p.I18n.E(l, "nut.errors.user-not-lock")
 	}
-	if err := p.sendEmail(c, &user, actUnlock); err != nil {
+	if err := p.sendEmail(c.Request, l, &user, actUnlock); err != nil {
 		log.Error(err)
 	}
 
-	return web.H{}, nil
+	return gin.H{}, nil
 }
 
 type fmUsersResetPassword struct {
@@ -217,7 +219,7 @@ type fmUsersResetPassword struct {
 	PasswordConfirmation string `json:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
-func (p *UsersPlugin) postResetPassword(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postResetPassword(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersResetPassword
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -253,9 +255,9 @@ func (p *UsersPlugin) postResetPassword(l string, c *web.Context) (interface{}, 
 	}); err != nil {
 		return nil, err
 	}
-	return web.H{}, nil
+	return gin.H{}, nil
 }
-func (p *UsersPlugin) postForgotPassword(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postForgotPassword(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -269,11 +271,11 @@ func (p *UsersPlugin) postForgotPassword(l string, c *web.Context) (interface{},
 		return nil, err
 	}
 
-	if err := p.sendEmail(c, &user, actResetPassword); err != nil {
+	if err := p.sendEmail(c.Request, l, &user, actResetPassword); err != nil {
 		log.Error(err)
 	}
 
-	return web.H{}, nil
+	return gin.H{}, nil
 }
 
 const (
@@ -285,8 +287,8 @@ const (
 	SendEmailJob = "send.email"
 )
 
-func (p *UsersPlugin) sendEmail(ctx *web.Context, user *User, act string) error {
-	lang := ctx.Get(web.LOCALE).(string)
+func (p *UsersPlugin) sendEmail(req *http.Request, lang string, user *User, act string) error {
+
 	cm := jws.Claims{}
 	cm.Set("act", act)
 	cm.Set("uid", user.UID)
@@ -299,7 +301,7 @@ func (p *UsersPlugin) sendEmail(ctx *web.Context, user *User, act string) error 
 		Home  string
 		Token string
 	}{
-		Home:  ctx.Home(),
+		Home:  p.Layout.Home(req),
 		Token: string(tkn),
 	}
 

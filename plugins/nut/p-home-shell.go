@@ -3,7 +3,6 @@ package nut
 import (
 	"context"
 	"crypto/x509/pkix"
-	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -11,19 +10,15 @@ import (
 	"os/signal"
 	"path"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/BurntSushi/toml"
-	"github.com/garyburd/redigo/redis"
 	"github.com/go-pg/migrations"
 	"github.com/go-pg/pg"
-	"github.com/gorilla/mux"
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
-	"github.com/urfave/negroni"
 	"golang.org/x/text/language"
 )
 
@@ -215,130 +210,11 @@ func (p *HomePlugin) Shell() []cli.Command {
 			Action: web.InjectAction(func(_ *cli.Context) error {
 				tpl := "%-7s %s\n"
 				fmt.Printf(tpl, "METHOD", "PATH")
-				return p.Router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
-					pat, err := route.GetPathTemplate()
-					if err != nil {
-						return err
-					}
-					mtd, err := route.GetMethods()
-					if err != nil {
-						return err
-					}
-					if len(mtd) == 0 {
-						return nil
-					}
-					fmt.Printf(tpl, strings.Join(mtd, ","), pat)
-					return nil
-				})
+				for _, rt := range p.Router.Routes() {
+					fmt.Printf(tpl, rt.Method, rt.Path)
+				}
+				return nil
 			}),
-		},
-	}
-}
-
-func (p *HomePlugin) openDB() (*pg.DB, error) {
-	args := viper.GetStringMap("postgresql")
-	opt, err := pg.ParseURL(fmt.Sprintf(
-		"postgres://%s:%s@%s:%d/%s?sslmode=%s",
-		args["user"],
-		args["password"],
-		args["host"],
-		args["port"],
-		args["dbname"],
-		args["sslmode"],
-	))
-	if err != nil {
-		return nil, err
-	}
-	db := pg.Connect(opt)
-
-	db.OnQueryProcessed(func(evt *pg.QueryProcessedEvent) {
-		query, err := evt.FormattedQuery()
-		if err != nil {
-			log.Error(err)
-			return
-		}
-		log.Debugf("%s %s", time.Since(evt.StartTime), query)
-	})
-	return db, nil
-}
-
-func (p *HomePlugin) openJobber() (*web.Jobber, error) {
-	args := viper.GetStringMap("rabbitmq")
-	return web.NewJobber(fmt.Sprintf(
-		"amqp://%s:%s@%s:%d/%s",
-		args["user"],
-		args["password"],
-		args["host"],
-		args["port"],
-		args["virtual"],
-	), args["queue"].(string))
-}
-
-func (p *HomePlugin) openWrapper(secret []byte) *web.Wrapper {
-	return web.NewWrapper(
-		secret,
-		path.Join("themes", viper.GetString("server.theme"), "views"),
-		template.FuncMap{
-			"fmt": fmt.Sprintf,
-			"dtf": func(t time.Time) string {
-				return t.Format(time.RFC822)
-			},
-			"eq": func(a interface{}, b interface{}) bool {
-				return a == b
-			},
-			"dict": func(values ...interface{}) (map[string]interface{}, error) {
-				if len(values)%2 != 0 {
-					return nil, errors.New("invalid dict call")
-				}
-				dict := make(map[string]interface{}, len(values)/2)
-				for i := 0; i < len(values); i += 2 {
-					key, ok := values[i].(string)
-					if !ok {
-						return nil, errors.New("dict keys must be strings")
-					}
-					dict[key] = values[i+1]
-				}
-				return dict, nil
-			},
-			"t": func(lang, code string, args ...interface{}) string {
-				return p.I18n.T(lang, code, args...)
-			},
-			"assets_css": func(u string) template.HTML {
-				return template.HTML(fmt.Sprintf(`<link type="text/css" rel="stylesheet" href="%s">`, u))
-			},
-			"assets_js": func(u string) template.HTML {
-				return template.HTML(fmt.Sprintf(`<script src="%s"></script>`, u))
-			},
-		},
-		viper.GetString("env") != "production",
-	)
-}
-
-func (p *HomePlugin) openRedis() *redis.Pool {
-	return &redis.Pool{
-		MaxIdle:     3,
-		IdleTimeout: 240 * time.Second,
-		Dial: func() (redis.Conn, error) {
-			c, e := redis.Dial(
-				"tcp",
-				fmt.Sprintf(
-					"%s:%d",
-					viper.GetString("redis.host"),
-					viper.GetInt("redis.port"),
-				),
-			)
-			if e != nil {
-				return nil, e
-			}
-			if _, e = c.Do("SELECT", viper.GetInt("redis.db")); e != nil {
-				c.Close()
-				return nil, e
-			}
-			return c, nil
-		},
-		TestOnBorrow: func(c redis.Conn, t time.Time) error {
-			_, err := c.Do("PING")
-			return err
 		},
 	}
 }
@@ -619,15 +495,11 @@ func (p *HomePlugin) httpServer() (http.Handler, error) {
 		p.Router.Static("/"+k+"/", v)
 	}
 
-	ng := negroni.New()
-	ng.Use(negroni.NewRecovery())
-	ng.UseFunc(web.LoggerMiddleware)
-	ng.UseFunc(p.Layout.CurrentUserMiddleware)
 	i18n, err := p.I18n.Middleware()
 	if err != nil {
 		return nil, err
 	}
-	ng.UseFunc(i18n)
-	ng.UseHandler(p.Router.Handler())
-	return ng, nil
+	p.Router.Use(i18n, p.Layout.CurrentUserMiddleware)
+
+	return p.Router, nil
 }

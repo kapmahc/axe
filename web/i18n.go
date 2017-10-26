@@ -2,7 +2,6 @@ package web
 
 import (
 	"bytes"
-	"context"
 	"errors"
 	"fmt"
 	"html/template"
@@ -11,10 +10,10 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-ini/ini"
 	"github.com/go-pg/pg"
 	log "github.com/sirupsen/logrus"
-	"github.com/urfave/negroni"
 	"golang.org/x/text/language"
 )
 
@@ -171,7 +170,7 @@ func (p *I18n) get(lang, code string) (string, error) {
 }
 
 // Middleware parse locales
-func (p *I18n) Middleware() (negroni.HandlerFunc, error) {
+func (p *I18n) Middleware() (gin.HandlerFunc, error) {
 	name := string(LOCALE)
 	langs, err := p.Languages()
 	if err != nil {
@@ -187,25 +186,19 @@ func (p *I18n) Middleware() (negroni.HandlerFunc, error) {
 	}
 	matcher := language.NewMatcher(tags)
 
-	return func(wrt http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
+	return func(c *gin.Context) {
 
-		lang, written := p.detect(req, name)
+		lang, written := p.detect(c.Request, name)
 		tag, _, _ := matcher.Match(language.Make(lang))
 		if lang != tag.String() {
 			written = true
 			lang = tag.String()
 		}
+		c.Set(LOCALE, lang)
+		c.Set("languages", langs)
 		if written {
-			http.SetCookie(wrt, &http.Cookie{
-				Name:     name,
-				Value:    lang,
-				MaxAge:   1<<32 - 1,
-				Secure:   false,
-				HttpOnly: false,
-			})
+			c.SetCookie(LOCALE, lang, 1<<32-1, "/", "", c.Request.TLS != nil, false)
 		}
-		ctx := context.WithValue(req.Context(), K(LOCALE), lang)
-		next(wrt, req.WithContext(ctx))
 	}, nil
 }
 

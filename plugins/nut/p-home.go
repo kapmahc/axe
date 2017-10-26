@@ -3,6 +3,7 @@ package nut
 import (
 	"encoding/base64"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
 	"github.com/spf13/viper"
@@ -12,9 +13,8 @@ import (
 type HomePlugin struct {
 	I18n     *web.I18n     `inject:""`
 	Cache    *web.Cache    `inject:""`
-	Router   *web.Router   `inject:""`
+	Router   *gin.Engine   `inject:""`
 	Jobber   *web.Jobber   `inject:""`
-	Wrapper  *web.Wrapper  `inject:""`
 	Settings *web.Settings `inject:""`
 	DB       *pg.DB        `inject:""`
 	Dao      *Dao          `inject:""`
