@@ -23,7 +23,12 @@ func (p *UsersPlugin) Mount() error {
 	api.POST("/unlock", p.Layout.JSON(p.postUnlock))
 	api.POST("/forgot-password", p.Layout.JSON(p.postForgotPassword))
 	api.POST("/reset-password", p.Layout.JSON(p.postResetPassword))
-	api.GET("/logs", p.Layout.MustSignInMiddleware, p.Layout.JSON(p.getLogs))
+
+	apiM := p.Router.Group("/api/users", p.Layout.MustSignInMiddleware)
+	apiM.GET("/logs", p.Layout.JSON(p.getLogs))
+	apiM.GET("/profile", p.Layout.JSON(p.getProfile))
+	apiM.POST("/profile", p.Layout.JSON(p.postProfile))
+	apiM.POST("/change-password", p.Layout.JSON(p.postChangePassword))
 
 	p.Jobber.Register(SendEmailJob, func(id string, payload []byte) error {
 		var buf bytes.Buffer

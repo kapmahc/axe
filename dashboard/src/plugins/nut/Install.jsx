@@ -104,7 +104,7 @@ class Widget extends Component {
                   ]
                 })(<Input type="password"/>)}
               </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password-confirmation" />} hasFeedback>
+              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.passwordConfirmation" />} hasFeedback>
                 {getFieldDecorator('passwordConfirmation', {
                   rules: [
                     {

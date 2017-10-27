@@ -12,6 +12,55 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type fmUsersChangePassword struct {
+	CurrentPassword      string `json:"currentPassword" binding:"required"`
+	NewPassword          string `json:"newPassword" binding:"required,min=6"`
+	PasswordConfirmation string `json:"passwordConfirmation" binding:"eqfield=NewPassword"`
+}
+
+func (p *UsersPlugin) postChangePassword(l string, c *gin.Context) (interface{}, error) {
+	var fm fmUsersChangePassword
+	if err := c.BindJSON(&fm); err != nil {
+		return nil, err
+	}
+	user := c.MustGet(CurrentUser).(*User)
+	if !p.Security.Check(user.Password, []byte(fm.CurrentPassword)) {
+		return nil, p.I18n.E(l, "nut.errors.user-bad-password")
+	}
+	var err error
+	if user.Password, err = p.Security.Hash([]byte(fm.NewPassword)); err != nil {
+		return nil, err
+	}
+	user.UpdatedAt = time.Now()
+	err = p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		if _, er := tx.Model(user).Column("name", "password").Update(); er != nil {
+			return err
+		}
+		return p.Dao.AddLog(tx, user.ID, c.ClientIP(), l, "nut.logs.change-password")
+	})
+	return gin.H{}, err
+}
+func (p *UsersPlugin) getProfile(l string, c *gin.Context) (interface{}, error) {
+	user := c.MustGet(CurrentUser).(*User)
+	return gin.H{"email": user.Email, "name": user.Name}, nil
+}
+
+type fmUsersProfile struct {
+	Name string `json:"name" binding:"required"`
+}
+
+func (p *UsersPlugin) postProfile(l string, c *gin.Context) (interface{}, error) {
+	var fm fmUsersProfile
+	if err := c.BindJSON(&fm); err != nil {
+		return nil, err
+	}
+	user := c.MustGet(CurrentUser).(*User)
+	user.Name = fm.Name
+	user.UpdatedAt = time.Now()
+	_, err := p.DB.Model(user).Column("name", "updated_at").Update()
+	return gin.H{}, err
+}
+
 func (p *UsersPlugin) getLogs(l string, c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
 	var items []Log
@@ -53,7 +102,7 @@ func (p *UsersPlugin) postSignIn(l string, c *gin.Context) (interface{}, error) 
 type fmUsersSignUp struct {
 	Name                 string `json:"name" binding:"required"`
 	Email                string `json:"email" binding:"email"`
-	Password             string `json:"password" binding:"required"`
+	Password             string `json:"password" binding:"required,min=6"`
 	PasswordConfirmation string `json:"passwordConfirmation" binding:"eqfield=Password"`
 }
 

@@ -78,13 +78,11 @@ class Widget extends Component {
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty-password"})
-                    }, {
-                      validator: this.checkConfirm
                     }
                   ]
                 })(<Input type="password"/>)}
               </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password-confirmation" />} hasFeedback>
+              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.passwordConfirmation" />} hasFeedback>
                 {getFieldDecorator('passwordConfirmation', {
                   rules: [
                     {

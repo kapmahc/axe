@@ -69,7 +69,7 @@ class Widget extends Component {
         }
       ]
     return (
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={[]} onClick={this.handleMenu}>
+      <Menu theme="dark" mode="inline" onClick={this.handleMenu}>
         {items.map((it) => it.items
           ? (
             <SubMenu key={it.key} title={< span > <Icon type={it.icon}/> < FormattedMessage id = {
