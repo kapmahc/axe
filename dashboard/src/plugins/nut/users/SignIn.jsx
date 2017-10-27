@@ -1,14 +1,14 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Form, Row, Col, Input} from 'antd'
+import {Form, Row, Col, Input, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
-import axios from 'axios'
 
 import Layout from '../../../layout'
-import {Submit, formItemLayout, fail} from '../../../components/form'
-import {signIn, TOKEN} from '../../../actions'
+import {post, TOKEN} from '../../../ajax'
+import {Submit, formItemLayout} from '../../../components/form'
+import {signIn} from '../../../actions'
 
 const FormItem = Form.Item
 
@@ -18,12 +18,12 @@ class Widget extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        axios.post('/api/users/sign-in', values).then((rst) => {
-          var token = rst.data.token
+        post('/api/users/sign-in', values).then((rst) => {
+          var token = rst.token
           signIn(token)
           sessionStorage.setItem(TOKEN, token)
           push('/users/logs')
-        }, fail);
+        }).catch(message.error);
       }
     });
   }

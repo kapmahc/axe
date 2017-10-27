@@ -32,7 +32,7 @@ type fmUsersSignIn struct {
 
 func (p *UsersPlugin) postSignIn(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersSignIn
-	if err := c.Bind(&fm); err != nil {
+	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
 	user, err := p.Dao.SignIn(l, c.ClientIP(), fm.Email, fm.Password)
@@ -59,7 +59,7 @@ type fmUsersSignUp struct {
 
 func (p *UsersPlugin) postSignUp(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersSignUp
-	if err := c.Bind(&fm); err != nil {
+	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
 
@@ -129,7 +129,7 @@ func (p *UsersPlugin) getConfirmToken(l string, c *gin.Context) error {
 
 func (p *UsersPlugin) postConfirm(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersEmail
-	if err := c.Bind(&fm); err != nil {
+	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
 
@@ -192,7 +192,7 @@ func (p *UsersPlugin) getUnlockToken(l string, c *gin.Context) error {
 
 func (p *UsersPlugin) postUnlock(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersEmail
-	if err := c.Bind(&fm); err != nil {
+	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
 
@@ -221,7 +221,7 @@ type fmUsersResetPassword struct {
 
 func (p *UsersPlugin) postResetPassword(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersResetPassword
-	if err := c.Bind(&fm); err != nil {
+	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
 
@@ -259,7 +259,7 @@ func (p *UsersPlugin) postResetPassword(l string, c *gin.Context) (interface{}, 
 }
 func (p *UsersPlugin) postForgotPassword(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersEmail
-	if err := c.Bind(&fm); err != nil {
+	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
 

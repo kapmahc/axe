@@ -6,7 +6,6 @@
   "homepage": "/my",
   "dependencies": {
     "antd": "^2.13.7",
-    "axios": "^0.16.2",
     "history": "^4.7.2",
     "js-cookie": "^2.1.4",
     "jwt-decode": "^2.2.0",
@@ -16,7 +15,7 @@
     "react": "^16.0.0",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.0.0",
-    "react-google-maps": "^9.0.1",
+    "react-google-maps": "^9.2.1",
     "react-intl": "^2.4.0",
     "react-markdown": "^2.5.0",
     "react-moment": "^0.6.5",

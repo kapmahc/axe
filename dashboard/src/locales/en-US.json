@@ -14,6 +14,7 @@
   "nut.attributes.site.title": "Title",
   "nut.attributes.site.subhead": "Subhead",
   "nut.install.title": "Install",
+  "nut.install.success": "Install successfully. Please sign in to continue.",
   "nut.personal.title": "Personal",
   "nut.users.sign-in.title": "Sign In",
   "nut.users.sign-up.title": "Sign Up",

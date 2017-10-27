@@ -4,24 +4,22 @@ import {Form, Row, Col, Input, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
-import axios from 'axios'
 
 import Layout from '../../../layout'
-import {Submit, formItemLayout, fail} from '../../../components/form'
+import {post} from '../../../ajax'
+import {Submit, formItemLayout} from '../../../components/form'
 
 const FormItem = Form.Item
 
 class Widget extends Component {
   handleSubmit = (e) => {
-    const {push} = this.props
     const {formatMessage} = this.props.intl
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        axios.post('/api/users/sign-up', values).then(() => {
-          message.info(formatMessage({id: "nut.users.confirm.notice"}))
-          push('/users/sign-in')
-        }, fail);
+        post('/api/users/profile', values).then(() => {
+          message.info(formatMessage({id: "message.success"}))
+        }).catch(message.error);
       }
     });
   }

@@ -8,7 +8,8 @@ import {push} from 'react-router-redux'
 import Footer from './Footer'
 import LeftNavPanel from './LeftNavPanel'
 import TopNavBar from './TopNavBar'
-import {signIn, signOut, refresh, TOKEN} from '../actions'
+import {signIn, signOut, refresh} from '../actions'
+import {TOKEN} from '../ajax'
 
 const {Header, Content, Sider} = Layout
 

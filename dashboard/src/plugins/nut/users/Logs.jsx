@@ -4,26 +4,16 @@ import {Form, Row, Col, Input, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
-import axios from 'axios'
 
 import Layout from '../../../layout'
-import {Submit, formItemLayout, fail} from '../../../components/form'
+import {get} from '../../../ajax'
+import {Submit, formItemLayout} from '../../../components/form'
 
 const FormItem = Form.Item
 
 class Widget extends Component {
   handleSubmit = (e) => {
-    const {push} = this.props
-    const {formatMessage} = this.props.intl
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        axios.post('/api/users/sign-up', values).then(() => {
-          message.info(formatMessage({id: "nut.users.confirm.notice"}))
-          push('/users/sign-in')
-        }, fail);
-      }
-    });
   }
   checkPassword = (rule, value, callback) => {
     const {formatMessage} = this.props.intl
@@ -35,9 +25,9 @@ class Widget extends Component {
     }
   }
   componentDidMount() {
-    axios.get('/api/users/logs').then((rsp) => {
+    get('/api/users/logs').then((rsp) => {
       console.log(rsp)
-    }, fail);
+    }).catch(message.error);
   }
   render() {
     const {formatMessage} = this.props.intl

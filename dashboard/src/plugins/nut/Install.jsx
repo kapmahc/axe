@@ -1,23 +1,27 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Form, Row, Col, Input} from 'antd'
+import {Form, Row, Col, Input, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
-import axios from 'axios'
 
 import Layout from '../../layout'
+import {post} from '../../ajax'
 import {Submit, formItemLayout} from '../../components/form'
 
 const FormItem = Form.Item
 
 class Widget extends Component {
   handleSubmit = (e) => {
+    const {formatMessage} = this.props.intl
     const {push} = this.props
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        axios.post('/api/install', values).then(() => push('/users/sign-in'));
+        post('/api/install', values).then(() => {
+          message.info(formatMessage({id: "nut.install.success"}))
+          push('/users/sign-in')
+        }).catch(message.error);
       }
     });
   }

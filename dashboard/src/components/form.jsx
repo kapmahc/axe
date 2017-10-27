@@ -1,10 +1,8 @@
 import React, {Component} from 'react'
-import {Form, Button, message} from 'antd'
+import {Form, Button} from 'antd'
 import {FormattedMessage} from 'react-intl'
 
 const FormItem = Form.Item
-
-export const fail = (err) => message.error(err.response.data)
 
 export const formItemLayout = {
   labelCol: {

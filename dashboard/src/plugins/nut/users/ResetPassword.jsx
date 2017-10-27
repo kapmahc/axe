@@ -4,10 +4,10 @@ import {Form, Row, Col, Input, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
-import axios from 'axios'
 
 import Layout from '../../../layout'
-import {Submit, formItemLayout, fail} from '../../../components/form'
+import {post} from '../../../ajax'
+import {Submit, formItemLayout} from '../../../components/form'
 
 const FormItem = Form.Item
 
@@ -19,10 +19,10 @@ class Widget extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         values.token = match.params.token
-        axios.post('/api/users/reset-password', values).then(() => {
+        post('/api/users/reset-password', values).then(() => {
           message.info(formatMessage({id: "nut.users.reset-password.success"}))
           push('/users/sign-in')
-        }, fail);
+        }).catch(message.error);
       }
     });
   }

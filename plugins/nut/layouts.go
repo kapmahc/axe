@@ -1,13 +1,16 @@
 package nut
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
+	validator "gopkg.in/go-playground/validator.v8"
 )
 
 const (
@@ -97,10 +100,24 @@ func (p *Layout) JSON(fn func(string, *gin.Context) (interface{}, error)) gin.Ha
 		if val, err := fn(l, c); err == nil {
 			c.JSON(http.StatusOK, val)
 		} else {
-			log.Error(err)
-			c.AbortWithError(http.StatusInternalServerError, err)
+			p.Abort(c, http.StatusInternalServerError, err)
 		}
 	}
+}
+
+// Abort abort error
+func (p *Layout) Abort(c *gin.Context, s int, e error) {
+	log.Error(e)
+	if er, ok := e.(validator.ValidationErrors); ok {
+		var ss []string
+		for _, it := range er {
+			ss = append(ss, fmt.Sprintf("Validation for '%s' failed on the '%s' tag;", it.Field, it.Tag))
+		}
+		c.String(http.StatusBadRequest, strings.Join(ss, "\n"))
+	} else {
+		c.String(s, e.Error())
+	}
+	// c.AbortWithError(s, err)
 }
 
 // XML render xml
@@ -110,8 +127,7 @@ func (p *Layout) XML(fn func(string, *gin.Context) (interface{}, error)) gin.Han
 		if val, err := fn(l, c); err == nil {
 			c.XML(http.StatusOK, val)
 		} else {
-			log.Error(err)
-			c.AbortWithError(http.StatusInternalServerError, err)
+			p.Abort(c, http.StatusInternalServerError, err)
 		}
 	}
 }

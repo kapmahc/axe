@@ -42,7 +42,7 @@ type fmInstall struct {
 
 func (p *HomePlugin) postInstall(l string, c *gin.Context) (interface{}, error) {
 	var fm fmInstall
-	if err := c.Bind(&fm); err != nil {
+	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
 
@@ -100,7 +100,7 @@ type fmLeaveWord struct {
 
 func (p *HomePlugin) createLeaveWord(l string, c *gin.Context) (interface{}, error) {
 	var fm fmLeaveWord
-	if err := c.Bind(&fm); err != nil {
+	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
 	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
