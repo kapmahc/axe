@@ -16,8 +16,8 @@ func (p *UsersPlugin) getLogs(l string, c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)
 	var items []Log
 	if err := p.DB.Model(&items).
-		Column("ip", "message", "created_at").
-		Where("id = ?", user.ID).
+		Column("id", "ip", "message", "created_at").
+		Where("user_id = ?", user.ID).
 		Order("created_at DESC").
 		Select(); err != nil {
 		return nil, err

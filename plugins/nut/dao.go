@@ -26,7 +26,7 @@ func (p *Dao) SignIn(lang, ip, email, password string) (*User, error) {
 			return err
 		}
 		if !p.Security.Check(it.Password, []byte(password)) {
-			if err := p.DB.Insert(&Log{UserID: it.ID, IP: ip, Message: p.I18n.T(lang, "nut.logs.sign-in-fail")}); err != nil {
+			if err := p.DB.Insert(&Log{UserID: it.ID, IP: ip, Message: p.I18n.T(lang, "nut.logs.sign-in.fail")}); err != nil {
 				log.Error(err)
 			}
 			return p.I18n.E(lang, "nut.errors.user-bad-password")
@@ -51,7 +51,7 @@ func (p *Dao) SignIn(lang, ip, email, password string) (*User, error) {
 			"updated_at").Update(); err != nil {
 			return err
 		}
-		if err := p.AddLog(tx, it.ID, ip, lang, "nut.logs.sign-in-success"); err != nil {
+		if err := p.AddLog(tx, it.ID, ip, lang, "nut.logs.sign-in.success"); err != nil {
 			return err
 		}
 		return nil

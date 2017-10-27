@@ -111,7 +111,7 @@ func (p *UsersPlugin) Shell() []cli.Command {
 								if err := p.Dao.Allow(tx, user.ID, name, DefaultResourceType, DefaultResourceID, years, 0, 0); err != nil {
 									return err
 								}
-								if err := p.Dao.AddLog(tx, user.ID, ip, lang, "nut.logs.allow-role", name, DefaultResourceType, DefaultResourceID); err != nil {
+								if err := p.Dao.AddLog(tx, user.ID, ip, lang, "nut.logs.apply-role", name, DefaultResourceType, DefaultResourceID); err != nil {
 									return err
 								}
 							}

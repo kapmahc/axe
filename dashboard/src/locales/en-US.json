@@ -5,6 +5,9 @@
   "attributes.username": "Username",
   "attributes.password-confirmation": "Confirm Password",
   "attributes.content": "Content",
+  "attributes.ip": "IP address",
+  "attributes.createdAt": "Created at",
+  "attributes.updatedAt": "Updated at",
   "errors.not-valid-email": "The input is not valid E-mail!",
   "errors.empty-email": "Please input your E-mail!",
   "errors.empty-password": "Please input your password!",
@@ -30,7 +33,7 @@
   "nut.users.profile.title": "Profile",
   "nut.users.change-password.title": "Change password",
   "nut.leave-words.new.title": "Leave me a message",
-  "nut.leave-words.new.help": "Please leave your email or phone for reply."
-
+  "nut.leave-words.new.help": "Please leave your email or phone for reply.",
+  "nut.attributes.log.message": "Message"
 
 }

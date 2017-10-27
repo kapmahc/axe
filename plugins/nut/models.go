@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"math"
 	"strings"
 	"time"
 
@@ -20,9 +19,9 @@ const (
 	UserTypeEmail = "email"
 
 	// DefaultResourceType default resource type
-	DefaultResourceType = "null"
+	DefaultResourceType = ""
 	// DefaultResourceID default resourc id
-	DefaultResourceID = math.MaxUint32
+	DefaultResourceID = 0
 )
 
 // User user
@@ -96,13 +95,13 @@ func (p *Attachment) IsPicture() bool {
 
 // Log log
 type Log struct {
-	tableName struct{} `sql:"logs"`
-	ID        uint
-	Message   string
-	IP        string
-	User      *User
-	UserID    uint
-	CreatedAt time.Time
+	tableName struct{}  `sql:"logs"`
+	ID        uint      `json:"id"`
+	Message   string    `json:"message"`
+	IP        string    `json:"ip"`
+	User      *User     `json:"user"`
+	UserID    uint      `json:"userId"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 func (p Log) String() string {
@@ -134,8 +133,8 @@ type Role struct {
 	tableName    struct{} `sql:"roles"`
 	ID           uint
 	Name         string
-	ResourceID   uint
-	ResourceType string
+	ResourceID   uint   `sql:",notnull"`
+	ResourceType string `sql:",notnull"`
 	UpdatedAt    time.Time
 	CreatedAt    time.Time
 }

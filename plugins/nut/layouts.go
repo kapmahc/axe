@@ -66,7 +66,7 @@ func (p *Layout) MustSignInMiddleware(c *gin.Context) {
 			return
 		}
 	}
-	c.AbortWithError(http.StatusForbidden, p.I18n.E(c.MustGet(web.LOCALE).(string), "errors.forbidden"))
+	p.Abort(c, http.StatusForbidden, p.I18n.E(c.MustGet(web.LOCALE).(string), "errors.forbidden"))
 }
 
 // MustAdminMiddleware currend user middleware
@@ -76,7 +76,7 @@ func (p *Layout) MustAdminMiddleware(c *gin.Context) {
 			return
 		}
 	}
-	c.AbortWithError(http.StatusForbidden, p.I18n.E(c.MustGet(web.LOCALE).(string), "errors.forbidden"))
+	p.Abort(c, http.StatusForbidden, p.I18n.E(c.MustGet(web.LOCALE).(string), "errors.forbidden"))
 }
 
 // Redirect redirect
