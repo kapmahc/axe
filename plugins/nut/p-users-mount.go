@@ -29,6 +29,7 @@ func (p *UsersPlugin) Mount() error {
 	apiM.GET("/profile", p.Layout.JSON(p.getProfile))
 	apiM.POST("/profile", p.Layout.JSON(p.postProfile))
 	apiM.POST("/change-password", p.Layout.JSON(p.postChangePassword))
+	apiM.DELETE("/sign-out", p.Layout.JSON(p.deleteSignOut))
 
 	p.Jobber.Register(SendEmailJob, func(id string, payload []byte) error {
 		var buf bytes.Buffer

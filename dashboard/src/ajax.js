@@ -1,4 +1,4 @@
-export const TOKEN = "token"
+import {TOKEN} from './actions'
 
 const parse = (res) => {
   // res.status === 200 || res.status === 0

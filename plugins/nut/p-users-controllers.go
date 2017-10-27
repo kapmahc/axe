@@ -12,6 +12,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func (p *UsersPlugin) deleteSignOut(l string, c *gin.Context) (interface{}, error) {
+	user := c.MustGet(CurrentUser).(*User)
+	err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		return p.Dao.AddLog(tx, user.ID, c.ClientIP(), l, "nut.logs.sign-out")
+	})
+	return gin.H{}, err
+}
+
 type fmUsersChangePassword struct {
 	CurrentPassword      string `json:"currentPassword" binding:"required"`
 	NewPassword          string `json:"newPassword" binding:"required,min=6"`

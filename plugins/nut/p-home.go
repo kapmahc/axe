@@ -55,7 +55,7 @@ func init() {
 		"sslmode":  "disable",
 	})
 
-	secret, _ := RandomBytes(32)
+	secret, _ := web.RandomBytes(32)
 	viper.SetDefault("server", map[string]interface{}{
 		"port":  8080,
 		"name":  "www.change-me.com",

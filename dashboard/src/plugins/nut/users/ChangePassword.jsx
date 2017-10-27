@@ -1,9 +1,7 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
 import {Form, Row, Col, Input, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
-import {push} from 'react-router-redux'
 
 import Layout from '../../../layout'
 import {post} from '../../../ajax'
@@ -13,7 +11,6 @@ const FormItem = Form.Item
 
 class Widget extends Component {
   handleSubmit = (e) => {
-    const {push} = this.props
     const {formatMessage} = this.props.intl
     const {setFieldsValue} = this.props.form
     e.preventDefault();
@@ -92,12 +89,9 @@ class Widget extends Component {
 }
 
 Widget.propTypes = {
-  intl: intlShape.isRequired,
-  push: PropTypes.func.isRequired
+  intl: intlShape.isRequired
 }
 
 const WidgetF = Form.create()(injectIntl(Widget))
 
-export default connect(state => ({}), {
-  push
-},)(WidgetF)
+export default connect(state => ({}), {},)(WidgetF)

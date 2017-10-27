@@ -15,6 +15,8 @@ import UsersChangePassword from './users/ChangePassword'
 
 import NewLeaveWord from './leave-words/New'
 
+import AdminSiteStatus from './admin/site/Status'
+
 const UsersConfirm = () => (<UsersEmailForm action="confirm"/>)
 const UsersUnlock = () => (<UsersEmailForm action="unlock"/>)
 const UsersForgotPassword = () => (<UsersEmailForm action="forgot-password"/>)
@@ -56,6 +58,10 @@ const routes = [
 
   (< Route key = "nut.leave-words.new" path = "/leave-words/new" component = {
     NewLeaveWord
+  } />),
+
+  (< Route key = "nut.admin.site.status" path = "/admin/site/status" component = {
+    AdminSiteStatus
   } />),
 
   (<Route key="nut.no-match" component={NoMatch}/>)

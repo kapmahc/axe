@@ -8,6 +8,7 @@ import (
 )
 
 func (p *HomePlugin) getHome(l string, d gin.H, c *gin.Context) error {
+	// TODO
 	return nil
 }
 

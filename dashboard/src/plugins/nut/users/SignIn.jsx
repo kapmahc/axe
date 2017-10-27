@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
 import Layout from '../../../layout'
-import {post, TOKEN} from '../../../ajax'
+import {post} from '../../../ajax'
 import {Submit, formItemLayout} from '../../../components/form'
 import {signIn} from '../../../actions'
 
@@ -19,9 +19,7 @@ class Widget extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         post('/api/users/sign-in', values).then((rst) => {
-          var token = rst.token
-          signIn(token)
-          sessionStorage.setItem(TOKEN, token)
+          signIn(rst.token)
           push('/users/logs')
         }).catch(message.error);
       }

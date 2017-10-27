@@ -36,6 +36,15 @@ type Jobber struct {
 	consumers map[string]Consumer
 }
 
+// Status status
+func (p *Jobber) Status() map[string]interface{} {
+	rst := make(map[string]interface{})
+	for k, v := range p.consumers {
+		rst[k] = FuncName(v)
+	}
+	return rst
+}
+
 // Register register handler
 func (p *Jobber) Register(_type string, hnd Consumer) {
 	if _, ok := p.consumers[_type]; ok {

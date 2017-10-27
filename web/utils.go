@@ -1,11 +1,18 @@
-package nut
+package web
 
 import (
 	"crypto/rand"
 	"os"
 	"os/exec"
+	"reflect"
+	"runtime"
 	"syscall"
 )
+
+// FuncName get func's name
+func FuncName(f interface{}) string {
+	return runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
+}
 
 // RandomBytes random bytes
 func RandomBytes(l int) ([]byte, error) {

@@ -408,7 +408,7 @@ func (p *HomePlugin) runDatabase(act string) cli.ActionFunc {
 }
 func (p *HomePlugin) createDatabase(_ *cli.Context) error {
 	args := viper.GetStringMapString("postgresql")
-	return Shell("psql",
+	return web.Shell("psql",
 		"-h", args["host"],
 		"-p", args["port"],
 		"-U", "postgres",
@@ -420,7 +420,7 @@ func (p *HomePlugin) createDatabase(_ *cli.Context) error {
 }
 func (p *HomePlugin) dropDatabase(_ *cli.Context) error {
 	args := viper.GetStringMapString("postgresql")
-	return Shell("psql",
+	return web.Shell("psql",
 		"-h", args["host"],
 		"-p", args["port"],
 		"-U", "postgres",
@@ -429,7 +429,7 @@ func (p *HomePlugin) dropDatabase(_ *cli.Context) error {
 }
 func (p *HomePlugin) connectDatabase(_ *cli.Context) error {
 	args := viper.GetStringMapString("postgresql")
-	return Shell("psql",
+	return web.Shell("psql",
 		"-h", args["host"],
 		"-p", args["port"],
 		"-U", args["user"],
