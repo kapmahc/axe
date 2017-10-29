@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {Form, Button} from 'antd'
 import {FormattedMessage} from 'react-intl'
+import ReactQuill from 'react-quill'
 
 const FormItem = Form.Item
 
@@ -37,22 +39,59 @@ export const tailFormItemLayout = {
 
 export const orders = (size) => Array(size * 2 + 1).fill().map((_, id) => (id - size).toString())
 
-// export class SortOrder extends Component {
-//   render() {
-//     const {size} = this.props
-//     return (
-//       <Select>
-//         {Array(size * 2 + 1).fill().map((_, id) => (id - size).toString()).map((i) => (
-//           <Option key={i} value={i}>{i}</Option>
-//         ))}
-//       </Select>
-//     )
-//   }
-// }
-//
-// SortOrder.propTypes = {
-//   size: PropTypes.number.isRequired
-// }
+export class Quill extends Component {
+  render() {
+    const {value, onChange} = this.props
+    const modules = {
+      toolbar: [
+        [
+          {
+            'header': [1, 2, false]
+          }
+        ],
+        [
+          'bold', 'italic', 'underline', 'strike', 'blockquote'
+        ],
+        [
+          {
+            'list': 'ordered'
+          }, {
+            'list': 'bullet'
+          }, {
+            'indent': '-1'
+          }, {
+            'indent': '+1'
+          },
+          'code-block'
+        ],
+        [
+          'link', 'formula', 'image', 'video'
+        ],
+        ['clean']
+      ]
+    }
+
+    const formats = [
+      'header',
+      'bold',
+      'italic',
+      'underline',
+      'strike',
+      'blockquote',
+      'list',
+      'bullet',
+      'indent',
+      'link',
+      'image'
+    ]
+    return (<ReactQuill modules={modules} formats={formats} value={value} onChange={onChange} theme="snow"/>)
+  }
+}
+
+Quill.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired
+}
 
 export class Submit extends Component {
   render() {

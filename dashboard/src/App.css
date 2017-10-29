@@ -1,4 +1,5 @@
 @import '~antd/dist/antd.css';
+@import '~react-quill/dist/quill.snow.css';
 div .logo {
   height: 32px;
   background: #333;

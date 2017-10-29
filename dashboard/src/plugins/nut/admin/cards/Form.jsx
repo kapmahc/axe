@@ -11,6 +11,7 @@ import {
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
+import ReactQuill from 'react-quill'
 
 import Layout from '../../../../layout'
 import {post, get} from '../../../../ajax'
@@ -20,22 +21,30 @@ const FormItem = Form.Item
 const Option = Select.Option
 
 class Widget extends Component {
+  state = {
+    summary: ''
+  }
   componentDidMount() {
     const {setFieldsValue} = this.props.form
     const {id} = this.props.match.params
     if (id) {
-      get(`/api/admin/cards/${id}`).then((rst) => setFieldsValue({
-        title: rst.title,
-        summary: rst.summary,
-        action: rst.action,
-        logo: rst.logo,
-        href: rst.href,
-        sortOrder: rst.sortOrder.toString(),
-        loc: rst.loc
-      })).catch(message.error)
+      get(`/api/admin/cards/${id}`).then((rst) => {
+        setFieldsValue({
+          title: rst.title,
+          action: rst.action,
+          logo: rst.logo,
+          href: rst.href,
+          sortOrder: rst.sortOrder.toString(),
+          loc: rst.loc
+        })
+        this.setState({summary: rst.summary})
+      }).catch(message.error)
     } else {
       setFieldsValue({sortOrder: '0'})
     }
+  }
+  handleChange = (value) => {
+    this.setState({summary: value})
   }
   handleSubmit = (e) => {
     const {formatMessage} = this.props.intl
@@ -48,7 +57,8 @@ class Widget extends Component {
           ? `/api/admin/cards/${id}`
           : '/api/admin/cards', Object.assign({}, values, {
           sortOrder: parseInt(values.sortOrder, 10),
-          type: 'html'
+          type: 'html',
+          summary: this.state.summary
         })).then(() => {
           message.success(formatMessage({id: "messages.success"}))
           push('/admin/cards')
@@ -80,8 +90,7 @@ class Widget extends Component {
       ]}>
         <Row>
           <Col md={{
-            span: 12,
-            offset: 2
+            span: 18
           }}>
             <Form onSubmit={this.handleSubmit}>
               <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.loc" />} hasFeedback>
@@ -123,15 +132,8 @@ class Widget extends Component {
                   ]
                 })(<Input/>)}
               </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.summary" />} hasFeedback>
-                {getFieldDecorator('summary', {
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({id: "errors.empty"})
-                    }
-                  ]
-                })(<Input.TextArea rows={4}/>)}
+              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.summary" />}>
+                <ReactQuill value={this.state.summary} onChange={this.handleChange} theme="snow"/>
               </FormItem>
               <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.action" />} hasFeedback>
                 {getFieldDecorator('action', {
