@@ -14,8 +14,91 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
+
+func (p *AdminPlugin) getSiteSMTP(l string, c *gin.Context) (interface{}, error) {
+	smtp := make(map[string]interface{})
+	if err := p.Settings.Get("site.smtp", &smtp); err == nil {
+		smtp["password"] = ""
+	} else {
+		smtp["host"] = "localhost"
+		smtp["port"] = 25
+		smtp["user"] = "who-am-i@change-me.com"
+		smtp["password"] = ""
+	}
+	return smtp, nil
+}
+
+type fmSiteSMTP struct {
+	Host                 string `json:"host" binding:"required"`
+	Port                 int    `json:"port"`
+	User                 string `json:"user" binding:"required"`
+	Password             string `json:"password" binding:"required,min=6"`
+	PasswordConfirmation string `json:"passwordConfirmation" binding:"eqfield=Password"`
+}
+
+func (p *AdminPlugin) postSiteSMTP(l string, c *gin.Context) (interface{}, error) {
+	var fm fmSiteSMTP
+	if err := c.BindJSON(&fm); err != nil {
+		return nil, err
+	}
+
+	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		return p.Settings.Set(tx, "site.smtp", map[string]interface{}{
+			"host":     fm.Host,
+			"port":     fm.Port,
+			"user":     fm.User,
+			"password": fm.Password,
+		}, true)
+	}); err != nil {
+		return nil, err
+	}
+	return gin.H{}, nil
+}
+
+func (p *AdminPlugin) getSiteSeo(l string, c *gin.Context) (interface{}, error) {
+	var googleVerifyCode string
+	if err := p.Settings.Get("site.google.verify-code", &googleVerifyCode); err != nil {
+		log.Error(err)
+	}
+	var baiduVerifyCode string
+	if err := p.Settings.Get("site.baidu.verify-code", &baiduVerifyCode); err != nil {
+		log.Error(err)
+	}
+	return map[string]string{
+		"googleVerifyCode": googleVerifyCode,
+		"baiduVerifyCode":  baiduVerifyCode,
+	}, nil
+}
+
+type fmSiteSeo struct {
+	GoogleVerifyCode string `json:"googleVerifyCode" binding:"required"`
+	BaiduVerifyCode  string `json:"baiduVerifyCode" binding:"required"`
+}
+
+func (p *AdminPlugin) postSiteSeo(l string, c *gin.Context) (interface{}, error) {
+	var fm fmSiteSeo
+	if err := c.BindJSON(&fm); err != nil {
+		return nil, err
+	}
+
+	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		for k, v := range map[string]string{
+			"google.verify-code": fm.GoogleVerifyCode,
+			"baidu.verify-code":  fm.BaiduVerifyCode,
+		} {
+			if err := p.Settings.Set(tx, "site."+k, v, true); err != nil {
+				return err
+			}
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return gin.H{}, nil
+}
 
 type fmSiteAuthor struct {
 	Name  string `json:"name" binding:"required"`

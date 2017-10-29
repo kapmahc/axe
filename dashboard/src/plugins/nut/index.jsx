@@ -18,6 +18,8 @@ import NewLeaveWord from './leave-words/New'
 import AdminSiteStatus from './admin/site/Status'
 import AdminSiteInfo from './admin/site/Info'
 import AdminSiteAuthor from './admin/site/Author'
+import AdminSiteSeo from './admin/site/Seo'
+import AdminSiteSmtp from './admin/site/Smtp'
 
 const UsersConfirm = () => (<UsersEmailForm action="confirm"/>)
 const UsersUnlock = () => (<UsersEmailForm action="unlock"/>)
@@ -70,6 +72,12 @@ const routes = [
   } />),
   (< Route key = "nut.admin.site.author" path = "/admin/site/author" component = {
     AdminSiteAuthor
+  } />),
+  (< Route key = "nut.admin.site.seo" path = "/admin/site/seo" component = {
+    AdminSiteSeo
+  } />),
+  (< Route key = "nut.admin.site.smtp" path = "/admin/site/smtp" component = {
+    AdminSiteSmtp
   } />),
 
   (<Route key="nut.no-match" component={NoMatch}/>)

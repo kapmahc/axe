@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Layout} from 'antd'
+import {Layout, message} from 'antd'
 import {injectIntl, intlShape} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
@@ -9,16 +9,18 @@ import Footer from './Footer'
 import LeftNavPanel from './LeftNavPanel'
 import TopNavBar from './TopNavBar'
 import {signIn, signOut, refresh, TOKEN} from '../actions'
+import {get} from '../ajax'
 
 const {Header, Content, Sider} = Layout
 
 class Widget extends Component {
   componentDidMount() {
-    const {signIn} = this.props
+    const {signIn, refresh} = this.props
     var token = sessionStorage.getItem(TOKEN)
     if (token) {
       signIn(token)
     }
+    get('/api/site/info').then((rst) => refresh(rst)).catch(message.error)
   }
   render() {
     const {children, breads} = this.props

@@ -38,6 +38,10 @@ func (p *AdminPlugin) Mount() error {
 	api.GET("/site/status", p.Layout.JSON(p.getSiteStatus))
 	api.POST("/site/info", p.Layout.JSON(p.postSiteInfo))
 	api.POST("/site/author", p.Layout.JSON(p.postSiteAuthor))
+	api.GET("/site/seo", p.Layout.JSON(p.getSiteSeo))
+	api.POST("/site/seo", p.Layout.JSON(p.postSiteSeo))
+	api.GET("/site/smtp", p.Layout.JSON(p.getSiteSMTP))
+	api.POST("/site/smtp", p.Layout.JSON(p.postSiteSMTP))
 	return nil
 }
 

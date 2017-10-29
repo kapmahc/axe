@@ -117,7 +117,7 @@ func (p *Layout) Abort(c *gin.Context, s int, e error) {
 	} else {
 		c.String(s, e.Error())
 	}
-	// c.AbortWithError(s, err)
+	c.Abort()
 }
 
 // XML render xml
