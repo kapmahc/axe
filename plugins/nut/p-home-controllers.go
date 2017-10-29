@@ -24,9 +24,12 @@ func (p *HomePlugin) getSiteInfo(l string, c *gin.Context) (interface{}, error) 
 		data[k] = p.I18n.T(l, "site."+k)
 	}
 	// -----------
-	var author map[string]interface{}
+	var author map[string]string
 	if err := p.Settings.Get("site.author", &author); err != nil {
-		author = gin.H{}
+		author = map[string]string{
+			"name":  "",
+			"email": "",
+		}
 	}
 	data["author"] = author
 	return data, nil

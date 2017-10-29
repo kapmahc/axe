@@ -166,7 +166,12 @@ func (p *Layout) renderLayout(tpl string, fn func(string, gin.H, *gin.Context) e
 
 		// csrf.TemplateTag: csrf.TemplateField(req),
 		// "_csrf_token":    csrf.Token(req),
+		var author map[string]string
+		if err := p.Settings.Get("site.author", &author); err != nil {
+			author = make(map[string]string)
+		}
 
+		data["author"] = author
 		data["locale"] = lang
 		data["favicon"] = favicon
 		data["languages"] = langs

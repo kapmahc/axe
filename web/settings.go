@@ -19,7 +19,7 @@ type Setting struct {
 	ID        uint
 	Key       string
 	Value     []byte
-	Encode    bool
+	Encode    bool `sql:",notnull"`
 	UpdatedAt time.Time
 	CreatedAt time.Time
 }

@@ -157,7 +157,7 @@ func (p *I18n) T(lang, code string, args ...interface{}) string {
 func (p *I18n) get(lang, code string) (string, error) {
 	var it Locale
 	if err := p.db.Model(&it).
-		Column("id").
+		Column("message").
 		Where("lang = ? AND code = ?", lang, code).
 		Limit(1).Select(); err == nil {
 		return it.Message, nil

@@ -16,6 +16,8 @@ import UsersChangePassword from './users/ChangePassword'
 import NewLeaveWord from './leave-words/New'
 
 import AdminSiteStatus from './admin/site/Status'
+import AdminSiteInfo from './admin/site/Info'
+import AdminSiteAuthor from './admin/site/Author'
 
 const UsersConfirm = () => (<UsersEmailForm action="confirm"/>)
 const UsersUnlock = () => (<UsersEmailForm action="unlock"/>)
@@ -62,6 +64,12 @@ const routes = [
 
   (< Route key = "nut.admin.site.status" path = "/admin/site/status" component = {
     AdminSiteStatus
+  } />),
+  (< Route key = "nut.admin.site.info" path = "/admin/site/info" component = {
+    AdminSiteInfo
+  } />),
+  (< Route key = "nut.admin.site.author" path = "/admin/site/author" component = {
+    AdminSiteAuthor
   } />),
 
   (<Route key="nut.no-match" component={NoMatch}/>)

@@ -36,6 +36,8 @@ func (p *AdminPlugin) Shell() []cli.Command {
 func (p *AdminPlugin) Mount() error {
 	api := p.Router.Group("/api/admin", p.Layout.MustSignInMiddleware, p.Layout.MustAdminMiddleware)
 	api.GET("/site/status", p.Layout.JSON(p.getSiteStatus))
+	api.POST("/site/info", p.Layout.JSON(p.postSiteInfo))
+	api.POST("/site/author", p.Layout.JSON(p.postSiteAuthor))
 	return nil
 }
 

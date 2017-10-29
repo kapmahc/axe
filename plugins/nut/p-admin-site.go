@@ -17,6 +17,60 @@ import (
 	"github.com/spf13/viper"
 )
 
+type fmSiteAuthor struct {
+	Name  string `json:"name" binding:"required"`
+	Email string `json:"email" binding:"required"`
+}
+
+func (p *AdminPlugin) postSiteAuthor(l string, c *gin.Context) (interface{}, error) {
+	var fm fmSiteAuthor
+	if err := c.BindJSON(&fm); err != nil {
+		return nil, err
+	}
+
+	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		return p.Settings.Set(tx, "site.author", map[string]string{
+			"name":  fm.Name,
+			"email": fm.Email,
+		}, false)
+	}); err != nil {
+		return nil, err
+	}
+	return gin.H{}, nil
+}
+
+type fmSiteInfo struct {
+	Title       string `json:"title" binding:"required"`
+	Subhead     string `json:"subhead" binding:"required"`
+	Keywords    string `json:"keywords" binding:"required"`
+	Description string `json:"description" binding:"required"`
+	Copyright   string `json:"copyright" binding:"required"`
+}
+
+func (p *AdminPlugin) postSiteInfo(l string, c *gin.Context) (interface{}, error) {
+	var fm fmSiteInfo
+	if err := c.BindJSON(&fm); err != nil {
+		return nil, err
+	}
+	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		for k, v := range map[string]string{
+			"title":       fm.Title,
+			"subhead":     fm.Subhead,
+			"keywords":    fm.Keywords,
+			"description": fm.Description,
+			"copyright":   fm.Copyright,
+		} {
+			if err := p.I18n.Set(tx, l, "site."+k, v); err != nil {
+				return err
+			}
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return gin.H{}, nil
+}
+
 func (p *AdminPlugin) getSiteStatus(l string, c *gin.Context) (interface{}, error) {
 	data := gin.H{}
 
