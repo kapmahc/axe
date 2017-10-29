@@ -23,7 +23,13 @@ import AdminSiteSmtp from './admin/site/Smtp'
 import AdminIndexUsers from './admin/users/Index'
 import AdminIndexLeaveWords from './admin/leave-words/Index'
 import AdminIndexLocales from './admin/locales/Index'
-import AdminIndexForm from './admin/locales/Form'
+import AdminFormLocale from './admin/locales/Form'
+import AdminIndexLinks from './admin/links/Index'
+import AdminFormLink from './admin/links/Form'
+import AdminIndexCards from './admin/cards/Index'
+import AdminFormCard from './admin/cards/Form'
+import AdminIndexFriendLinks from './admin/friend-links/Index'
+import AdminFormFriendLink from './admin/friend-links/Form'
 
 const UsersConfirm = () => (<UsersEmailForm action="confirm"/>)
 const UsersUnlock = () => (<UsersEmailForm action="unlock"/>)
@@ -92,13 +98,43 @@ const routes = [
   } />),
 
   (< Route key = "nut.admin.locales.edit" path = "/admin/locales/edit/:code" component = {
-    AdminIndexForm
+    AdminFormLocale
   } />),
   (< Route key = "nut.admin.locales.new" path = "/admin/locales/new" component = {
-    AdminIndexForm
+    AdminFormLocale
   } />),
   (< Route key = "nut.admin.locales.index" path = "/admin/locales" component = {
     AdminIndexLocales
+  } />),
+
+  (< Route key = "nut.admin.friend-links.edit" path = "/admin/friend-links/edit/:id" component = {
+    AdminFormFriendLink
+  } />),
+  (< Route key = "nut.admin.friend-links.new" path = "/admin/friend-links/new" component = {
+    AdminFormFriendLink
+  } />),
+  (< Route key = "nut.admin.friend-links.index" path = "/admin/friend-links" component = {
+    AdminIndexFriendLinks
+  } />),
+
+  (< Route key = "nut.admin.links.edit" path = "/admin/links/edit/:id" component = {
+    AdminFormLink
+  } />),
+  (< Route key = "nut.admin.links.new" path = "/admin/links/new" component = {
+    AdminFormLink
+  } />),
+  (< Route key = "nut.admin.links.index" path = "/admin/links" component = {
+    AdminIndexLinks
+  } />),
+
+  (< Route key = "nut.admin.cards.edit" path = "/admin/cards/edit/:id" component = {
+    AdminFormCard
+  } />),
+  (< Route key = "nut.admin.cards.new" path = "/admin/cards/new" component = {
+    AdminFormCard
+  } />),
+  (< Route key = "nut.admin.cards.index" path = "/admin/cards" component = {
+    AdminIndexCards
   } />),
 
   (<Route key="nut.no-match" component={NoMatch}/>)

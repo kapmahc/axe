@@ -165,40 +165,42 @@ type LeaveWord struct {
 
 // Link link
 type Link struct {
-	tableName struct{} `sql:"links"`
-	ID        uint
-	Loc       string
-	Href      string
-	Label     string
-	SortOrder int
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	tableName struct{}  `sql:"links"`
+	ID        uint      `json:"id"`
+	Lang      string    `json:"lang"`
+	Loc       string    `json:"loc"`
+	Href      string    `json:"href"`
+	Label     string    `json:"label"`
+	SortOrder int       `json:"sortOrder"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // Card card
 type Card struct {
-	tableName struct{} `sql:"cards"`
-	ID        uint
-	Loc       string
-	Title     string
-	Summary   string
-	Type      string
-	Href      string
-	Logo      string
-	SortOrder int
-	Action    string
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	tableName struct{}  `sql:"cards"`
+	ID        uint      `json:"id"`
+	Lang      string    `json:"lang"`
+	Loc       string    `json:"loc"`
+	Title     string    `json:"title"`
+	Summary   string    `json:"summary"`
+	Type      string    `json:"type"`
+	Href      string    `json:"href"`
+	Logo      string    `json:"logo"`
+	SortOrder int       `json:"sortOrder"`
+	Action    string    `json:"action"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // FriendLink friend_links
 type FriendLink struct {
-	tableName struct{} `sql:"friend_links"`
-	ID        uint
-	Title     string
-	Home      string
-	Logo      string
-	SortOrder int
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	tableName struct{}  `sql:"friend_links"`
+	ID        uint      `json:"id"`
+	Title     string    `json:"title"`
+	Home      string    `json:"home"`
+	Logo      string    `json:"logo"`
+	SortOrder int       `json:"sortOrder"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	CreatedAt time.Time `json:"createdAt"`
 }

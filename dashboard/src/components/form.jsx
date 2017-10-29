@@ -35,6 +35,25 @@ export const tailFormItemLayout = {
   }
 };
 
+export const orders = (size) => Array(size * 2 + 1).fill().map((_, id) => (id - size).toString())
+
+// export class SortOrder extends Component {
+//   render() {
+//     const {size} = this.props
+//     return (
+//       <Select>
+//         {Array(size * 2 + 1).fill().map((_, id) => (id - size).toString()).map((i) => (
+//           <Option key={i} value={i}>{i}</Option>
+//         ))}
+//       </Select>
+//     )
+//   }
+// }
+//
+// SortOrder.propTypes = {
+//   size: PropTypes.number.isRequired
+// }
+
 export class Submit extends Component {
   render() {
     return (

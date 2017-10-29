@@ -51,6 +51,25 @@ func (p *AdminPlugin) Mount() error {
 	api.GET("/locales/:code", p.Layout.JSON(p.showLocale))
 	api.POST("/locales", p.Layout.JSON(p.createLocale))
 	api.DELETE("/locales/:id", p.Layout.JSON(p.destroyLocale))
+
+	api.GET("/links", p.Layout.JSON(p.indexLinks))
+	api.GET("/links/:id", p.Layout.JSON(p.showLink))
+	api.POST("/links", p.Layout.JSON(p.createLink))
+	api.POST("/links/:id", p.Layout.JSON(p.updateLink))
+	api.DELETE("/links/:id", p.Layout.JSON(p.destroyLink))
+
+	api.GET("/cards", p.Layout.JSON(p.indexCards))
+	api.GET("/cards/:id", p.Layout.JSON(p.showCard))
+	api.POST("/cards", p.Layout.JSON(p.createCard))
+	api.POST("/cards/:id", p.Layout.JSON(p.updateCard))
+	api.DELETE("/cards/:id", p.Layout.JSON(p.destroyCard))
+
+	api.GET("/friend-links", p.Layout.JSON(p.indexFriendLinks))
+	api.GET("/friend-links/:id", p.Layout.JSON(p.showFriendLink))
+	api.POST("/friend-links", p.Layout.JSON(p.createFriendLink))
+	api.POST("/friend-links/:id", p.Layout.JSON(p.updateFriendLink))
+	api.DELETE("/friend-links/:id", p.Layout.JSON(p.destroyFriendLink))
+
 	return nil
 }
 
