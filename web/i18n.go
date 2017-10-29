@@ -34,13 +34,13 @@ const LOCALE = "locale"
 
 // Locale locale
 type Locale struct {
-	tableName struct{} `sql:"locales"`
-	ID        uint
-	Lang      string
-	Code      string
-	Message   string
-	UpdatedAt time.Time
-	CreatedAt time.Time
+	tableName struct{}  `sql:"locales"`
+	ID        uint      `json:"id"`
+	Lang      string    `json:"lang"`
+	Code      string    `json:"code"`
+	Message   string    `json:"message"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // I18n i18n

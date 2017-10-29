@@ -42,9 +42,15 @@ func (p *AdminPlugin) Mount() error {
 	api.POST("/site/seo", p.Layout.JSON(p.postSiteSeo))
 	api.GET("/site/smtp", p.Layout.JSON(p.getSiteSMTP))
 	api.POST("/site/smtp", p.Layout.JSON(p.postSiteSMTP))
+
 	api.GET("/users", p.Layout.JSON(p.indexUsers))
 	api.GET("/leave-words", p.Layout.JSON(p.indexLeaveWords))
 	api.DELETE("/leave-words/:id", p.Layout.JSON(p.destroyLeaveWord))
+
+	api.GET("/locales", p.Layout.JSON(p.indexLocales))
+	api.GET("/locales/:code", p.Layout.JSON(p.showLocale))
+	api.POST("/locales", p.Layout.JSON(p.createLocale))
+	api.DELETE("/locales/:id", p.Layout.JSON(p.destroyLocale))
 	return nil
 }
 

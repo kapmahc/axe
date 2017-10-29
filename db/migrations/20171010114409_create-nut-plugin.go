@@ -124,6 +124,7 @@ func init() {
 
 			CREATE TABLE links (
 			  id BIGSERIAL PRIMARY KEY,
+				lang VARCHAR(8) NOT NULL,
 			  href VARCHAR(255) NOT NULL,
 			  label VARCHAR(255) NOT NULL,
 			  loc VARCHAR(16) NOT NULL,
@@ -131,10 +132,12 @@ func init() {
 			  created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
 			  updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 			);
-			CREATE INDEX idx_links_loc ON links (loc);
+			CREATE INDEX idx_links_loc_lang ON links (loc, lang);
+			CREATE INDEX idx_links_lang ON links (lang);
 
 			CREATE TABLE cards (
 			  id BIGSERIAL PRIMARY KEY,
+				lang VARCHAR(8) NOT NULL,
 			  title VARCHAR(255) NOT NULL,
 			  summary VARCHAR(2048) NOT NULL,
 			  type VARCHAR(8) NOT NULL DEFAULT 'markdown',
@@ -146,7 +149,8 @@ func init() {
 			  created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
 			  updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 			);
-			CREATE INDEX idx_cards_loc ON cards (loc);
+			CREATE INDEX idx_cards_loc_lang ON cards (loc, lang);
+			CREATE INDEX idx_cards_lang ON cards (lang);
 
 			CREATE TABLE friend_links (
 			  id BIGSERIAL PRIMARY KEY,

@@ -22,6 +22,8 @@ import AdminSiteSeo from './admin/site/Seo'
 import AdminSiteSmtp from './admin/site/Smtp'
 import AdminIndexUsers from './admin/users/Index'
 import AdminIndexLeaveWords from './admin/leave-words/Index'
+import AdminIndexLocales from './admin/locales/Index'
+import AdminIndexForm from './admin/locales/Form'
 
 const UsersConfirm = () => (<UsersEmailForm action="confirm"/>)
 const UsersUnlock = () => (<UsersEmailForm action="unlock"/>)
@@ -87,6 +89,16 @@ const routes = [
   } />),
   (< Route key = "nut.admin.leave-words.index" path = "/admin/leave-words" component = {
     AdminIndexLeaveWords
+  } />),
+
+  (< Route key = "nut.admin.locales.edit" path = "/admin/locales/edit/:code" component = {
+    AdminIndexForm
+  } />),
+  (< Route key = "nut.admin.locales.new" path = "/admin/locales/new" component = {
+    AdminIndexForm
+  } />),
+  (< Route key = "nut.admin.locales.index" path = "/admin/locales" component = {
+    AdminIndexLocales
   } />),
 
   (<Route key="nut.no-match" component={NoMatch}/>)

@@ -1,6 +1,8 @@
 {
   "buttons.submit": "Submit",
   "buttons.action": "Action",
+  "buttons.new": "New",
+  "buttons.edit": "Edit [{id}]",
   "attributes.email": "Email",
   "attributes.password": "Password",
   "attributes.username": "Username",
@@ -31,6 +33,8 @@
   "nut.attributes.log.message": "Message",
   "nut.attributes.user.lastSignIn": "Last sign in",
   "nut.attributes.user.currentSignIn": "Current sign in",
+  "nut.attributes.locale.code": "Code",
+  "nut.attributes.locale.message": "Message",
   "nut.install.title": "Install",
   "nut.install.success": "Install successfully. Please sign in to continue.",
   "nut.personal.title": "Personal",
