@@ -26,25 +26,25 @@ const (
 
 // User user
 type User struct {
-	tableName       struct{} `sql:"users"`
-	ID              uint
-	Name            string
-	Email           string
-	UID             string
-	Password        []byte
-	ProviderID      string
-	ProviderType    string
-	Logo            string
-	SignInCount     uint
-	LastSignInAt    *time.Time
-	LastSignInIP    string
-	CurrentSignInAt *time.Time
-	CurrentSignInIP string
-	ConfirmedAt     *time.Time
-	LockedAt        *time.Time
-	Logs            []Log
-	UpdatedAt       time.Time
-	CreatedAt       time.Time
+	tableName       struct{}   `sql:"users"`
+	ID              uint       `json:"id"`
+	Name            string     `json:"name"`
+	Email           string     `json:"email"`
+	UID             string     `json:"uid"`
+	Password        []byte     `json:"-"`
+	ProviderID      string     `json:"providerId"`
+	ProviderType    string     `json:"providerType"`
+	Logo            string     `json:"logo"`
+	SignInCount     uint       `json:"signInCount"`
+	LastSignInAt    *time.Time `json:"lastSignInAt"`
+	LastSignInIP    string     `json:"lastSignInIp"`
+	CurrentSignInAt *time.Time `json:"currentSignInAt"`
+	CurrentSignInIP string     `json:"currentSignInIp"`
+	ConfirmedAt     *time.Time `json:"confirmedAt"`
+	LockedAt        *time.Time `json:"lockAt"`
+	Logs            []Log      `json:"logs"`
+	UpdatedAt       time.Time  `json:"updatedAt"`
+	CreatedAt       time.Time  `json:"createdAt"`
 }
 
 // IsConfirm is confirm?
@@ -156,11 +156,11 @@ type Vote struct {
 
 // LeaveWord leave-word
 type LeaveWord struct {
-	tableName struct{} `sql:"leave_words"`
-	ID        uint
-	Body      string
-	Type      string
-	CreatedAt time.Time
+	tableName struct{}  `sql:"leave_words"`
+	ID        uint      `json:"id"`
+	Body      string    `json:"body"`
+	Type      string    `json:"type"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // Link link

@@ -20,6 +20,8 @@ import AdminSiteInfo from './admin/site/Info'
 import AdminSiteAuthor from './admin/site/Author'
 import AdminSiteSeo from './admin/site/Seo'
 import AdminSiteSmtp from './admin/site/Smtp'
+import AdminIndexUsers from './admin/users/Index'
+import AdminIndexLeaveWords from './admin/leave-words/Index'
 
 const UsersConfirm = () => (<UsersEmailForm action="confirm"/>)
 const UsersUnlock = () => (<UsersEmailForm action="unlock"/>)
@@ -78,6 +80,13 @@ const routes = [
   } />),
   (< Route key = "nut.admin.site.smtp" path = "/admin/site/smtp" component = {
     AdminSiteSmtp
+  } />),
+
+  (< Route key = "nut.admin.users.index" path = "/admin/users" component = {
+    AdminIndexUsers
+  } />),
+  (< Route key = "nut.admin.leave-words.index" path = "/admin/leave-words" component = {
+    AdminIndexLeaveWords
   } />),
 
   (<Route key="nut.no-match" component={NoMatch}/>)

@@ -28,7 +28,7 @@ class Widget extends Component {
             span: 12,
             offset: 2
           }}>
-            <Table rowKey="id" dataSource={this.state.items} columns={[
+            <Table bordered rowKey="id" dataSource={this.state.items} columns={[
               {
                 title: <FormattedMessage id="attributes.createdAt"/>,
                 key: 'createdAt',
