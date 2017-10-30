@@ -1,7 +1,6 @@
 package forum
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
@@ -19,15 +18,15 @@ func (p *Plugin) checkCommentToken(user *nut.User, cid uint) bool {
 	return it.UserID == user.ID || p.Dao.Is(user.ID, nut.RoleAdmin)
 }
 
-func (p *Plugin) editCommentH(tid uint, token string) (string, string, string, error) {
+func (p *Plugin) editCommentH(tid uint, token string) (string, string, error) {
 	var it Comment
 	if err := p.DB.Model(&it).
 		Column("id", "body").
 		Where("id = ?", tid).
 		Limit(1).Select(); err != nil {
-		return "", "", "", err
+		return "", "", err
 	}
-	return strconv.Itoa(int(it.ID)), fmt.Sprintf("/forum/comments/edit/%s", token), it.Body, nil
+	return strconv.Itoa(int(it.ID)), it.Body, nil
 
 }
 func (p *Plugin) updateCommentH(id uint, body string) error {

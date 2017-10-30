@@ -37,6 +37,7 @@ type Layout struct {
 	Jwt      *web.Jwt      `inject:""`
 	DB       *pg.DB        `inject:""`
 	Dao      *Dao          `inject:""`
+	Router   *gin.Engine   `inject:""`
 }
 
 type fmUEditor struct {
@@ -67,24 +68,31 @@ func (p *Layout) checkToken(act string, c *gin.Context, check func(*User, uint) 
 }
 
 // UEditor ueditor edit
-func (p *Layout) UEditor(act string, check func(*User, uint) bool, get func(uint, string) (string, string, string, error), update func(uint, string) error) (gin.HandlerFunc, gin.HandlerFunc) {
-	return p.Application("nut-ueditor.html", func(lng string, data gin.H, c *gin.Context) error {
+func (p *Layout) UEditor(act string, check func(*User, uint) bool, edit func(uint, string) (string, string, error), update func(uint, string) error) {
+
+	p.Router.GET(
+		act+"/:token",
+		p.Application("nut-ueditor.html", func(lng string, data gin.H, c *gin.Context) error {
 			token, tid, err := p.checkToken(act, c, check)
 			if err != nil {
 				return err
 			}
-			title, next, body, err := get(tid, token)
+			title, body, err := edit(tid, token)
 			if err != nil {
 				return err
 			}
 
 			data["value"] = body
-			data["next"] = next
+			data["next"] = act + "/" + token
 			data["title"] = title
 			data["token"] = token
 			data["id"] = "body"
 			return nil
-		}), func(c *gin.Context) {
+		}),
+	)
+	p.Router.POST(
+		act+"/:token",
+		func(c *gin.Context) {
 			lng := c.MustGet(web.LOCALE).(string)
 			var tid uint
 			var fm fmUEditor
@@ -105,7 +113,8 @@ func (p *Layout) UEditor(act string, check func(*User, uint) bool, get func(uint
 			ss.Save()
 			log.Debugf("%+v", fm)
 			c.Redirect(http.StatusFound, fm.Next)
-		}
+		},
+	)
 }
 
 // Home home url

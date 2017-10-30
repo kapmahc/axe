@@ -12,7 +12,8 @@ import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
 import Layout from '../../../../layout'
-import {get, _delete, post} from '../../../../ajax'
+import {get, _delete} from '../../../../ajax'
+import {UEditor} from '../../../../components/form'
 
 class Widget extends Component {
   state = {
@@ -22,12 +23,6 @@ class Widget extends Component {
     get('/api/admin/cards').then((rst) => {
       this.setState({items: rst})
     }).catch(message.error);
-  }
-  handleUEditor = (id) => {
-    post('/api/token', {
-      act: "card.summary.edit",
-      tid: id
-    }).then((rst) => window.open(`/cards/edit/${rst.token}`, '_blank')).catch(message.error)
   }
   handleRemove = (id) => {
     const {formatMessage} = this.props.intl
@@ -63,7 +58,7 @@ class Widget extends Component {
                 key: 'action',
                 render: (text, record) => (<span>
                   <Button onClick={(e) => push(`/admin/cards/edit/${record.id}`)} shape="circle" icon="edit"/>
-                  <Button onClick={(e) => this.handleUEditor(record.id)} shape="circle" icon="chrome"/>
+                  <UEditor target={record.id} action="/cards/summary/edit"/>
                   <Popconfirm title={<FormattedMessage id = "messages.are-you-sure" />} onConfirm={(e) => this.handleRemove(record.id)}>
                     <Button type="danger" shape="circle" icon="delete"/>
                   </Popconfirm>

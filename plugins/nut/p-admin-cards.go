@@ -1,7 +1,6 @@
 package nut
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,15 +12,15 @@ func (p *AdminPlugin) checkCardToken(user *User, tid uint) bool {
 	return p.Dao.Is(user.ID, RoleAdmin)
 }
 
-func (p *AdminPlugin) editCardH(tid uint, token string) (string, string, string, error) {
+func (p *AdminPlugin) editCardH(tid uint, token string) (string, string, error) {
 	var it Card
 	if err := p.DB.Model(&it).
 		Column("id", "title", "summary").
 		Where("id = ?", tid).
 		Limit(1).Select(); err != nil {
-		return "", "", "", err
+		return "", "", err
 	}
-	return it.Title, fmt.Sprintf("/cards/edit/%s", token), it.Summary, nil
+	return it.Title, it.Summary, nil
 
 }
 func (p *AdminPlugin) updateCardH(id uint, body string) error {

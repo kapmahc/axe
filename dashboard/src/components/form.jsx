@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Form, Button} from 'antd'
+import {Form, Button, message} from 'antd'
 import {FormattedMessage} from 'react-intl'
 import ReactQuill from 'react-quill'
+
+import {post} from '../ajax'
 
 const FormItem = Form.Item
 
@@ -24,6 +26,7 @@ export const formItemLayout = {
     }
   }
 };
+
 export const tailFormItemLayout = {
   wrapperCol: {
     xs: {
@@ -36,6 +39,24 @@ export const tailFormItemLayout = {
     }
   }
 };
+
+export class UEditor extends Component {
+  onClick = () => {
+    const {action, target} = this.props
+    post('/api/token', {
+      act: action,
+      tid: target
+    }).then((rst) => window.open(`${action}/${rst.token}`, '_blank')).catch(message.error)
+  }
+  render() {
+    return (<Button onClick={this.onClick} shape="circle" icon="chrome"/>)
+  }
+}
+
+UEditor.propTypes = {
+  action: PropTypes.string.isRequired,
+  target: PropTypes.number.isRequired
+}
 
 export const orders = (size) => Array(size * 2 + 1).fill().map((_, id) => (id - size).toString())
 

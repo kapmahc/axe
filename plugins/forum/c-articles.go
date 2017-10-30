@@ -1,7 +1,6 @@
 package forum
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
@@ -20,15 +19,15 @@ func (p *Plugin) checkArticleToken(user *nut.User, aid uint) bool {
 	return it.UserID == user.ID || p.Dao.Is(user.ID, nut.RoleAdmin)
 }
 
-func (p *Plugin) editArticleH(tid uint, token string) (string, string, string, error) {
+func (p *Plugin) editArticleH(tid uint, token string) (string, string, error) {
 	var it Article
 	if err := p.DB.Model(&it).
 		Column("id", "title", "body").
 		Where("id = ?", tid).
 		Limit(1).Select(); err != nil {
-		return "", "", "", err
+		return "", "", err
 	}
-	return it.Title, fmt.Sprintf("/forum/articles/edit/%s", token), it.Body, nil
+	return it.Title, it.Body, nil
 
 }
 func (p *Plugin) updateArticleH(id uint, body string) error {

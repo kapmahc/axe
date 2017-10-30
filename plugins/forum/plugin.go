@@ -34,13 +34,8 @@ func (p *Plugin) Shell() []cli.Command {
 
 // Mount register
 func (p *Plugin) Mount() error {
-	editArticle, updateArticle := p.Layout.UEditor("forum.article.body.edit", p.checkArticleToken, p.editArticleH, p.updateArticleH)
-	editComment, updateComment := p.Layout.UEditor("forum.comment.body.edit", p.checkCommentToken, p.editCommentH, p.updateCommentH)
-	htm := p.Router.Group("/forum")
-	htm.GET("/article/edit/:token", editArticle)
-	htm.POST("/articles/edit/:token", updateArticle)
-	htm.GET("/comments/edit/:token", editComment)
-	htm.POST("/comments/edit/:token", updateComment)
+	p.Layout.UEditor("/forum/articles/body/edit", p.checkArticleToken, p.editArticleH, p.updateArticleH)
+	p.Layout.UEditor("/forum/comments/body/edit", p.checkCommentToken, p.editCommentH, p.updateCommentH)
 
 	api := p.Router.Group("/api/forum", p.Layout.MustSignInMiddleware)
 	api.GET("/articles", p.Layout.JSON(p.indexArticles))
