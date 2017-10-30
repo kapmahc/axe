@@ -50,7 +50,7 @@ func (p *Plugin) indexArticles(l string, c *gin.Context) (interface{}, error) {
 	if !admin {
 		db = db.Where("user_id = ?", user.ID)
 	}
-	err := db.Order("updated_at ASC").Select()
+	err := db.Order("updated_at DESC").Select()
 	return items, err
 }
 

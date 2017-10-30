@@ -76,7 +76,7 @@ class Widget extends Component {
             offset: 2
           }}>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.loc" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.loc" />} hasFeedback={true}>
               {
                 getFieldDecorator('loc', {
                   rules: [
@@ -95,7 +95,7 @@ class Widget extends Component {
                 </Select>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.label" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.label" />} hasFeedback={true}>
               {
                 getFieldDecorator('label', {
                   rules: [
@@ -107,7 +107,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.href" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.href" />} hasFeedback={true}>
               {
                 getFieldDecorator('href', {
                   rules: [

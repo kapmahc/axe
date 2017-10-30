@@ -59,7 +59,7 @@ class Widget extends Component {
             offset: 2
           }}>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.locale.code" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.locale.code" />} hasFeedback={true}>
               {
                 getFieldDecorator('code', {
                   rules: [
@@ -71,7 +71,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.locale.message" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.locale.message" />} hasFeedback={true}>
               {
                 getFieldDecorator('message', {
                   rules: [

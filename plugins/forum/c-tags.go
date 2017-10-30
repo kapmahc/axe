@@ -9,8 +9,8 @@ import (
 
 func (p *Plugin) indexTags(l string, c *gin.Context) (interface{}, error) {
 	var items []Tag
-	err := p.DB.Model(&items).
-		Order("loc ASC").Order("sort_order ASC").Select()
+	err := p.DB.Model(&items).Column("id", "name").
+		Order("updated_at DESC").Select()
 	return items, err
 }
 

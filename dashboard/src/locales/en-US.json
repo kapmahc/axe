@@ -29,6 +29,7 @@
   "attributes.title": "Title",
   "attributes.summary": "Summary",
   "attributes.logo": "Logo",
+  "attributes.name": "Name",
   "errors.not-valid-email": "The input is not valid E-mail!",
   "errors.empty-email": "Please input your E-mail!",
   "errors.empty-password": "Please input your password!",

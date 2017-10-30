@@ -15,7 +15,7 @@ type Article struct {
 	Type      string    `json:"type"`
 	User      nut.User  `json:"user"`
 	UserID    uint      `json:"userId"`
-	Tags      []Tag     `json:"tags"`
+	Tags      []Tag     `json:"tags" pg:",many2many:forum_articles_tags"`
 	Comments  []Comment `json:"comments"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -26,7 +26,7 @@ type Tag struct {
 	tableName struct{}  `sql:"forum_tags"`
 	ID        uint      `json:"id"`
 	Name      string    `json:"name"`
-	Articles  []Article `json:"articles"`
+	Articles  []Article `json:"articles" pg:",many2many:forum_articles_tags"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	CreatedAt time.Time `json:"createdAt"`
 }

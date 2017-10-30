@@ -76,7 +76,7 @@ class Widget extends Component {
             offset: 2
           }}>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.title" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.title" />} hasFeedback={true}>
               {
                 getFieldDecorator('title', {
                   rules: [
@@ -88,7 +88,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.friend-link.home" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.friend-link.home" />} hasFeedback={true}>
               {
                 getFieldDecorator('home', {
                   rules: [
@@ -100,7 +100,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.friend-link.logo" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.friend-link.logo" />} hasFeedback={true}>
               {
                 getFieldDecorator('logo', {
                   rules: [

@@ -1,30 +1,22 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {
-  Form,
-  Row,
-  Col,
-  Input,
-  Select,
-  message
-} from 'antd'
+import {Form, Row, Col, Input, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
 import Layout from '../../../layout'
 import {post, get} from '../../../ajax'
-import {Submit, orders, formItemLayout} from '../../../components/form'
+import {Submit, formItemLayout} from '../../../components/form'
 
 const FormItem = Form.Item
-const Option = Select.Option
 
 class Widget extends Component {
   componentDidMount() {
     const {setFieldsValue} = this.props.form
     const {id} = this.props.match.params
     if (id) {
-      get(`/api/admin/links/${id}`).then((rst) => setFieldsValue({label: rst.label, href: rst.href, sortOrder: rst.sortOrder.toString(), loc: rst.loc})).catch(message.error)
+      get(`/api/forum/tags/${id}`).then((rst) => setFieldsValue({name: rst.name})).catch(message.error)
     } else {
       setFieldsValue({sortOrder: '0'})
     }
@@ -38,13 +30,11 @@ class Widget extends Component {
       if (!err) {
         post(
           id
-          ? `/api/admin/links/${id}`
-          : '/api/admin/links',
-        Object.assign({}, values, {
-          sortOrder: parseInt(values.sortOrder, 10)
-        })).then(() => {
+          ? `/api/forum/tags/${id}`
+          : '/api/forum/tags',
+        values).then(() => {
           message.success(formatMessage({id: "messages.success"}))
-          push('/admin/links')
+          push('/api/forum/tags')
         }).catch(message.error);
       }
     });
@@ -55,61 +45,30 @@ class Widget extends Component {
     const {id} = this.props.match.params
     return (<Layout breads={[
         {
-          href: '/admin/links',
-          label: <FormattedMessage id='nut.admin.links.index.title'/>
+          href: '/forum/tags',
+          label: <FormattedMessage id='forum.tags.index.title'/>
         },
         id
           ? {
-            href: `/admin/links/edit/${id}`,
+            href: `/forum/tags/edit/${id}`,
             label: (<FormattedMessage id={"buttons.edit"} values={{
                 id: id
               }}/>)
           }
           : {
-            href: "/admin/links/new",
+            href: "/forum/tags/new",
             label: <FormattedMessage id={"buttons.new"}/>
           }
       ]}>
       <Row>
         <Col md={{
-            span: 12,
+            span: 8,
             offset: 2
           }}>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.loc" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.name" />} hasFeedback={true}>
               {
-                getFieldDecorator('loc', {
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({id: "errors.empty"})
-                    }
-                  ]
-                })(<Input/>)
-              }
-            </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.sortOrder" />}>
-              {
-                getFieldDecorator('sortOrder')(<Select>
-                  {orders(10).map((p) => (<Option key={p} value={p}>{p}</Option>))}
-                </Select>)
-              }
-            </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.label" />} hasFeedback="hasFeedback">
-              {
-                getFieldDecorator('label', {
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({id: "errors.empty"})
-                    }
-                  ]
-                })(<Input/>)
-              }
-            </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.href" />} hasFeedback="hasFeedback">
-              {
-                getFieldDecorator('href', {
+                getFieldDecorator('name', {
                   rules: [
                     {
                       required: true,

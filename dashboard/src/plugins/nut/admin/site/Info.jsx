@@ -41,7 +41,7 @@ class Widget extends Component {
             offset: 2
           }}>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.title" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.title" />} hasFeedback={true}>
               {
                 getFieldDecorator('title', {
                   rules: [
@@ -53,7 +53,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.subhead" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.subhead" />} hasFeedback={true}>
               {
                 getFieldDecorator('subhead', {
                   rules: [
@@ -65,7 +65,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.keywords" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.keywords" />} hasFeedback={true}>
               {
                 getFieldDecorator('keywords', {
                   rules: [
@@ -77,7 +77,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.description" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.description" />} hasFeedback={true}>
               {
                 getFieldDecorator('description', {
                   rules: [
@@ -89,7 +89,7 @@ class Widget extends Component {
                 })(<Input.TextArea rows={4}/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.copyright" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.copyright" />} hasFeedback={true}>
               {
                 getFieldDecorator('copyright', {
                   rules: [

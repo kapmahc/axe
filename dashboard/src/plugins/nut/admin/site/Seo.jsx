@@ -54,7 +54,7 @@ class Widget extends Component {
             offset: 2
           }}>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.admin.site.seo.googleVerifyCode" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.admin.site.seo.googleVerifyCode" />} hasFeedback={true}>
               {
                 getFieldDecorator('googleVerifyCode', {
                   rules: [
@@ -66,7 +66,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.admin.site.seo.baiduVerifyCode" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.admin.site.seo.baiduVerifyCode" />} hasFeedback={true}>
               {
                 getFieldDecorator('baiduVerifyCode', {
                   rules: [

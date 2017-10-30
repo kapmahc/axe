@@ -51,7 +51,7 @@ class Widget extends Component {
             offset: 2
           }}>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.host" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.host" />} hasFeedback={true}>
               {
                 getFieldDecorator('host', {
                   rules: [
@@ -70,7 +70,7 @@ class Widget extends Component {
                 </Select>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.user" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.user" />} hasFeedback={true}>
               {
                 getFieldDecorator('user', {
                   rules: [
@@ -85,7 +85,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.password" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.password" />} hasFeedback={true}>
               {
                 getFieldDecorator('password', {
                   rules: [
@@ -97,7 +97,7 @@ class Widget extends Component {
                 })(<Input type="password"/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.passwordConfirmation" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.passwordConfirmation" />} hasFeedback={true}>
               {
                 getFieldDecorator('passwordConfirmation', {
                   rules: [

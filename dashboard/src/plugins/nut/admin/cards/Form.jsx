@@ -93,7 +93,7 @@ class Widget extends Component {
             span: 18
           }}>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.loc" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.loc" />} hasFeedback={true}>
               {
                 getFieldDecorator('loc', {
                   rules: [
@@ -112,7 +112,7 @@ class Widget extends Component {
                 </Select>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.title" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.title" />} hasFeedback={true}>
               {
                 getFieldDecorator('title', {
                   rules: [
@@ -124,7 +124,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.logo" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.logo" />} hasFeedback={true}>
               {
                 getFieldDecorator('logo', {
                   rules: [
@@ -139,7 +139,7 @@ class Widget extends Component {
             <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.summary" />}>
               <Quill value={this.state.summary} onChange={this.handleChange}/>
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.action" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.action" />} hasFeedback={true}>
               {
                 getFieldDecorator('action', {
                   rules: [
@@ -151,7 +151,7 @@ class Widget extends Component {
                 })(<Input/>)
               }
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.href" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.href" />} hasFeedback={true}>
               {
                 getFieldDecorator('href', {
                   rules: [
