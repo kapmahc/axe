@@ -89,6 +89,9 @@
   "nut.admin.friend-links.index.title": "Friend links",
   "nut.admin.users.index.title": "Users",
   "forum.title": "Forum",
+  "forum.tags.index.title": "Tags",
+  "forum.articles.index.title": "Articles",
+  "forum.comments.index.title": "Comments",
   "pos.title": "POS",
   "survey.title": "Survey",
   "shop.title": "Shopping"

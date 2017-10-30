@@ -44,7 +44,7 @@ type fmUEditor struct {
 	Next string `form:"next" binding:"required"`
 }
 
-func (p *Layout) checkToken(act string, c *gin.Context, check func(*User) bool) (string, uint, error) {
+func (p *Layout) checkToken(act string, c *gin.Context, check func(*User, uint) bool) (string, uint, error) {
 	lng := c.MustGet(web.LOCALE).(string)
 	token := c.Param("token")
 	cw, err := p.Jwt.Validate([]byte(token))
@@ -58,15 +58,16 @@ func (p *Layout) checkToken(act string, c *gin.Context, check func(*User) bool) 
 	if err := p.DB.Model(&user).Where("uid = ?", cw.Get("uid")).Limit(1).Select(); err != nil {
 		return "", 0, p.I18n.E(lng, "errors.forbidden")
 	}
-	if user.IsLock() || !user.IsConfirm() || !check(&user) {
+	tid := uint(cw.Get("tid").(float64))
+	if user.IsLock() || !user.IsConfirm() || !check(&user, tid) {
 		return "", 0, p.I18n.E(lng, "errors.forbidden")
 	}
 
-	return token, uint(cw.Get("tid").(float64)), nil
+	return token, tid, nil
 }
 
 // UEditor ueditor edit
-func (p *Layout) UEditor(act string, check func(*User) bool, get func(uint, string) (string, string, string, error), update func(uint, string) error) (gin.HandlerFunc, gin.HandlerFunc) {
+func (p *Layout) UEditor(act string, check func(*User, uint) bool, get func(uint, string) (string, string, string, error), update func(uint, string) error) (gin.HandlerFunc, gin.HandlerFunc) {
 	return p.Application("nut-ueditor.html", func(lng string, data gin.H, c *gin.Context) error {
 			token, tid, err := p.checkToken(act, c, check)
 			if err != nil {

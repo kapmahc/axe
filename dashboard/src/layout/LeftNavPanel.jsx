@@ -56,8 +56,23 @@ class Widget extends Component {
         ]
       })
 
+      var forum = {
+        icon: "tablet",
+        label: "forum.title",
+        key: "forum",
+        items: [
+          {
+            label: "forum.articles.index.title",
+            key: "/forum/articles"
+          }, {
+            label: "forum.comments.index.title",
+            key: "/forum/comments"
+          }
+        ]
+      }
       if (user.admin) {
         // administrator?
+        forum.items.push({label: "forum.tags.index.title", key: "/forum/tags"})
         items.push({
           icon: "setting",
           label: "nut.settings.title",
@@ -100,7 +115,7 @@ class Widget extends Component {
           ]
         })
       }
-      items.push({icon: "tablet", label: "forum.title", key: "forum", items: []})
+      items.push(forum)
       items.push({icon: "notification", label: "survey.title", key: "survey", items: []})
       items.push({icon: "shopping-cart", label: "shop.title", key: "shop", items: []})
 
@@ -115,26 +130,21 @@ class Widget extends Component {
       items.push({icon: "message", label: "nut.leave-words.new.title", key: "/leave-words/new"})
     }
 
-    return (
-      <Menu theme="dark" mode="inline" onClick={this.handleMenu}>
-        {items.map((it) => it.items
-          ? (
-            <SubMenu key={it.key} title={< span > <Icon type={it.icon}/> < FormattedMessage id = {
+    return (<Menu theme="dark" mode="inline" onClick={this.handleMenu}>
+      {
+        items.map(
+          (it) => it.items
+          ? (<SubMenu key={it.key} title={<span > <Icon type={it.icon}/> < FormattedMessage id = {
               it.label
             } />< /span>}>
-              {it.items.map(l => (
-                <Menu.Item key={l.key}><FormattedMessage id={l.label}/></Menu.Item>
-              ))}
-            </SubMenu>
-          )
-          : (
-            <Menu.Item key={it.key}>
-              <Icon type={it.icon}/>
-              <FormattedMessage id={it.label}/>
-            </Menu.Item>
-          ))}
-      </Menu>
-    )
+            {it.items.map(l => (<Menu.Item key={l.key}><FormattedMessage id={l.label}/></Menu.Item>))}
+          </SubMenu>)
+          : (<Menu.Item key={it.key}>
+            <Icon type={it.icon}/>
+            <FormattedMessage id={it.label}/>
+          </Menu.Item>))
+      }
+    </Menu>)
 
   }
 }

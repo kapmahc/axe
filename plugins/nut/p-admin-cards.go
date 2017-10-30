@@ -9,7 +9,7 @@ import (
 	"github.com/kapmahc/axe/web"
 )
 
-func (p *AdminPlugin) checkCardToken(user *User) bool {
+func (p *AdminPlugin) checkCardToken(user *User, tid uint) bool {
 	return p.Dao.Is(user.ID, RoleAdmin)
 }
 
@@ -100,10 +100,9 @@ func (p *AdminPlugin) updateCard(l string, c *gin.Context) (interface{}, error) 
 			Loc:       fm.Loc,
 			Logo:      fm.Logo,
 			SortOrder: fm.SortOrder,
-			Lang:      l,
 			UpdatedAt: time.Now(),
 		}).
-			Column("href", "title", "summary", "action", "type", "logo", "loc", "sort_order", "lang", "updated_at").
+			Column("href", "title", "summary", "action", "type", "logo", "loc", "sort_order", "updated_at").
 			Where("id = ?", c.Param("id")).
 			Update()
 		return err
