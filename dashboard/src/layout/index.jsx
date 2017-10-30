@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {Layout, message} from 'antd'
+import {Layout, message, BackTop} from 'antd'
 import {injectIntl, intlShape} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
@@ -52,6 +52,7 @@ class Widget extends Component {
           </div>
         </Content>
         <Footer/>
+        <BackTop/>
       </Layout>
     </Layout>);
   }

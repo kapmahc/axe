@@ -2,10 +2,12 @@ package forum
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/orm"
 	"github.com/kapmahc/axe/plugins/nut"
 	"github.com/kapmahc/axe/web"
 )
@@ -55,18 +57,25 @@ func (p *Plugin) indexArticles(l string, c *gin.Context) (interface{}, error) {
 }
 
 func (p *Plugin) showArticle(l string, c *gin.Context) (interface{}, error) {
+	db := p.DB
 	var item Article
-	err := p.DB.Model(&item).
-		Where("id = ?", c.Param("id")).
+	err := db.Model(&item).
+		Where("id = ?", c.Param("id")).Relation("Tags", func(q *orm.Query) (*orm.Query, error) {
+		return q.Column("id", "name"), nil
+	}).
 		Limit(1).Select()
-	return item, err
+	if err != nil {
+		return nil, err
+	}
+
+	return item, nil
 }
 
 type fmArticle struct {
-	Title string   `json:"title" binding:"required"`
-	Body  string   `json:"body" binding:"required"`
-	Type  string   `json:"type" binding:"required"`
-	Tags  []string `json:"tags"`
+	Title string `json:"title" binding:"required"`
+	Body  string `json:"body" binding:"required"`
+	Type  string `json:"type" binding:"required"`
+	Tags  []uint `json:"tags"`
 }
 
 func (p *Plugin) createArticle(l string, c *gin.Context) (interface{}, error) {
@@ -75,14 +84,27 @@ func (p *Plugin) createArticle(l string, c *gin.Context) (interface{}, error) {
 	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
+
 	err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
-		return tx.Insert(&Article{
+		it := Article{
 			Title:     fm.Title,
 			Body:      fm.Body,
 			Type:      fm.Type,
 			UserID:    user.ID,
 			UpdatedAt: time.Now(),
-		})
+		}
+		if err := tx.Insert(&it); err != nil {
+			return err
+		}
+		var ats []interface{}
+		for _, t := range fm.Tags {
+			ats = append(ats, &ArticleTag{TagID: t, ArticleID: it.ID})
+		}
+		if err := tx.Insert(ats...); err != nil {
+			return err
+		}
+
+		return nil
 	})
 	return gin.H{}, err
 }
@@ -92,17 +114,34 @@ func (p *Plugin) updateArticle(l string, c *gin.Context) (interface{}, error) {
 	if err := c.BindJSON(&fm); err != nil {
 		return nil, err
 	}
-	err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
-		_, err := tx.Model(&Article{
+	aid, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return nil, err
+	}
+	err = p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		_, er := tx.Model(&Article{
 			Title:     fm.Title,
 			Body:      fm.Body,
 			Type:      fm.Type,
 			UpdatedAt: time.Now(),
 		}).
 			Column("title", "body", "type", "updated_at").
-			Where("id = ?", c.Param("id")).
+			Where("id = ?", aid).
 			Update()
-		return err
+		if er != nil {
+			return er
+		}
+		if _, er := tx.Model(&ArticleTag{}).Where("article_id = ?", aid).Delete(); er != nil {
+			return er
+		}
+		var ats []interface{}
+		for _, t := range fm.Tags {
+			ats = append(ats, &ArticleTag{TagID: t, ArticleID: uint(aid)})
+		}
+		if er := tx.Insert(ats...); er != nil {
+			return er
+		}
+		return nil
 	})
 	return gin.H{}, err
 }

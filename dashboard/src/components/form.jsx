@@ -106,12 +106,10 @@ Quill.propTypes = {
 
 export class Submit extends Component {
   render() {
-    return (
-      <FormItem {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
-          <FormattedMessage id="buttons.submit"/>
-        </Button>
-      </FormItem>
-    );
+    return (<FormItem {...tailFormItemLayout}>
+      <Button type="primary" htmlType="submit">
+        <FormattedMessage id="buttons.submit"/>
+      </Button>
+    </FormItem>);
   }
 }

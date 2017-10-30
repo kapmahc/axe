@@ -21,6 +21,13 @@ type Article struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
+// ArticleTag articles-tags
+type ArticleTag struct {
+	tableName struct{} `sql:"forum_articles_tags"`
+	ArticleID uint
+	TagID     uint
+}
+
 // Tag tag
 type Tag struct {
 	tableName struct{}  `sql:"forum_tags"`
