@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/base64"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -45,13 +46,21 @@ func (p *UEditor) Upload(wrt UEditorWriter, images UEditorManager, files UEditor
 }
 
 func (p *UEditor) scrawl(c *gin.Context, f UEditorWriter) {
-	buf, err := base64.StdEncoding.DecodeString(c.Query("upfile"))
+	if err := c.Request.ParseForm(); err != nil {
+		p.fail(c, err)
+	}
+	buf, err := base64.StdEncoding.DecodeString(c.Request.FormValue("upfile"))
 	if err != nil {
 		p.fail(c, err)
 		return
 	}
 	name := "scrawl.png"
-	url, err := f(c, name, buf, int64(len(buf)))
+	size := int64(len(buf))
+	if size == 0 {
+		p.fail(c, errors.New("empty file"))
+		return
+	}
+	url, err := f(c, name, buf, size)
 	if err != nil {
 		p.fail(c, err)
 		return
@@ -87,7 +96,7 @@ func (p *UEditor) upload(c *gin.Context, name string, fn UEditorWriter) {
 	}
 	defer fd.Close()
 	buf := make([]byte, fh.Size)
-	if _, err := fd.Read(buf); err != nil {
+	if _, err = fd.Read(buf); err != nil {
 		p.fail(c, err)
 		return
 	}

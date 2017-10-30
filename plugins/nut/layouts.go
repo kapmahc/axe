@@ -40,8 +40,8 @@ type Layout struct {
 }
 
 type fmUEditor struct {
-	Body string `json:"body" binding:"required"`
-	Next string `json:"next" binding:"required"`
+	Body string `form:"body" binding:"required"`
+	Next string `form:"next" binding:"required"`
 }
 
 func (p *Layout) checkToken(act string, c *gin.Context, check func(*User) bool) (string, uint, error) {
@@ -88,7 +88,7 @@ func (p *Layout) UEditor(act string, check func(*User) bool, get func(uint, stri
 			var tid uint
 			var fm fmUEditor
 
-			err := c.BindJSON(&fm)
+			err := c.Bind(&fm)
 			if err == nil {
 				_, tid, err = p.checkToken(act, c, check)
 			}
@@ -102,6 +102,7 @@ func (p *Layout) UEditor(act string, check func(*User) bool, get func(uint, stri
 				ss.AddFlash(err.Error(), ERROR)
 			}
 			ss.Save()
+			log.Debugf("%+v", fm)
 			c.Redirect(http.StatusFound, fm.Next)
 		}
 }

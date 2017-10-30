@@ -1,21 +1,31 @@
 {{template "top.html" .}}
 <div class="container">
   <br/>
-  {{template "flash.html" .}}
   <div class="row">
-    <h1>{{.title}}</h1>
-    <script id="{{.id}}" name="{{.id}}" type="text/plain">{{str2htm .value}}</script>
-    <script type="text/javascript">
-    var ue = UE.getEditor('{{.id}}');
-     /* 1.传入函数,命令里执行该函数得到参数表,添加到已有参数表里 */
-    ue.ready(function() {
-      ue.execCommand('serverparam', function(editor) {
-        return {
-          'token': '{{.token}}'
-        };
-      });
-    });
-    </script>
+    <div class="col-12">
+      <h1>{{.title}}</h1>
+      <hr/>
+      {{template "flash.html" .}}
+    </div>
+    <div class="col-12">
+      <form method="post">
+        <script id="{{.id}}" name="{{.id}}" type="text/plain">{{str2htm .value}}</script>
+        <script type="text/javascript">
+        var ue = UE.getEditor('{{.id}}');
+         /* 1.传入函数,命令里执行该函数得到参数表,添加到已有参数表里 */
+        ue.ready(function() {
+          ue.execCommand('serverparam', function(editor) {
+            return {
+              'token': '{{.token}}'
+            };
+          });
+        });
+        </script>
+        <br/>
+        <input type="hidden" name="next" value="{{.next}}"/>
+        <input type="submit" class="btn btn-primary" value="{{t .locale "buttons.submit"}}"/>
+      </form>
+    </div>
   </div>
 </div>
 {{template "bottom.html" .}}

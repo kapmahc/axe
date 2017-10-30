@@ -81,8 +81,8 @@ type Attachment struct {
 	URL          string    `json:"url"`
 	Length       int64     `json:"length"`
 	MediaType    string    `json:"mediaType"`
-	ResourceID   uint      `json:"resourceId"`
-	ResourceType string    `json:"resourceType"`
+	ResourceID   uint      `json:"resourceId" sql:",notnull"`
+	ResourceType string    `json:"resourceType" sql:",notnull"`
 	User         User      `json:"user"`
 	UserID       uint      `json:"userId"`
 	UpdatedAt    time.Time `json:"updatedAt"`

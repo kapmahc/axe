@@ -33,6 +33,7 @@ func (p *AttachmentsPlugin) upload(c *gin.Context, name string, buf []byte, size
 	if err != nil {
 		return "", err
 	}
+
 	if err = p.DB.RunInTransaction(func(tx *pg.Tx) error {
 		return tx.Insert(&Attachment{
 			Title:        name,
