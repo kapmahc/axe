@@ -11,11 +11,10 @@ import {
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
-import ReactQuill from 'react-quill'
 
 import Layout from '../../../../layout'
 import {post, get} from '../../../../ajax'
-import {Submit, orders, formItemLayout} from '../../../../components/form'
+import {Submit, Quill, orders, formItemLayout} from '../../../../components/form'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -133,7 +132,7 @@ class Widget extends Component {
                 })(<Input/>)}
               </FormItem>
               <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.summary" />}>
-                <ReactQuill value={this.state.summary} onChange={this.handleChange} theme="snow"/>
+                <Quill value={this.state.summary} onChange={this.handleChange}/>
               </FormItem>
               <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.action" />} hasFeedback>
                 {getFieldDecorator('action', {

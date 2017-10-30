@@ -46,7 +46,12 @@ export class Quill extends Component {
       toolbar: [
         [
           {
-            'header': [1, 2, false]
+            'font': []
+          }
+        ],
+        [
+          {
+            size: []
           }
         ],
         [
@@ -61,18 +66,23 @@ export class Quill extends Component {
             'indent': '-1'
           }, {
             'indent': '+1'
-          },
-          'code-block'
+          }
         ],
         [
-          'link', 'formula', 'image', 'video'
+          'link', 'video'
         ],
         ['clean']
-      ]
+      ],
+      clipboard: {
+        // toggle to add extra line breaks when pasting HTML:
+        matchVisual: false
+      }
     }
 
     const formats = [
       'header',
+      'font',
+      'size',
       'bold',
       'italic',
       'underline',
@@ -82,7 +92,8 @@ export class Quill extends Component {
       'bullet',
       'indent',
       'link',
-      'image'
+      'image',
+      'video'
     ]
     return (<ReactQuill modules={modules} formats={formats} value={value} onChange={onChange} theme="snow"/>)
   }
