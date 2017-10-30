@@ -16,42 +16,34 @@ class Widget extends Component {
     }).catch(message.error);
   }
   render() {
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/admin/users",
           label: <FormattedMessage id={"nut.admin.users.index.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 18,
             offset: 2
           }}>
-            <Table bordered rowKey="id" dataSource={this.state.items} columns={[
+          <Table bordered={true} rowKey="id" dataSource={this.state.items} columns={[
               {
                 title: <FormattedMessage id="attributes.user"/>,
                 key: 'user',
-                render: (text, record) => (
-                  <span>{record.name}&lt;{record.email}&gt;[{record.signInCount}]</span>
-                )
+                render: (text, record) => (<span>{record.name}&lt;{record.email}&gt;[{record.signInCount}]</span>)
               }, {
                 title: <FormattedMessage id="nut.attributes.user.lastSignIn"/>,
                 key: 'lastSignIn',
-                render: (text, record) => (
-                  <span>{record.lastSignInAt}[{record.lastSignInIp}]</span>
-                )
+                render: (text, record) => (<span>{record.lastSignInAt}[{record.lastSignInIp}]</span>)
               }, {
                 title: <FormattedMessage id="nut.attributes.user.currentSignIn"/>,
                 key: 'currentSignIn',
-                render: (text, record) => (
-                  <span>{record.currentSignInAt}[{record.currentSignInIp}]</span>
-                )
+                render: (text, record) => (<span>{record.currentSignInAt}[{record.currentSignInIp}]</span>)
               }
             ]}/>
-          </Col>
-        </Row>
-      </Layout>
-    );
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

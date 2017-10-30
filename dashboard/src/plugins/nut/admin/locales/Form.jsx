@@ -36,8 +36,7 @@ class Widget extends Component {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
     const {code} = this.props.match.params
-    return (
-      <Layout breads={[
+    return (<Layout breads={[
         {
           href: '/admin/locales',
           label: <FormattedMessage id='nut.admin.locales.index.title'/>
@@ -46,46 +45,49 @@ class Widget extends Component {
           ? {
             href: `/admin/locales/edit/${code}`,
             label: (<FormattedMessage id={"buttons.edit"} values={{
-              id: code
-            }}/>)
+                id: code
+              }}/>)
           }
           : {
             href: "/admin/locales/new",
             label: <FormattedMessage id={"buttons.new"}/>
           }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.locale.code" />} hasFeedback>
-                {getFieldDecorator('code', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.locale.code" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('code', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.locale.message" />} hasFeedback>
-                {getFieldDecorator('message', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.locale.message" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('message', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input.TextArea rows={6}/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input.TextArea rows={6}/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

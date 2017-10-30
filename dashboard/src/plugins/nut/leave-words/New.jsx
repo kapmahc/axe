@@ -27,34 +27,34 @@ class Widget extends Component {
   render() {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/leave-words/new",
           label: <FormattedMessage id={"nut.leave-words.new.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.content" />} extra={< FormattedMessage id = "nut.leave-words.new.help" />} hasFeedback>
-                {getFieldDecorator('body', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.content" />} extra={<FormattedMessage id = "nut.leave-words.new.help" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('body', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty-email"})
                     }
                   ]
-                })(<Input.TextArea rows={8}/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input.TextArea rows={8}/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

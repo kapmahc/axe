@@ -40,39 +40,39 @@ class Widget extends Component {
   render() {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/admin/site/smtp",
           label: <FormattedMessage id={"nut.admin.site.smtp.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.host" />} hasFeedback>
-                {getFieldDecorator('host', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.host" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('host', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.port" />}>
-                {getFieldDecorator('port')(
-                  <Select>
-                    {["25", "465", "587"].map((p) => (
-                      <Option key={p} value={p}>{p}</Option>
-                    ))}
-                  </Select>
-                )}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.user" />} hasFeedback>
-                {getFieldDecorator('user', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.port" />}>
+              {
+                getFieldDecorator('port')(<Select>
+                  {["25", "465", "587"].map((p) => (<Option key={p} value={p}>{p}</Option>))}
+                </Select>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.user" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('user', {
                   rules: [
                     {
                       type: 'email',
@@ -82,20 +82,24 @@ class Widget extends Component {
                       message: formatMessage({id: "errors.empty-email"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password" />} hasFeedback>
-                {getFieldDecorator('password', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.password" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('password', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty-password"})
                     }
                   ]
-                })(<Input type="password"/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.passwordConfirmation" />} hasFeedback>
-                {getFieldDecorator('passwordConfirmation', {
+                })(<Input type="password"/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.passwordConfirmation" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('passwordConfirmation', {
                   rules: [
                     {
                       required: true,
@@ -104,14 +108,14 @@ class Widget extends Component {
                       validator: this.checkPassword
                     }
                   ]
-                })(<Input type="password"/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input type="password"/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

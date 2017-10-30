@@ -30,30 +30,32 @@ class Widget extends Component {
   render() {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/admin/site/author",
           label: <FormattedMessage id={"nut.admin.site.author.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.username" />} hasFeedback>
-                {getFieldDecorator('name', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.username" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('name', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.email" />} hasFeedback>
-                {getFieldDecorator('email', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.email" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('email', {
                   rules: [
                     {
                       type: 'email',
@@ -63,14 +65,14 @@ class Widget extends Component {
                       message: formatMessage({id: "errors.empty-email"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

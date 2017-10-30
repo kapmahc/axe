@@ -43,58 +43,60 @@ class Widget extends Component {
   render() {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/admin/site/seo",
           label: <FormattedMessage id={"nut.admin.site.seo.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.admin.site.seo.googleVerifyCode" />} hasFeedback>
-                {getFieldDecorator('googleVerifyCode', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.admin.site.seo.googleVerifyCode" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('googleVerifyCode', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.admin.site.seo.baiduVerifyCode" />} hasFeedback>
-                {getFieldDecorator('baiduVerifyCode', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.admin.site.seo.baiduVerifyCode" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('baiduVerifyCode', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty-email"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={{
+                })(<Input/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+      <Row>
+        <Col md={{
             span: 6,
             offset: 4
           }}>
-            <Card>
-              {['/robots.txt', '/sitemap.xml.gz', `/google${this.state.item.googleVerifyCode}.html`, `/baidu_verify_${this.state.item.baiduVerifyCode}.html`].concat(this.props.site.languages.map(it => `/rss-${it}.atom`)).map((it, id) => (
-                <p key={id}>
-                  <a href={it} target='_blank'>{it}</a>
-                </p>
-              ))}
-            </Card>
-          </Col>
-        </Row>
-      </Layout>
-    );
+          <Card>
+            {
+              ['/robots.txt', '/sitemap.xml.gz', `/google${this.state.item.googleVerifyCode}.html`, `/baidu_verify_${this.state.item.baiduVerifyCode}.html`].concat(this.props.site.languages.map(it => `/rss-${it}.atom`)).map((it, id) => (<p key={id}>
+                <a href={it} target='_blank'>{it}</a>
+              </p>))
+            }
+          </Card>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

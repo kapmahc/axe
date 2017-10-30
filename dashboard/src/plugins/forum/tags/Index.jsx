@@ -11,21 +11,21 @@ import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
-import Layout from '../../../../layout'
-import {get, _delete} from '../../../../ajax'
+import Layout from '../../../layout'
+import {get, _delete} from '../../../ajax'
 
 class Widget extends Component {
   state = {
     items: []
   }
   componentDidMount() {
-    get('/api/admin/links').then((rst) => {
+    get('/api/forum/tags').then((rst) => {
       this.setState({items: rst})
     }).catch(message.error);
   }
   handleRemove = (id) => {
     const {formatMessage} = this.props.intl
-    _delete(`/api/admin/links/${id}`).then((rst) => {
+    _delete(`/api/forum/tags/${id}`).then((rst) => {
       message.success(formatMessage({id: 'messages.success'}))
       var items = this.state.items.filter((it) => it.id !== id)
       this.setState({items})
@@ -34,13 +34,13 @@ class Widget extends Component {
   render() {
     const {push} = this.props
     return (<Layout breads={[{
-          href: "/admin/links",
-          label: <FormattedMessage id={"nut.admin.links.index.title"}/>
+          href: "/forum/tags",
+          label: <FormattedMessage id={"forum.tags.index.title"}/>
         }
       ]}>
       <Row>
         <Col>
-          <Button onClick={(e) => push('/admin/links/new')} type='primary' shape="circle" icon="plus"/>
+          <Button onClick={(e) => push('/forum/tags/new')} type='primary' shape="circle" icon="plus"/>
           <Table bordered={true} rowKey="id" dataSource={this.state.items} columns={[
               {
                 title: <FormattedMessage id="attributes.loc"/>,

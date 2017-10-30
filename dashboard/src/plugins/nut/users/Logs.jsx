@@ -17,24 +17,21 @@ class Widget extends Component {
     }).catch(message.error);
   }
   render() {
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/users/logs",
           label: <FormattedMessage id={"nut.users.logs.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Table bordered rowKey="id" dataSource={this.state.items} columns={[
+          <Table bordered={true} rowKey="id" dataSource={this.state.items} columns={[
               {
                 title: <FormattedMessage id="attributes.createdAt"/>,
                 key: 'createdAt',
-                render: (text, record) => (
-                  <Moment fromNow>{record.createdAt}</Moment>
-                )
+                render: (text, record) => (<Moment fromNow={true}>{record.createdAt}</Moment>)
               }, {
                 title: <FormattedMessage id="attributes.ip"/>,
                 dataIndex: 'ip',
@@ -45,10 +42,9 @@ class Widget extends Component {
                 key: 'message'
               }
             ]}/>
-          </Col>
-        </Row>
-      </Layout>
-    );
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

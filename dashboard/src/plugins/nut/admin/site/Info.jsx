@@ -30,74 +30,82 @@ class Widget extends Component {
   render() {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/admin/site/info",
           label: <FormattedMessage id={"nut.admin.site.info.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.site.title" />} hasFeedback>
-                {getFieldDecorator('title', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.title" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('title', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.site.subhead" />} hasFeedback>
-                {getFieldDecorator('subhead', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.subhead" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('subhead', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.site.keywords" />} hasFeedback>
-                {getFieldDecorator('keywords', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.keywords" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('keywords', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.site.description" />} hasFeedback>
-                {getFieldDecorator('description', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.description" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('description', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input.TextArea rows={4}/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.site.copyright" />} hasFeedback>
-                {getFieldDecorator('copyright', {
+                })(<Input.TextArea rows={4}/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.copyright" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('copyright', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

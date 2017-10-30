@@ -37,50 +37,56 @@ class Widget extends Component {
   render() {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/install",
           label: <FormattedMessage id={"nut.install.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.site.title" />} hasFeedback>
-                {getFieldDecorator('title', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.title" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('title', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "nut.attributes.site.subhead" />} hasFeedback>
-                {getFieldDecorator('subhead', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.site.subhead" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('subhead', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.username" />} hasFeedback>
-                {getFieldDecorator('name', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.username" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('name', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.email" />} hasFeedback>
-                {getFieldDecorator('email', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.email" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('email', {
                   rules: [
                     {
                       type: 'email',
@@ -90,10 +96,12 @@ class Widget extends Component {
                       message: formatMessage({id: "errors.empty-email"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password" />} hasFeedback>
-                {getFieldDecorator('password', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.password" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('password', {
                   rules: [
                     {
                       required: true,
@@ -102,10 +110,12 @@ class Widget extends Component {
                       validator: this.checkConfirm
                     }
                   ]
-                })(<Input type="password"/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.passwordConfirmation" />} hasFeedback>
-                {getFieldDecorator('passwordConfirmation', {
+                })(<Input type="password"/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.passwordConfirmation" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('passwordConfirmation', {
                   rules: [
                     {
                       required: true,
@@ -114,14 +124,14 @@ class Widget extends Component {
                       validator: this.checkPassword
                     }
                   ]
-                })(<Input type="password"/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input type="password"/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

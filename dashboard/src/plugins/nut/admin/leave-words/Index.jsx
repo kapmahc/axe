@@ -32,24 +32,21 @@ class Widget extends Component {
     }).catch(message.error)
   }
   render() {
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/admin/leave-words",
           label: <FormattedMessage id={"nut.admin.leave-words.index.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Table bordered rowKey="id" dataSource={this.state.items} columns={[
+          <Table bordered={true} rowKey="id" dataSource={this.state.items} columns={[
               {
                 title: <FormattedMessage id="attributes.createdAt"/>,
                 key: 'createdAt',
-                render: (text, record) => (
-                  <Moment fromNow>{record.createdAt}</Moment>
-                )
+                render: (text, record) => (<Moment fromNow={true}>{record.createdAt}</Moment>)
               }, {
                 title: <FormattedMessage id="attributes.content"/>,
                 dataIndex: 'body',
@@ -57,19 +54,16 @@ class Widget extends Component {
               }, {
                 title: 'Action',
                 key: 'action',
-                render: (text, record) => (
-                  <span>
-                    <Popconfirm title={< FormattedMessage id = "messages.are-you-sure" />} onConfirm={(e) => this.handleRemove(record.id)}>
-                      <Button type="danger" shape="circle" icon="delete"/>
-                    </Popconfirm>
-                  </span>
-                )
+                render: (text, record) => (<span>
+                  <Popconfirm title={<FormattedMessage id = "messages.are-you-sure" />} onConfirm={(e) => this.handleRemove(record.id)}>
+                    <Button type="danger" shape="circle" icon="delete"/>
+                  </Popconfirm>
+                </span>)
               }
             ]}/>
-          </Col>
-        </Row>
-      </Layout>
-    );
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

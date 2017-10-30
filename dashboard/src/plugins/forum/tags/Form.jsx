@@ -12,9 +12,9 @@ import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
 
-import Layout from '../../../../layout'
-import {post, get} from '../../../../ajax'
-import {Submit, orders, formItemLayout} from '../../../../components/form'
+import Layout from '../../../layout'
+import {post, get} from '../../../ajax'
+import {Submit, orders, formItemLayout} from '../../../components/form'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -24,7 +24,7 @@ class Widget extends Component {
     const {setFieldsValue} = this.props.form
     const {id} = this.props.match.params
     if (id) {
-      get(`/api/admin/friend-links/${id}`).then((rst) => setFieldsValue({title: rst.title, home: rst.home, logo: rst.logo, sortOrder: rst.sortOrder.toString()})).catch(message.error)
+      get(`/api/admin/links/${id}`).then((rst) => setFieldsValue({label: rst.label, href: rst.href, sortOrder: rst.sortOrder.toString(), loc: rst.loc})).catch(message.error)
     } else {
       setFieldsValue({sortOrder: '0'})
     }
@@ -38,13 +38,13 @@ class Widget extends Component {
       if (!err) {
         post(
           id
-          ? `/api/admin/friend-links/${id}`
-          : '/api/admin/friend-links',
+          ? `/api/admin/links/${id}`
+          : '/api/admin/links',
         Object.assign({}, values, {
           sortOrder: parseInt(values.sortOrder, 10)
         })).then(() => {
           message.success(formatMessage({id: "messages.success"}))
-          push('/admin/friend-links')
+          push('/admin/links')
         }).catch(message.error);
       }
     });
@@ -55,18 +55,18 @@ class Widget extends Component {
     const {id} = this.props.match.params
     return (<Layout breads={[
         {
-          href: '/admin/friend-links',
-          label: <FormattedMessage id='nut.admin.friend-links.index.title'/>
+          href: '/admin/links',
+          label: <FormattedMessage id='nut.admin.links.index.title'/>
         },
         id
           ? {
-            href: `/admin/friend-links/edit/${id}`,
+            href: `/admin/links/edit/${id}`,
             label: (<FormattedMessage id={"buttons.edit"} values={{
                 id: id
               }}/>)
           }
           : {
-            href: "/admin/friend-links/new",
+            href: "/admin/links/new",
             label: <FormattedMessage id={"buttons.new"}/>
           }
       ]}>
@@ -76,33 +76,9 @@ class Widget extends Component {
             offset: 2
           }}>
           <Form onSubmit={this.handleSubmit}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.title" />} hasFeedback="hasFeedback">
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.loc" />} hasFeedback="hasFeedback">
               {
-                getFieldDecorator('title', {
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({id: "errors.empty"})
-                    }
-                  ]
-                })(<Input/>)
-              }
-            </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.friend-link.home" />} hasFeedback="hasFeedback">
-              {
-                getFieldDecorator('home', {
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({id: "errors.empty"})
-                    }
-                  ]
-                })(<Input/>)
-              }
-            </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.attributes.friend-link.logo" />} hasFeedback="hasFeedback">
-              {
-                getFieldDecorator('logo', {
+                getFieldDecorator('loc', {
                   rules: [
                     {
                       required: true,
@@ -119,7 +95,30 @@ class Widget extends Component {
                 </Select>)
               }
             </FormItem>
-
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.label" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('label', {
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({id: "errors.empty"})
+                    }
+                  ]
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.href" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('href', {
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({id: "errors.empty"})
+                    }
+                  ]
+                })(<Input/>)
+              }
+            </FormItem>
             <Submit/>
           </Form>
         </Col>

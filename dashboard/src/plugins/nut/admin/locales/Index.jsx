@@ -33,16 +33,15 @@ class Widget extends Component {
   }
   render() {
     const {push} = this.props
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/admin/locales",
           label: <FormattedMessage id={"nut.admin.locales.index.title"}/>
         }
       ]}>
-        <Row>
-          <Col>
-            <Button onClick={(e) => push('/admin/locales/new')} type='primary' shape="circle" icon="plus"/>
-            <Table bordered rowKey="id" dataSource={this.state.items} columns={[
+      <Row>
+        <Col>
+          <Button onClick={(e) => push('/admin/locales/new')} type='primary' shape="circle" icon="plus"/>
+          <Table bordered={true} rowKey="id" dataSource={this.state.items} columns={[
               {
                 title: <FormattedMessage id="nut.attributes.locale.code"/>,
                 key: 'code',
@@ -54,20 +53,17 @@ class Widget extends Component {
               }, {
                 title: 'Action',
                 key: 'action',
-                render: (text, record) => (
-                  <span>
-                    <Button onClick={(e) => push(`/admin/locales/edit/${record.code}`)} shape="circle" icon="edit"/>
-                    <Popconfirm title={< FormattedMessage id = "messages.are-you-sure" />} onConfirm={(e) => this.handleRemove(record.id)}>
-                      <Button type="danger" shape="circle" icon="delete"/>
-                    </Popconfirm>
-                  </span>
-                )
+                render: (text, record) => (<span>
+                  <Button onClick={(e) => push(`/admin/locales/edit/${record.code}`)} shape="circle" icon="edit"/>
+                  <Popconfirm title={<FormattedMessage id = "messages.are-you-sure" />} onConfirm={(e) => this.handleRemove(record.id)}>
+                    <Button type="danger" shape="circle" icon="delete"/>
+                  </Popconfirm>
+                </span>)
               }
             ]}/>
-          </Col>
-        </Row>
-      </Layout>
-    );
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

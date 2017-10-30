@@ -38,20 +38,20 @@ class Widget extends Component {
   render() {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: "/users/reset-password",
           label: <FormattedMessage id={"nut.users.reset-password.title"}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password" />} hasFeedback>
-                {getFieldDecorator('password', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.password" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('password', {
                   rules: [
                     {
                       required: true,
@@ -60,10 +60,12 @@ class Widget extends Component {
                       validator: this.checkConfirm
                     }
                   ]
-                })(<Input type="password"/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.password-confirmation" />} hasFeedback>
-                {getFieldDecorator('passwordConfirmation', {
+                })(<Input type="password"/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.password-confirmation" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('passwordConfirmation', {
                   rules: [
                     {
                       required: true,
@@ -72,14 +74,14 @@ class Widget extends Component {
                       validator: this.checkPassword
                     }
                   ]
-                })(<Input type="password"/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input type="password"/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

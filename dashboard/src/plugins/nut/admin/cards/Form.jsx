@@ -52,9 +52,11 @@ class Widget extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        post(id
+        post(
+          id
           ? `/api/admin/cards/${id}`
-          : '/api/admin/cards', Object.assign({}, values, {
+          : '/api/admin/cards',
+        Object.assign({}, values, {
           sortOrder: parseInt(values.sortOrder, 10),
           type: 'html',
           summary: this.state.summary
@@ -69,8 +71,7 @@ class Widget extends Component {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
     const {id} = this.props.match.params
-    return (
-      <Layout breads={[
+    return (<Layout breads={[
         {
           href: '/admin/cards',
           label: <FormattedMessage id='nut.admin.cards.index.title'/>
@@ -79,87 +80,94 @@ class Widget extends Component {
           ? {
             href: `/admin/cards/edit/${id}`,
             label: (<FormattedMessage id={"buttons.edit"} values={{
-              id: id
-            }}/>)
+                id: id
+              }}/>)
           }
           : {
             href: "/admin/cards/new",
             label: <FormattedMessage id={"buttons.new"}/>
           }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 18
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.loc" />} hasFeedback>
-                {getFieldDecorator('loc', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.loc" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('loc', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.sortOrder" />}>
-                {getFieldDecorator('sortOrder')(
-                  <Select>
-                    {orders(10).map((p) => (
-                      <Option key={p} value={p}>{p}</Option>
-                    ))}
-                  </Select>
-                )}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.title" />} hasFeedback>
-                {getFieldDecorator('title', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.sortOrder" />}>
+              {
+                getFieldDecorator('sortOrder')(<Select>
+                  {orders(10).map((p) => (<Option key={p} value={p}>{p}</Option>))}
+                </Select>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.title" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('title', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.logo" />} hasFeedback>
-                {getFieldDecorator('logo', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.logo" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('logo', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.summary" />}>
-                <Quill value={this.state.summary} onChange={this.handleChange}/>
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.action" />} hasFeedback>
-                {getFieldDecorator('action', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.summary" />}>
+              <Quill value={this.state.summary} onChange={this.handleChange}/>
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.action" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('action', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.href" />} hasFeedback>
-                {getFieldDecorator('href', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.href" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('href', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

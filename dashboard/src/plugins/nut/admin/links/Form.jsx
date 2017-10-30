@@ -36,9 +36,11 @@ class Widget extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        post(id
+        post(
+          id
           ? `/api/admin/links/${id}`
-          : '/api/admin/links', Object.assign({}, values, {
+          : '/api/admin/links',
+        Object.assign({}, values, {
           sortOrder: parseInt(values.sortOrder, 10)
         })).then(() => {
           message.success(formatMessage({id: "messages.success"}))
@@ -51,8 +53,7 @@ class Widget extends Component {
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
     const {id} = this.props.match.params
-    return (
-      <Layout breads={[
+    return (<Layout breads={[
         {
           href: '/admin/links',
           label: <FormattedMessage id='nut.admin.links.index.title'/>
@@ -61,65 +62,68 @@ class Widget extends Component {
           ? {
             href: `/admin/links/edit/${id}`,
             label: (<FormattedMessage id={"buttons.edit"} values={{
-              id: id
-            }}/>)
+                id: id
+              }}/>)
           }
           : {
             href: "/admin/links/new",
             label: <FormattedMessage id={"buttons.new"}/>
           }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.loc" />} hasFeedback>
-                {getFieldDecorator('loc', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.loc" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('loc', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.sortOrder" />}>
-                {getFieldDecorator('sortOrder')(
-                  <Select>
-                    {orders(10).map((p) => (
-                      <Option key={p} value={p}>{p}</Option>
-                    ))}
-                  </Select>
-                )}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.label" />} hasFeedback>
-                {getFieldDecorator('label', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.sortOrder" />}>
+              {
+                getFieldDecorator('sortOrder')(<Select>
+                  {orders(10).map((p) => (<Option key={p} value={p}>{p}</Option>))}
+                </Select>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.label" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('label', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.href" />} hasFeedback>
-                {getFieldDecorator('href', {
+                })(<Input/>)
+              }
+            </FormItem>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.href" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('href', {
                   rules: [
                     {
                       required: true,
                       message: formatMessage({id: "errors.empty"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 

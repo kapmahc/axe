@@ -29,20 +29,20 @@ class Widget extends Component {
     const {action} = this.props
     const {formatMessage} = this.props.intl
     const {getFieldDecorator} = this.props.form
-    return (
-      <Layout breads={[{
+    return (<Layout breads={[{
           href: `/users/${action}`,
           label: <FormattedMessage id={`nut.users.${action}.title`}/>
         }
       ]}>
-        <Row>
-          <Col md={{
+      <Row>
+        <Col md={{
             span: 12,
             offset: 2
           }}>
-            <Form onSubmit={this.handleSubmit}>
-              <FormItem {...formItemLayout} label={< FormattedMessage id = "attributes.email" />} hasFeedback>
-                {getFieldDecorator('email', {
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.email" />} hasFeedback="hasFeedback">
+              {
+                getFieldDecorator('email', {
                   rules: [
                     {
                       type: 'email',
@@ -52,14 +52,14 @@ class Widget extends Component {
                       message: formatMessage({id: "errors.empty-email"})
                     }
                   ]
-                })(<Input/>)}
-              </FormItem>
-              <Submit/>
-            </Form>
-          </Col>
-        </Row>
-      </Layout>
-    );
+                })(<Input/>)
+              }
+            </FormItem>
+            <Submit/>
+          </Form>
+        </Col>
+      </Row>
+    </Layout>);
   }
 }
 
