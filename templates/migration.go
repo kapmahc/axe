@@ -2,6 +2,7 @@ package migrations
 
 import (
 	"github.com/go-pg/migrations"
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
