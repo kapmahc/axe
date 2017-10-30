@@ -13,6 +13,7 @@ import (
 type HomePlugin struct {
 	I18n     *web.I18n     `inject:""`
 	Cache    *web.Cache    `inject:""`
+	Jwt      *web.Jwt      `inject:""`
 	Router   *gin.Engine   `inject:""`
 	Jobber   *web.Jobber   `inject:""`
 	Settings *web.Settings `inject:""`
@@ -28,7 +29,7 @@ func init() {
 		"access_key_id":     "change-me",
 		"secret_access_key": "change-me",
 		"region":            "change-me",
-		"bucket_name":       "change-me",
+		"bucket":            "change-me",
 	})
 
 	viper.SetDefault("redis", map[string]interface{}{

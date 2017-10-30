@@ -45,6 +45,11 @@ func (p *HomePlugin) openDB() (*pg.DB, error) {
 	return db, nil
 }
 
+func (p *HomePlugin) openS3() (*web.S3, error) {
+	args := viper.GetStringMapString("aws")
+	return web.NewS3(args["access_key_id"], args["secret_access_key"], args["region"], args["bucket"])
+}
+
 func (p *HomePlugin) openJobber() (*web.Jobber, error) {
 	args := viper.GetStringMap("rabbitmq")
 	return web.NewJobber(fmt.Sprintf(
@@ -70,6 +75,9 @@ func (p *HomePlugin) openRouter(secret []byte, i18n *web.I18n, lyt *Layout) (*gi
 		},
 		"eq": func(a interface{}, b interface{}) bool {
 			return a == b
+		},
+		"str2htm": func(s string) template.HTML {
+			return template.HTML(s)
 		},
 		"dict": func(values ...interface{}) (map[string]interface{}, error) {
 			if len(values)%2 != 0 {
@@ -188,6 +196,11 @@ func (p *HomePlugin) Init(g *inject.Graph) error {
 		return err
 	}
 
+	s3, err := p.openS3()
+	if err != nil {
+		return err
+	}
+
 	return g.Provide(
 		&inject.Object{Value: &lyt},
 		&inject.Object{Value: db},
@@ -195,6 +208,7 @@ func (p *HomePlugin) Init(g *inject.Graph) error {
 		&inject.Object{Value: security},
 		&inject.Object{Value: i18n},
 		&inject.Object{Value: jobber},
+		&inject.Object{Value: s3},
 		&inject.Object{Value: web.NewCache(redis, "cache://")},
 		&inject.Object{Value: web.NewSettings(db, security)},
 		&inject.Object{Value: web.NewJwt(secret, crypto.SigningMethodHS512)},

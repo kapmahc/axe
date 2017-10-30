@@ -1,11 +1,40 @@
 package nut
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
+	"github.com/kapmahc/axe/web"
 )
+
+func (p *AdminPlugin) checkCardToken(user *User) bool {
+	return p.Dao.Is(user.ID, RoleAdmin)
+}
+
+func (p *AdminPlugin) editCardH(tid uint, token string) (string, string, string, error) {
+	var it Card
+	if err := p.DB.Model(&it).
+		Column("id", "title", "summary").
+		Where("id = ?", tid).
+		Limit(1).Select(); err != nil {
+		return "", "", "", err
+	}
+	return it.Title, fmt.Sprintf("/cards/edit/%s", token), it.Summary, nil
+
+}
+func (p *AdminPlugin) updateCardH(id uint, body string) error {
+	return p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		_, err := tx.Model(&Card{
+			ID:        id,
+			Summary:   body,
+			Type:      web.HTML,
+			UpdatedAt: time.Now(),
+		}).Column("summary", "type", "updated_at").Update()
+		return err
+	})
+}
 
 func (p *AdminPlugin) indexCards(l string, c *gin.Context) (interface{}, error) {
 	var items []Card

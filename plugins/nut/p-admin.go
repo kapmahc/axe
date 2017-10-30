@@ -34,6 +34,10 @@ func (p *AdminPlugin) Shell() []cli.Command {
 
 // Mount register
 func (p *AdminPlugin) Mount() error {
+	editCard, updateCard := p.Layout.UEditor("card.summary.edit", p.checkCardToken, p.editCardH, p.updateCardH)
+	p.Router.GET("/cards/edit/:token", editCard)
+	p.Router.POST("/cards/edit/:token", updateCard)
+
 	api := p.Router.Group("/api/admin", p.Layout.MustSignInMiddleware, p.Layout.MustAdminMiddleware)
 	api.GET("/site/status", p.Layout.JSON(p.getSiteStatus))
 	api.POST("/site/info", p.Layout.JSON(p.postSiteInfo))

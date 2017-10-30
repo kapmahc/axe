@@ -30,6 +30,7 @@
   "errors.empty-email": "Please input your E-mail!",
   "errors.empty-password": "Please input your password!",
   "errors.empty": "Required!",
+  "errors.no-match": "No match",
   "errors.passwords-not-match": "Two passwords that you enter is inconsistent!",
   "messages.success": "Success",
   "messages.are-you-sure": "Are you sure?",

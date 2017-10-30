@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -36,6 +37,73 @@ type Layout struct {
 	Jwt      *web.Jwt      `inject:""`
 	DB       *pg.DB        `inject:""`
 	Dao      *Dao          `inject:""`
+}
+
+type fmUEditor struct {
+	Body string `json:"body" binding:"required"`
+	Next string `json:"next" binding:"required"`
+}
+
+func (p *Layout) checkToken(act string, c *gin.Context, check func(*User) bool) (string, uint, error) {
+	lng := c.MustGet(web.LOCALE).(string)
+	token := c.Param("token")
+	cw, err := p.Jwt.Validate([]byte(token))
+	if err != nil {
+		return "", 0, err
+	}
+	if cw.Get("act").(string) != act {
+		return "", 0, p.I18n.E(lng, "errors.bad-action")
+	}
+	var user User
+	if err := p.DB.Model(&user).Where("uid = ?", cw.Get("uid")).Limit(1).Select(); err != nil {
+		return "", 0, p.I18n.E(lng, "errors.forbidden")
+	}
+	if user.IsLock() || !user.IsConfirm() || !check(&user) {
+		return "", 0, p.I18n.E(lng, "errors.forbidden")
+	}
+
+	return token, uint(cw.Get("tid").(float64)), nil
+}
+
+// UEditor ueditor edit
+func (p *Layout) UEditor(act string, check func(*User) bool, get func(uint, string) (string, string, string, error), update func(uint, string) error) (gin.HandlerFunc, gin.HandlerFunc) {
+	return p.Application("nut-ueditor.html", func(lng string, data gin.H, c *gin.Context) error {
+			token, tid, err := p.checkToken(act, c, check)
+			if err != nil {
+				return err
+			}
+			title, next, body, err := get(tid, token)
+			if err != nil {
+				return err
+			}
+
+			data["value"] = body
+			data["next"] = next
+			data["title"] = title
+			data["token"] = token
+			data["id"] = "body"
+			return nil
+		}), func(c *gin.Context) {
+			lng := c.MustGet(web.LOCALE).(string)
+			var tid uint
+			var fm fmUEditor
+
+			err := c.BindJSON(&fm)
+			if err == nil {
+				_, tid, err = p.checkToken(act, c, check)
+			}
+			if err == nil {
+				err = update(tid, fm.Body)
+			}
+			ss := sessions.Default(c)
+			if err == nil {
+				ss.AddFlash(p.I18n.T(lng, "messages.success"), NOTICE)
+			} else {
+				ss.AddFlash(err.Error(), ERROR)
+			}
+			ss.Save()
+			c.Redirect(http.StatusFound, fm.Next)
+		}
 }
 
 // Home home url
@@ -148,12 +216,6 @@ func (p *Layout) renderLayout(tpl string, fn func(string, gin.H, *gin.Context) e
 		lang := c.MustGet(web.LOCALE).(string)
 		data := gin.H{}
 
-		if err := fn(lang, data, c); err != nil {
-			log.Error(err)
-			c.HTML(http.StatusInternalServerError, "nut-error.html", gin.H{"error": err.Error()})
-			return
-		}
-
 		var favicon string
 		if err := p.Settings.Get("site.favicon", &favicon); err != nil {
 			favicon = "/assets/favicon.png"
@@ -176,6 +238,14 @@ func (p *Layout) renderLayout(tpl string, fn func(string, gin.H, *gin.Context) e
 		data["favicon"] = favicon
 		data["languages"] = langs
 		data["flashes"] = flashes
+
+		if err := fn(lang, data, c); err != nil {
+			log.Error(err)
+			data["error"] = err.Error()
+			data["createdAt"] = time.Now()
+			c.HTML(http.StatusInternalServerError, "nut-error.html", data)
+			return
+		}
 
 		// log.Debugf("%+v", data)
 		c.HTML(http.StatusOK, tpl, data)

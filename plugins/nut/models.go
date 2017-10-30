@@ -75,17 +75,18 @@ func (p User) String() string {
 
 // Attachment attachment
 type Attachment struct {
-	tableName    struct{} `sql:"attachments"`
-	ID           uint
-	Title        string
-	URL          string
-	Length       int64
-	MediaType    string
-	ResourceID   uint
-	ResourceType string
-	User         User
-	UpdatedAt    time.Time
-	CreatedAt    time.Time
+	tableName    struct{}  `sql:"attachments"`
+	ID           uint      `json:"id"`
+	Title        string    `json:"title"`
+	URL          string    `json:"url"`
+	Length       int64     `json:"length"`
+	MediaType    string    `json:"mediaType"`
+	ResourceID   uint      `json:"resourceId"`
+	ResourceType string    `json:"resourceType"`
+	User         User      `json:"user"`
+	UserID       uint      `json:"userId"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+	CreatedAt    time.Time `json:"crateAt"`
 }
 
 // IsPicture is picture?

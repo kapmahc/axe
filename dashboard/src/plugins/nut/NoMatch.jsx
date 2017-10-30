@@ -1,11 +1,14 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
+import {FormattedMessage} from 'react-intl'
+
+import Layout from '../../layout'
 
 class Widget extends Component {
   render() {
     return (
-      <div>
-        no match
-      </div>
+      <Layout breads={[]}>
+        <FormattedMessage id="errors.no-match" tagName="h1"/>
+      </Layout>
     );
   }
 }
