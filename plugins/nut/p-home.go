@@ -7,6 +7,7 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
 	"github.com/spf13/viper"
+	"golang.org/x/text/language"
 )
 
 // HomePlugin admin plugin
@@ -24,6 +25,11 @@ type HomePlugin struct {
 
 func init() {
 	web.Register(&HomePlugin{})
+	viper.SetDefault("languages", []string{
+		language.AmericanEnglish.String(),
+		language.SimplifiedChinese.String(),
+		language.TraditionalChinese.String(),
+	})
 
 	viper.SetDefault("aws", map[string]interface{}{
 		"access_key_id":     "change-me",

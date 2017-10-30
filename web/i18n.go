@@ -170,36 +170,22 @@ func (p *I18n) get(lang, code string) (string, error) {
 }
 
 // Middleware parse locales
-func (p *I18n) Middleware() (gin.HandlerFunc, error) {
-	name := string(LOCALE)
-	langs, err := p.Languages()
-	if err != nil {
-		return nil, err
-	}
-	var tags []language.Tag
-	for _, l := range langs {
-		t, e := language.Parse(l)
-		if e != nil {
-			return nil, e
-		}
-		tags = append(tags, t)
-	}
+func (p *I18n) Middleware(tags ...language.Tag) gin.HandlerFunc {
 	matcher := language.NewMatcher(tags)
-
 	return func(c *gin.Context) {
 
-		lang, written := p.detect(c.Request, name)
+		lang, written := p.detect(c.Request, LOCALE)
 		tag, _, _ := matcher.Match(language.Make(lang))
 		if lang != tag.String() {
 			written = true
 			lang = tag.String()
 		}
 		c.Set(LOCALE, lang)
-		c.Set("languages", langs)
+		c.Set("languages", tags)
 		if written {
 			c.SetCookie(LOCALE, lang, 1<<32-1, "/", "", c.Request.TLS != nil, false)
 		}
-	}, nil
+	}
 }
 
 func (p *I18n) detect(r *http.Request, k string) (string, bool) {

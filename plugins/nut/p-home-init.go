@@ -16,6 +16,7 @@ import (
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"golang.org/x/text/language"
 )
 
 func (p *HomePlugin) openDB() (*pg.DB, error) {
@@ -113,9 +114,13 @@ func (p *HomePlugin) openRouter(secret []byte, i18n *web.I18n, lyt *Layout) (*gi
 		rt.Static("/"+k+"/", v)
 	}
 
-	i18m, err := i18n.Middleware()
-	if err != nil {
-		return nil, err
+	var langs []language.Tag
+	for _, l := range Languages() {
+		t, e := language.Parse(l)
+		if e != nil {
+			return nil, e
+		}
+		langs = append(langs, t)
 	}
 
 	store := sessions.NewCookieStore(secret)
@@ -127,7 +132,7 @@ func (p *HomePlugin) openRouter(secret []byte, i18n *web.I18n, lyt *Layout) (*gi
 	})
 	rt.Use(
 		sessions.Sessions("_session_", store),
-		i18m,
+		i18n.Middleware(langs...),
 		lyt.CurrentUserMiddleware,
 	)
 

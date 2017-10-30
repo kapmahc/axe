@@ -38,12 +38,7 @@ func (p *HomePlugin) postToken(l string, c *gin.Context) (interface{}, error) {
 }
 
 func (p *HomePlugin) getSiteInfo(l string, c *gin.Context) (interface{}, error) {
-	// -----------
-	langs, err := p.I18n.Languages()
-	if err != nil {
-		return nil, err
-	}
-	data := gin.H{"locale": l, "languages": langs}
+	data := gin.H{"locale": l, "languages": Languages()}
 	// -----------
 	for _, k := range []string{"title", "subhead", "keywords", "description", "copyright"} {
 		data[k] = p.I18n.T(l, "site."+k)

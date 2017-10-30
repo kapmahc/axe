@@ -201,6 +201,7 @@ func (p *AdminPlugin) _osStatus() (gin.H, error) {
 		"app licence":          web.Copyright,
 		"app version":          fmt.Sprintf("%s(%s) - %s", web.Version, web.BuildTime, viper.GetString("env")),
 		"app root":             pwd,
+		"app languages":        strings.Join(Languages(), ", "),
 		"who-am-i":             fmt.Sprintf("%s@%s", hu.Username, hn),
 		"go version":           runtime.Version(),
 		"go root":              runtime.GOROOT(),

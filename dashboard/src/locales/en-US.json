@@ -1,4 +1,7 @@
 {
+  "languages.en-US": "English",
+  "languages.zh-Hant": "繁體中文",
+  "languages.zh-Hans": "简体中文",
   "buttons.submit": "Submit",
   "buttons.action": "Action",
   "buttons.new": "New",

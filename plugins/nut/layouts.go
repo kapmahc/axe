@@ -222,11 +222,6 @@ func (p *Layout) renderLayout(tpl string, fn func(string, gin.H, *gin.Context) e
 			favicon = "/assets/favicon.png"
 		}
 
-		langs, err := p.I18n.Languages()
-		if err != nil {
-			langs = make([]string, 0)
-		}
-
 		// csrf.TemplateTag: csrf.TemplateField(req),
 		// "_csrf_token":    csrf.Token(req),
 		var author map[string]string
@@ -237,7 +232,7 @@ func (p *Layout) renderLayout(tpl string, fn func(string, gin.H, *gin.Context) e
 		data["author"] = author
 		data["locale"] = lang
 		data["favicon"] = favicon
-		data["languages"] = langs
+		data["languages"] = Languages()
 		data["flashes"] = flashes
 
 		if err := fn(lang, data, c); err != nil {
