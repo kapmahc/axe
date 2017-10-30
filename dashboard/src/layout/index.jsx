@@ -15,45 +15,45 @@ const {Header, Content, Sider} = Layout
 
 class Widget extends Component {
   componentDidMount() {
-    const {signIn, refresh} = this.props
+    const {signIn, refresh, info} = this.props
     var token = sessionStorage.getItem(TOKEN)
     if (token) {
       signIn(token)
     }
-    get('/api/site/info').then((rst) => refresh(rst)).catch(message.error)
+    if (info.languages.length === 0) {
+      get('/api/site/info').then((rst) => refresh(rst)).catch(message.error)
+    }
   }
   render() {
     const {children, breads} = this.props
 
-    return (
-      <Layout>
-        <Sider breakpoint="lg" collapsedWidth="0" onCollapse={(collapsed, type) => {
+    return (<Layout>
+      <Sider breakpoint="lg" collapsedWidth="0" onCollapse={(collapsed, type) => {
           console.log(collapsed, type);
         }}>
-          <div className="logo"/>
-          <LeftNavPanel/>
-        </Sider>
-        <Layout>
-          <Header style={{
+        <div className="logo"/>
+        <LeftNavPanel/>
+      </Sider>
+      <Layout>
+        <Header style={{
             background: '#fff',
             padding: 0
           }}/>
-          <Content style={{
+        <Content style={{
             margin: '0 16px'
           }}>
-            <TopNavBar items={breads}/>
-            <div style={{
+          <TopNavBar items={breads}/>
+          <div style={{
               padding: 24,
               background: '#fff',
               minHeight: 360
             }}>
-              {children}
-            </div>
-          </Content>
-          <Footer/>
-        </Layout>
+            {children}
+          </div>
+        </Content>
+        <Footer/>
       </Layout>
-    );
+    </Layout>);
   }
 }
 

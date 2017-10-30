@@ -17,8 +17,6 @@ class Widget extends Component {
     const {id} = this.props.match.params
     if (id) {
       get(`/api/forum/tags/${id}`).then((rst) => setFieldsValue({name: rst.name})).catch(message.error)
-    } else {
-      setFieldsValue({sortOrder: '0'})
     }
   }
   handleSubmit = (e) => {
@@ -34,7 +32,7 @@ class Widget extends Component {
           : '/api/forum/tags',
         values).then(() => {
           message.success(formatMessage({id: "messages.success"}))
-          push('/api/forum/tags')
+          push('/forum/tags')
         }).catch(message.error);
       }
     });

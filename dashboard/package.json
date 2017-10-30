@@ -5,9 +5,9 @@
   "proxy": "http://localhost:8080",
   "homepage": "/my",
   "dependencies": {
-    "antd": "^2.13.7",
+    "antd": "^2.13.8",
     "history": "^4.7.2",
-    "js-cookie": "^2.1.4",
+    "js-cookie": "^2.2.0",
     "jwt-decode": "^2.2.0",
     "moment": "^2.19.1",
     "moment-timezone": "^0.5.13",

@@ -42,7 +42,7 @@ class Widget extends Component {
           }}>
           <Form onSubmit={this.handleSubmit}>
             <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.email" />}>
-              {getFieldDecorator('email', {})(<Input disabled="disabled"/>)}
+              {getFieldDecorator('email', {})(<Input disabled={true}/>)}
             </FormItem>
             <FormItem {...formItemLayout} label={<FormattedMessage id = "attributes.username" />} hasFeedback={true}>
               {

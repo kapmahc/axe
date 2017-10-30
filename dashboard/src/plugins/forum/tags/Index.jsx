@@ -43,20 +43,14 @@ class Widget extends Component {
           <Button onClick={(e) => push('/forum/tags/new')} type='primary' shape="circle" icon="plus"/>
           <Table bordered={true} rowKey="id" dataSource={this.state.items} columns={[
               {
-                title: <FormattedMessage id="attributes.loc"/>,
-                key: 'loc',
-                render: (text, record) => (<span>
-                  {record.loc}[{record.sortOrder}]
-                </span>)
-              }, {
-                title: <FormattedMessage id="attributes.content"/>,
-                dataIndex: 'label',
-                render: (text, record) => (<a target="_blank" href={record.href}>{record.label}</a>)
+                title: <FormattedMessage id="attributes.name"/>,
+                key: 'name',
+                dataIndex: 'name'
               }, {
                 title: 'Action',
                 key: 'action',
                 render: (text, record) => (<span>
-                  <Button onClick={(e) => push(`/admin/links/edit/${record.id}`)} shape="circle" icon="edit"/>
+                  <Button onClick={(e) => push(`/forum/tags/edit/${record.id}`)} shape="circle" icon="edit"/>
                   <Popconfirm title={<FormattedMessage id = "messages.are-you-sure" />} onConfirm={(e) => this.handleRemove(record.id)}>
                     <Button type="danger" shape="circle" icon="delete"/>
                   </Popconfirm>
