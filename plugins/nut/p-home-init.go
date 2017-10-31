@@ -123,6 +123,12 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n, lyt *L
 			}
 			return items, nil
 		},
+		"odd": func(v int) bool {
+			return v%2 != 0
+		},
+		"even": func(v int) bool {
+			return v%2 == 0
+		},
 	})
 
 	rt.LoadHTMLGlob(path.Join("themes", viper.GetString("server.theme"), "views", "*.html"))

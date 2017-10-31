@@ -9,12 +9,13 @@ import (
 )
 
 func (p *HomePlugin) getHome(c *gin.Context) {
-	var home string
-	if err := p.Settings.Get("site.home.theme", &home); err != nil {
-		home = "off-canvas"
+	theme := c.Query("theme")
+	if theme == "" {
+		if err := p.Settings.Get("site.home.theme", &theme); err != nil {
+			theme = "off-canvas"
+		}
 	}
-
-	p.Layout.Application("nut-home-"+home, func(l string, d gin.H, c *gin.Context) error {
+	p.Layout.Application("nut-home-"+theme, func(l string, d gin.H, c *gin.Context) error {
 		d["title"] = p.I18n.T(l, "nut.home.title")
 		return nil
 	})(c)

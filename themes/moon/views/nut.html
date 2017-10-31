@@ -69,13 +69,66 @@
 
 {{define "nut-home-carousel"}}
   {{template "application-head" .}}
-  <div class="container">
-    <br/>
-    {{template "application-flash" .}}
-    <div class="row">
-        <h1>home</h1>
+  <main role="main">
+    <div id="main-carousel" class="carousel slide" data-ride="carousel">
+      {{$carousel := (cards .locale "carousel")}}
+      <ol class="carousel-indicators">
+        {{range $k, $v := $carousel}}
+          <li data-target="#main-carousel" data-slide-to="{{$k}}" {{if eq $k 0}}class="active"{{end}}></li>
+        {{end}}
+      </ol>
+      <div class="carousel-inner">
+        {{range $k, $v := $carousel}}
+          <div class="carousel-item {{if eq $k 0}}active{{end}}">
+            <img src="{{.Logo}}" alt="{{.Logo}}"/>
+            <div class="container">
+              <div class="carousel-caption">
+                <h1>{{.Title}}</h1>
+                <p>{{str2htm .Summary}}</p>
+                <p><a class="btn btn-lg btn-primary" href="{{.Href}}" role="button">{{.Action}}</a></p>
+              </div>
+            </div>
+          </div>
+        {{end}}
+      </div>
+      <a class="carousel-control-prev" href="#main-carousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">{{t .locale "buttons.previous"}}</span>
+      </a>
+      <a class="carousel-control-next" href="#main-carousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">{{t .locale "buttons.next"}}</span>
+      </a>
     </div>
-  </div>
+
+    <div class="container">
+      {{template "application-flash" .}}
+      <div class="row">
+        {{range (cards .locale "cricle")}}
+          <div class="col-md-4">
+            <img class="rounded-circle" src="{{.Logo}}" alt="{{.Logo}}" width="140" height="140">
+            <h2>{{.Title}}</h2>
+            <p>{{str2htm .Summary}}</p>
+            <p><a class="btn btn-secondary" href="{{.Href}}" role="button">{{.Action}} &raquo;</a></p>
+          </div>
+        {{end}}
+      </div>
+
+      {{range $k, $v := (cards .locale "main")}}
+        <hr/>
+        <div class="row">
+          <div class="col-md-7 {{if odd $k}}order-md-2{{end}}">
+            <h2><span class="text-muted">{{$v.Title}}</span></h2>
+            <p class="lead">{{str2htm .Summary}}</p>
+            <p><a class="btn btn-secondary" href="{{.Href}}" role="button">{{.Action}} &raquo;</a></p>
+          </div>
+          <div class="col-md-5 {{if odd $k}}order-md-1{{end}}">
+            <img class="img-fluid mx-auto" data-src="{{.Logo}}" alt="{{.Logo}}"/>
+          </div>
+        </div>
+      {{end}}
+    </div>
+  </main>
   {{template "application-tail" .}}
 {{end}}
 
