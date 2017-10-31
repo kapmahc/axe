@@ -188,7 +188,7 @@ type Card struct {
 	Type      string    `json:"type"`
 	Href      string    `json:"href"`
 	Logo      string    `json:"logo"`
-	SortOrder int       `json:"sortOrder"`
+	SortOrder int       `json:"sortOrder" sql:",notnull"`
 	Action    string    `json:"action"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	CreatedAt time.Time `json:"createdAt"`

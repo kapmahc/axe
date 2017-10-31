@@ -34,13 +34,36 @@
 
 {{define "nut-home-off-canvas"}}
   {{template "application-head" .}}
-  <div class="container">
+  <main role="main" class="container">
     <br/>
     {{template "application-flash" .}}
     <div class="row">
-        <h1>home</h1>
+      <div class="col-12 col-md-9">
+        {{range (cards .locale "jumbotron")}}
+          <div class="jumbotron">
+            <h1>{{.Title}}</h1>
+            <p>{{str2htm .Summary}}</p>
+          </div>
+        {{end}}
+        <div class="row">
+          {{range (cards .locale "main")}}
+            <div class="col-12 col-md-4">
+              <h2>{{.Title}}</h2>
+              <p>{{str2htm .Summary}}</p>
+              <p><a class="btn btn-secondary" href="{{.Href}}" role="button">{{.Action}} &raquo;</a></p>
+            </div>
+          {{end}}
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="list-group">
+          {{range (links .locale "sidebar")}}
+            <a href="{{.Href}}" class="list-group-item">{{.Label}}</a>
+          {{end}}
+        </div>
+      </div>
     </div>
-  </div>
+  </main>
   {{template "application-tail" .}}
 {{end}}
 

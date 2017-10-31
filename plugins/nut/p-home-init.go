@@ -113,6 +113,16 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n, lyt *L
 			}
 			return items, nil
 		},
+		"cards": func(lng, loc string) ([]Card, error) {
+			var items []Card
+			if err := db.Model(&items).Column("id", "title", "summary", "type", "action", "logo", "href", "loc", "sort_order").
+				Where("lang = ? AND loc = ?", lng, loc).
+				Order("sort_order ASC").
+				Select(); err != nil {
+				return nil, err
+			}
+			return items, nil
+		},
 	})
 
 	rt.LoadHTMLGlob(path.Join("themes", viper.GetString("server.theme"), "views", "*.html"))
