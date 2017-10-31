@@ -60,6 +60,12 @@ func (p *HomePlugin) getSiteInfo(l string, c *gin.Context) (interface{}, error) 
 		}
 	}
 	data["author"] = author
+	// -----
+	var favicon string
+	if err := p.Settings.Get("site.favicon", &favicon); err != nil {
+		favicon = "/favicon.png"
+	}
+	data["favicon"] = favicon
 	return data, nil
 }
 

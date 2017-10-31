@@ -18,6 +18,46 @@ import (
 	"github.com/spf13/viper"
 )
 
+func (p *AdminPlugin) getSiteHome(l string, c *gin.Context) (interface{}, error) {
+	var favicon string
+	if err := p.Settings.Get("site.favicon", &favicon); err != nil {
+		favicon = "/favicon.png"
+	}
+	var theme string
+	if err := p.Settings.Get("site.home.theme", &theme); err != nil {
+		theme = "off-canvas"
+	}
+
+	return gin.H{"favicon": favicon, "theme": theme}, nil
+}
+
+type fmSiteHome struct {
+	Favicon string `json:"favicon" binding:"required"`
+	Theme   string `json:"theme" binding:"required"`
+}
+
+func (p *AdminPlugin) postSiteHome(l string, c *gin.Context) (interface{}, error) {
+	var fm fmSiteHome
+	if err := c.BindJSON(&fm); err != nil {
+		return nil, err
+	}
+
+	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		for k, v := range map[string]string{
+			"favicon":    fm.Favicon,
+			"home.theme": fm.Theme,
+		} {
+			if err := p.Settings.Set(tx, "site."+k, v, false); err != nil {
+				return err
+			}
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return gin.H{}, nil
+}
+
 func (p *AdminPlugin) getSiteSMTP(l string, c *gin.Context) (interface{}, error) {
 	smtp := make(map[string]interface{})
 	if err := p.Settings.Get("site.smtp", &smtp); err == nil {

@@ -20,6 +20,7 @@ import AdminSiteInfo from './admin/site/Info'
 import AdminSiteAuthor from './admin/site/Author'
 import AdminSiteSeo from './admin/site/Seo'
 import AdminSiteSmtp from './admin/site/Smtp'
+import AdminSiteHome from './admin/site/Home'
 import AdminIndexUsers from './admin/users/Index'
 import AdminIndexLeaveWords from './admin/leave-words/Index'
 import AdminIndexLocales from './admin/locales/Index'
@@ -90,6 +91,9 @@ const routes = [
   } />),
   (< Route key = "nut.admin.site.smtp" path = "/admin/site/smtp" component = {
     AdminSiteSmtp
+  } />),
+  (< Route key = "nut.admin.site.home" path = "/admin/site/home" component = {
+    AdminSiteHome
   } />),
 
   (< Route key = "nut.admin.users.index" path = "/admin/users" component = {

@@ -97,6 +97,9 @@ class Widget extends Component {
               label: "nut.admin.site.smtp.title",
               key: "/admin/site/smtp"
             }, {
+              label: "nut.admin.site.home.title",
+              key: "/admin/site/home"
+            }, {
               label: "nut.admin.links.index.title",
               key: "/admin/links"
             }, {
