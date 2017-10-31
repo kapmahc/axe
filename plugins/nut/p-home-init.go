@@ -63,7 +63,7 @@ func (p *HomePlugin) openJobber() (*web.Jobber, error) {
 	), args["queue"].(string))
 }
 
-func (p *HomePlugin) openRouter(secret []byte, i18n *web.I18n, lyt *Layout) (*gin.Engine, error) {
+func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n, lyt *Layout) (*gin.Engine, error) {
 	if web.MODE() == web.PRODUCTION {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -102,6 +102,16 @@ func (p *HomePlugin) openRouter(secret []byte, i18n *web.I18n, lyt *Layout) (*gi
 		},
 		"assets_js": func(u string) template.HTML {
 			return template.HTML(fmt.Sprintf(`<script src="%s"></script>`, u))
+		},
+		"links": func(lng, loc string) ([]Link, error) {
+			var items []Link
+			if err := db.Model(&items).Column("id", "label", "href").
+				Where("lang = ? AND loc = ?", lng, loc).
+				Order("sort_order ASC").
+				Select(); err != nil {
+				return nil, err
+			}
+			return items, nil
 		},
 	})
 
@@ -196,7 +206,7 @@ func (p *HomePlugin) Init(g *inject.Graph) error {
 	redis := p.openRedis()
 	var lyt Layout
 
-	rt, err := p.openRouter(secret, i18n, &lyt)
+	rt, err := p.openRouter(secret, db, i18n, &lyt)
 	if err != nil {
 		return err
 	}

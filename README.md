@@ -39,15 +39,6 @@ make
 
 ## Notes
 
-- Install ueditor
-
-  ```
-  npm install -g grunt-cli  
-  cd node_modules/ueditor  
-  npm install
-  grunt
-  ```
-
 - Create database
 
 ```

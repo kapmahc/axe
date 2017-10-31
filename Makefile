@@ -1,6 +1,7 @@
 dist=dist
 pkg=github.com/kapmahc/axe/web
 theme=moon
+ueditor=node_modules/ueditor
 
 VERSION=`git rev-parse --short HEAD`
 BUILD_TIME=`date -R`
@@ -25,6 +26,8 @@ frontend:
 init:
 	govendor sync
 	npm install
+	cd dashboard && npm install
+	npm install uglify-js grunt-cli -g
 
 
 
@@ -34,6 +37,7 @@ clean:
 
 
 ueditor:
-	cd node_modules/ueditor/dist/utf8-php && uglifyjs ueditor.all.js > ueditor.all.min.js
-	cd node_modules/ueditor/dist/utf8-php && uglifyjs lang/zh-cn/zh-cn.js > lang/zh-cn/zh-cn.min.js
-	cd node_modules/ueditor/dist/utf8-php && uglifyjs lang/en/en.js > lang/en/en.min.js
+	cd $(ueditor) && npm install
+	cd $(ueditor)/dist/utf8-php && uglifyjs ueditor.all.js > ueditor.all.min.js
+	cd $(ueditor)/dist/utf8-php && uglifyjs lang/zh-cn/zh-cn.js > lang/zh-cn/zh-cn.min.js
+	cd $(ueditor)/dist/utf8-php && uglifyjs lang/en/en.js > lang/en/en.min.js
