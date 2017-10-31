@@ -10,6 +10,7 @@ import {
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
+import {CopyToClipboard} from 'react-copy-to-clipboard'
 
 import Layout from '../../../layout'
 import {get, _delete} from '../../../ajax'
@@ -51,6 +52,7 @@ class Widget extends Component {
                 title: 'Action',
                 key: 'action',
                 render: (text, record) => (<span>
+                  <CopyToClipboard text={`/forum/articles/${record.id}`}><Button shape="circle" icon="copy"/></CopyToClipboard>
                   <Button onClick={(e) => push(`/forum/articles/edit/${record.id}`)} shape="circle" icon="edit"/>
                   <UEditor target={record.id} action="/forum/articles/body/edit"/>
                   <Popconfirm title={<FormattedMessage id = "messages.are-you-sure" />} onConfirm={(e) => this.handleRemove(record.id)}>
