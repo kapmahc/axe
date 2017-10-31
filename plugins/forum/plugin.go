@@ -34,6 +34,14 @@ func (p *Plugin) Shell() []cli.Command {
 
 // Mount register
 func (p *Plugin) Mount() error {
+
+	htm := p.Router.Group("/forum")
+	htm.GET("/forum/tags", p.Layout.Application("forum-tags-index", p.indexTagsH))
+	htm.GET("/forum/tags/:id", p.Layout.Application("forum-tags-show", p.showTagH))
+	htm.GET("/forum/articles", p.Layout.Application("forum-articles-index", p.indexArticlesH))
+	htm.GET("/forum/articles/:id", p.Layout.Application("forum-articles-show", p.showArticleH))
+	htm.GET("/forum/comments", p.Layout.Application("forum-comments-index", p.indexCommentsH))
+
 	p.Layout.UEditor("/forum/articles/body/edit", p.checkArticleToken, p.editArticleH, p.updateArticleH)
 	p.Layout.UEditor("/forum/comments/body/edit", p.checkCommentToken, p.editCommentH, p.updateCommentH)
 
