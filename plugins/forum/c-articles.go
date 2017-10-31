@@ -1,6 +1,7 @@
 package forum
 
 import (
+	"net/http"
 	"strconv"
 	"time"
 
@@ -10,6 +11,19 @@ import (
 	"github.com/kapmahc/axe/plugins/nut"
 	"github.com/kapmahc/axe/web"
 )
+
+func (p *Plugin) canEditArticle(c *gin.Context) {
+	if admin := c.MustGet(nut.IsAdmin).(bool); admin {
+		return
+	}
+	lng := c.MustGet(web.LOCALE).(string)
+	user := c.MustGet(nut.CurrentUser).(*nut.User)
+	cnt, err := p.DB.Model(&Article{}).Where("id = ? AND user_id = ?", c.Param("id"), user.ID).Count()
+	if err != nil || cnt == 0 {
+		p.Layout.Abort(c, http.StatusInternalServerError, p.I18n.E(lng, "errors.forbidden"))
+		return
+	}
+}
 
 func (p *Plugin) checkArticleToken(user *nut.User, aid uint) bool {
 	var it Article

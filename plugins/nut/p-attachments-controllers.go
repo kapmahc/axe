@@ -25,14 +25,15 @@ func (p *AttachmentsPlugin) destroy(l string, c *gin.Context) (interface{}, erro
 }
 
 func (p *AttachmentsPlugin) canEdit(c *gin.Context) {
-	user := c.MustGet(CurrentUser).(*User)
-	admin := c.MustGet(IsAdmin).(bool)
-	lng := c.MustGet(web.LOCALE).(string)
-	if !admin {
-		cnt, err := p.DB.Model(&Attachment{}).Where("id = ? AND user_id = ?", c.Param("id"), user.ID).Count()
-		if err != nil || cnt == 0 {
-			p.Layout.Abort(c, http.StatusInternalServerError, p.I18n.E(lng, "errors.forbidden"))
-			return
-		}
+	if admin := c.MustGet(IsAdmin).(bool); admin {
+		return
 	}
+	user := c.MustGet(CurrentUser).(*User)
+	lng := c.MustGet(web.LOCALE).(string)
+	cnt, err := p.DB.Model(&Attachment{}).Where("id = ? AND user_id = ?", c.Param("id"), user.ID).Count()
+	if err != nil || cnt == 0 {
+		p.Layout.Abort(c, http.StatusInternalServerError, p.I18n.E(lng, "errors.forbidden"))
+		return
+	}
+
 }

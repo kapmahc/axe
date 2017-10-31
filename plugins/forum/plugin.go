@@ -41,8 +41,8 @@ func (p *Plugin) Mount() error {
 	api.GET("/articles", p.Layout.JSON(p.indexArticles))
 	api.GET("/articles/:id", p.Layout.JSON(p.showArticle))
 	api.POST("/articles", p.Layout.JSON(p.createArticle))
-	api.POST("/articles/:id", p.Layout.JSON(p.updateArticle))
-	api.DELETE("/articles/:id", p.Layout.JSON(p.destroyArticle))
+	api.POST("/articles/:id", p.canEditArticle, p.Layout.JSON(p.updateArticle))
+	api.DELETE("/articles/:id", p.canEditArticle, p.Layout.JSON(p.destroyArticle))
 	api.GET("/tags", p.Layout.JSON(p.indexTags))
 	api.GET("/tags/:id", p.Layout.JSON(p.showTag))
 	api.POST("/tags", p.Layout.MustAdminMiddleware, p.Layout.JSON(p.createTag))
@@ -51,8 +51,8 @@ func (p *Plugin) Mount() error {
 	api.GET("/comments", p.Layout.JSON(p.indexComments))
 	api.GET("/comments/:id", p.Layout.JSON(p.showComment))
 	api.POST("/comments", p.Layout.JSON(p.createComment))
-	api.POST("/comments/:id", p.Layout.JSON(p.updateComment))
-	api.DELETE("/comments/:id", p.Layout.JSON(p.destroyComment))
+	api.POST("/comments/:id", p.canEditComment, p.Layout.JSON(p.updateComment))
+	api.DELETE("/comments/:id", p.canEditComment, p.Layout.JSON(p.destroyComment))
 
 	return nil
 }
