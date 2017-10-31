@@ -11,7 +11,7 @@ COPYRIGHT=`head -n 1 LICENSE`
 USAGE=`sed -n '3p' README.md`
 
 build: backend frontend
-	tar jcf dist.tar.bz2 $(dist)
+	cd $(dist) && tar jcf ../$(dist).tar.bz2 *
 
 
 backend:

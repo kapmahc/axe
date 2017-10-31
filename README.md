@@ -58,8 +58,8 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
   rabbitmqctl add_user who-am-i change-me
   rabbitmqctl set_user_tags who-am-i administrator
   rabbitmqctl list_vhosts
-  rabbitmqctl add_vhost /v-host
-  rabbitmqctl set_permissions -p /v-host who-am-i ".*" ".*" ".*"
+  rabbitmqctl add_vhost v-host
+  rabbitmqctl set_permissions -p v-host who-am-i ".*" ".*" ".*"
   ```
 
 - "RPC failed; HTTP 301 curl 22 The requested URL returned error: 301"
@@ -96,3 +96,5 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 - [nvm](https://github.com/creationix/nvm)
 
 - [ant design](https://ant.design/docs/react/introduce)
+
+- [smver](http://semver.org/)
