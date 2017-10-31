@@ -27,13 +27,11 @@ const siteInfo = (state = {
 }, action) => {
   switch (action.type) {
     case SITE_REFRESH:
+      document.title = action.info.subhead + '|' + action.info.title
       return Object.assign({}, action.info)
     default:
       return state;
   }
 }
 
-export default {
-  currentUser,
-  siteInfo
-}
+export default {currentUser, siteInfo}

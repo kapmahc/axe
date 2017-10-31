@@ -5,4 +5,7 @@ div .logo {
   background: #333;
   border-radius: 6px;
   margin: 16px;
+  text-align: center;
+  font-size: 22px;
+  color: gray;
 }

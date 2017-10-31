@@ -25,13 +25,13 @@ class Widget extends Component {
     }
   }
   render() {
-    const {children, breads} = this.props
+    const {children, breads, info} = this.props
 
     return (<Layout>
       <Sider breakpoint="lg" collapsedWidth="0" onCollapse={(collapsed, type) => {
           console.log(collapsed, type);
         }}>
-        <div className="logo"/>
+        <div className="logo">{info.subhead}</div>
         <LeftNavPanel/>
       </Sider>
       <Layout>
