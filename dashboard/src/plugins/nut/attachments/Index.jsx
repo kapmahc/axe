@@ -5,6 +5,8 @@ import {
   Table,
   Popconfirm,
   Button,
+  Upload,
+  Icon,
   message
 } from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
@@ -13,6 +15,7 @@ import {push} from 'react-router-redux'
 
 import Layout from '../../../layout'
 import {get, _delete} from '../../../ajax'
+import {TOKEN} from '../../../actions'
 
 class Widget extends Component {
   state = {
@@ -32,7 +35,6 @@ class Widget extends Component {
     }).catch(message.error)
   }
   render() {
-    const {push} = this.props
     return (<Layout breads={[{
           href: "/attachments",
           label: <FormattedMessage id={"nut.admin.links.index.title"}/>
@@ -40,7 +42,14 @@ class Widget extends Component {
       ]}>
       <Row>
         <Col>
-          <Button onClick={(e) => push('/attachments/new')} type='primary' shape="circle" icon="plus"/>
+          <Upload multiple={true} name="file" action="/api/attachments" headers={{
+              'Authorization' : `BEARER ${window.sessionStorage.getItem(TOKEN)}`
+            }}>
+            <Button>
+              <Icon type="upload"/>
+              <FormattedMessage id="nut.attachments.index.upload"/>
+            </Button>
+          </Upload>
           <Table bordered={true} rowKey="id" dataSource={this.state.items} columns={[
               {
                 title: <FormattedMessage id="attributes.content"/>,

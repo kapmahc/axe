@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -54,7 +55,8 @@ func (p *UEditor) scrawl(c *gin.Context, f UEditorWriter) {
 		p.fail(c, err)
 		return
 	}
-	name := "scrawl.png"
+
+	name := "scrawl-" + time.Now().Format(time.RFC822) + ".png"
 	size := int64(len(buf))
 	if size == 0 {
 		p.fail(c, errors.New("empty file"))

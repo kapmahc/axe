@@ -2,10 +2,55 @@ package nut
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
 )
+
+func (p *AttachmentsPlugin) create(l string, c *gin.Context) (interface{}, error) {
+	user := c.MustGet(CurrentUser).(*User)
+	// c.Request.ParseMultipartForm(maxMemory)
+	fd, fh, err := c.Request.FormFile("file")
+	if err != nil {
+		return nil, err
+	}
+	defer fd.Close()
+
+	name := fh.Filename
+	size := fh.Size
+	buf := make([]byte, size)
+	if _, err = fd.Read(buf); err != nil {
+		return nil, err
+	}
+
+	mty, url, err := p.S3.Write(name, buf, size)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = p.DB.RunInTransaction(func(tx *pg.Tx) error {
+		return tx.Insert(&Attachment{
+			Title:        name,
+			Length:       size,
+			MediaType:    mty,
+			URL:          url,
+			ResourceID:   DefaultResourceID,
+			ResourceType: DefaultResourceType,
+			UserID:       user.ID,
+			UpdatedAt:    time.Now(),
+		})
+	}); err != nil {
+		return nil, err
+	}
+	return gin.H{
+		"url":    url,
+		"name":   name,
+		"status": "done",
+		"uid":    url,
+	}, err
+}
 
 func (p *AttachmentsPlugin) index(l string, c *gin.Context) (interface{}, error) {
 	user := c.MustGet(CurrentUser).(*User)

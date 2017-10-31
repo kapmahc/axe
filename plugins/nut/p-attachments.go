@@ -47,6 +47,7 @@ func (p *AttachmentsPlugin) Mount() error {
 
 	api := p.Router.Group("/api", p.Layout.MustSignInMiddleware)
 	api.GET("/attachments", p.Layout.JSON(p.index))
+	api.POST("/attachments", p.Layout.JSON(p.create))
 	api.DELETE("/attachments/:id", p.canEdit, p.Layout.JSON(p.destroy))
 	return nil
 }
