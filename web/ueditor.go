@@ -100,7 +100,7 @@ func (p *UEditor) upload(c *gin.Context, name string, fn UEditorWriter) {
 		p.fail(c, err)
 		return
 	}
-	url, err := fn(c, name, buf, int64(len(buf)))
+	url, err := fn(c, fh.Filename, buf, int64(len(buf)))
 	if err != nil {
 		p.fail(c, err)
 		return

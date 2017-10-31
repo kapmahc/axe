@@ -52,6 +52,9 @@ class Widget extends Component {
           }, {
             label: "nut.users.change-password.title",
             key: "/users/change-password"
+          }, {
+            label: "nut.attachments.index.title",
+            key: "/attachments"
           }
         ]
       })

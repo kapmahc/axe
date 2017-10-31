@@ -31,6 +31,8 @@ import AdminFormCard from './admin/cards/Form'
 import AdminIndexFriendLinks from './admin/friend-links/Index'
 import AdminFormFriendLink from './admin/friend-links/Form'
 
+import AttachmentsIndex from './attachments/Index'
+
 const UsersConfirm = () => (<UsersEmailForm action="confirm"/>)
 const UsersUnlock = () => (<UsersEmailForm action="unlock"/>)
 const UsersForgotPassword = () => (<UsersEmailForm action="forgot-password"/>)
@@ -135,6 +137,10 @@ const routes = [
   } />),
   (< Route key = "nut.admin.cards.index" path = "/admin/cards" component = {
     AdminIndexCards
+  } />),
+
+  (< Route key = "nut.attachments.index" path = "/attachments" component = {
+    AttachmentsIndex
   } />),
 
   (<Route key="nut.no-match" component={NoMatch}/>)

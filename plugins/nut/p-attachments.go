@@ -41,10 +41,13 @@ func (p *AttachmentsPlugin) Mount() error {
 		}),
 	)
 
-	rt := p.Router.Group("/attachments")
+	htm := p.Router.Group("/attachments")
+	htm.GET("/ueditor", ueditor)
+	htm.POST("/ueditor", ueditor)
 
-	rt.GET("/ueditor", ueditor)
-	rt.POST("/ueditor", ueditor)
+	api := p.Router.Group("/api", p.Layout.MustSignInMiddleware)
+	api.GET("/attachments", p.Layout.JSON(p.index))
+	api.DELETE("/attachments/:id", p.canEdit, p.Layout.JSON(p.destroy))
 	return nil
 }
 
