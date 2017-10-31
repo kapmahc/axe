@@ -14,8 +14,8 @@ nvm alias default node
 
 ```
 zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
-gvm install go1.9.1 -B
-gvm use go1.9.1 --default
+gvm install go1.9.2 -B
+gvm use go1.9.2 --default
 go get -u github.com/kardianos/govendor
 ```
 
