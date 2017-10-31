@@ -31,3 +31,9 @@ init:
 clean:
 	-rm -r $(dist) $(dist).tar.bz2
 	-rm -r dashboard/build
+
+
+ueditor:
+	cd node_modules/ueditor/dist/utf8-php && uglifyjs ueditor.all.js > ueditor.all.min.js
+	cd node_modules/ueditor/dist/utf8-php && uglifyjs lang/zh-cn/zh-cn.js > lang/zh-cn/zh-cn.min.js
+	cd node_modules/ueditor/dist/utf8-php && uglifyjs lang/en/en.js > lang/en/en.min.js

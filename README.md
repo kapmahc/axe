@@ -42,10 +42,8 @@ make
 - Install ueditor
 
   ```
-  npm install -g grunt-cli
-  git clone https://github.com/fex-team/ueditor.git node_modules/ueditor
-  cd node_modules/ueditor
-  git checkout v1.4.3.3
+  npm install -g grunt-cli  
+  cd node_modules/ueditor  
   npm install
   grunt
   ```
