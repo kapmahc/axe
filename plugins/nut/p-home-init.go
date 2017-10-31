@@ -105,7 +105,7 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n, lyt *L
 		},
 		"links": func(lng, loc string) ([]Link, error) {
 			var items []Link
-			if err := db.Model(&items).Column("id", "label", "href").
+			if err := db.Model(&items).Column("id", "label", "href", "loc", "sort_order").
 				Where("lang = ? AND loc = ?", lng, loc).
 				Order("sort_order ASC").
 				Select(); err != nil {

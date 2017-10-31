@@ -8,14 +8,16 @@ import (
 	"github.com/go-pg/pg"
 )
 
-func (p *HomePlugin) getHome() gin.HandlerFunc {
+func (p *HomePlugin) getHome(c *gin.Context) {
 	var home string
 	if err := p.Settings.Get("site.home.theme", &home); err != nil {
 		home = "off-canvas"
 	}
-	return p.Layout.Application("nut-home-"+home, func(l string, d gin.H, c *gin.Context) error {
+
+	p.Layout.Application("nut-home-"+home, func(l string, d gin.H, c *gin.Context) error {
+		d["title"] = p.I18n.T(l, "nut.home.title")
 		return nil
-	})
+	})(c)
 }
 
 type fmToken struct {

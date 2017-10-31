@@ -3,7 +3,7 @@ package nut
 // Mount register
 func (p *HomePlugin) Mount() error {
 	htm := p.Router
-	htm.GET("/", p.getHome())
+	htm.GET("/", p.getHome)
 
 	api := p.Router.Group("/api")
 	api.POST("/token", p.Layout.MustSignInMiddleware, p.Layout.JSON(p.postToken))

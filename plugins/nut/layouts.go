@@ -84,7 +84,7 @@ func (p *Layout) UEditor(act string, check func(*User, uint) bool, edit func(uin
 
 			data["value"] = body
 			data["next"] = act + "/" + token
-			data["title"] = title
+			data[TITLE] = title
 			data["token"] = token
 			data["id"] = "body"
 			return nil
@@ -247,6 +247,7 @@ func (p *Layout) renderLayout(tpl string, fn func(string, gin.H, *gin.Context) e
 
 		if err := fn(lang, data, c); err != nil {
 			log.Error(err)
+			data[TITLE] = p.I18n.T(lang, "nut.error.title")
 			data["error"] = err.Error()
 			data["createdAt"] = time.Now()
 			c.HTML(http.StatusInternalServerError, "nut-error", data)
