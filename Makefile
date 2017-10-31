@@ -23,21 +23,7 @@ frontend:
 	cd dashboard && npm run build
 	-cp -r dashboard/build $(dist)/dashboard
 
-init:
-	govendor sync
-	npm install
-	cd dashboard && npm install
-	npm install uglify-js grunt-cli -g
-
-
 
 clean:
 	-rm -r $(dist) $(dist).tar.bz2
 	-rm -r dashboard/build
-
-
-ueditor:
-	cd $(ueditor) && npm install
-	cd $(ueditor)/dist/utf8-php && uglifyjs ueditor.all.js > ueditor.all.min.js
-	cd $(ueditor)/dist/utf8-php && uglifyjs lang/zh-cn/zh-cn.js > lang/zh-cn/zh-cn.min.js
-	cd $(ueditor)/dist/utf8-php && uglifyjs lang/en/en.js > lang/en/en.min.js

@@ -38,7 +38,7 @@ class Widget extends Component {
   render() {
     return (<Layout breads={[{
           href: "/attachments",
-          label: <FormattedMessage id={"nut.admin.links.index.title"}/>
+          label: <FormattedMessage id={"nut.attachments.index.title"}/>
         }
       ]}>
       <Row>

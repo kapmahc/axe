@@ -21,11 +21,11 @@
     {{assets_js "/assets/ueditor.config.js"}}
     {{assets_js "/3rd/ueditor/dist/utf8-php/ueditor.all.min.js"}}
     {{if eq .locale "zh-Hans"}}
-    {{assets_js "/3rd/ueditor/dist/utf8-php/lang/zh-cn/zh-cn.min.js"}}
+    {{assets_js "/3rd/ueditor/dist/utf8-php/lang/zh-cn/zh-cn.js"}}
     {{else if eq .locale "zh-Hant"}}
-    {{assets_js "/3rd/ueditor/dist/utf8-php/lang/zh-cn/zh-cn.min.js"}}
+    {{assets_js "/3rd/ueditor/dist/utf8-php/lang/zh-cn/zh-cn.js"}}
     {{else}}
-    {{assets_js "/3rd/ueditor/dist/utf8-php/lang/en/en.min.js"}}
+    {{assets_js "/3rd/ueditor/dist/utf8-php/lang/en/en.js"}}
     {{end}}
 </head>
 <body>
@@ -56,7 +56,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="header-nav-bar">
-        <ul class="navbar-nav mr-auto">            
+        <ul class="navbar-nav mr-auto">
             {{range $k, $v := (links .locale "header")}}
               {{$items := (links $.locale (fmt "%s.%d" $v.Loc $v.SortOrder))}}
               {{if $items}}

@@ -5,10 +5,20 @@ A complete open source e-commerce solution by Go and React.
 ## Install nodejs
 
 ```
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | zsh
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | zsh
 nvm install node
 nvm alias default node
 ```
+
+- upgrade nvm
+
+  ```
+  (
+  cd "$NVM_DIR"
+  git fetch origin
+  git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
+  ) && . "$NVM_DIR/nvm.sh"
+  ```
 
 ## Install go
 
@@ -25,7 +35,9 @@ go get -u github.com/kardianos/govendor
 go get -u github.com/kardianos/govendor
 go get -d -u github.com:kapmahc/axe
 $GOPATH/src/github.com/kapmahc/axe
-make init
+govendor sync
+npm install
+cd dashboard && npm install 
 make
 ```
 
@@ -47,6 +59,15 @@ CREATE DATABASE db-name WITH ENCODING = 'UTF8';
 CREATE USER user-name WITH PASSWORD 'change-me';
 GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 ```
+
+- ueditor
+
+  ```
+  cd node_modules/ueditor
+  npm install grunt-cli -g
+  npm install
+  grunt
+  ```
 
 - Chrome browser: F12 => Console settings => Log XMLHTTPRequests
 
