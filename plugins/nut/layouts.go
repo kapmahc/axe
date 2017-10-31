@@ -72,7 +72,7 @@ func (p *Layout) UEditor(act string, check func(*User, uint) bool, edit func(uin
 
 	p.Router.GET(
 		act+"/:token",
-		p.Application("nut-ueditor.html", func(lng string, data gin.H, c *gin.Context) error {
+		p.Application("nut-ueditor", func(lng string, data gin.H, c *gin.Context) error {
 			token, tid, err := p.checkToken(act, c, check)
 			if err != nil {
 				return err
@@ -249,7 +249,7 @@ func (p *Layout) renderLayout(tpl string, fn func(string, gin.H, *gin.Context) e
 			log.Error(err)
 			data["error"] = err.Error()
 			data["createdAt"] = time.Now()
-			c.HTML(http.StatusInternalServerError, "nut-error.html", data)
+			c.HTML(http.StatusInternalServerError, "nut-error", data)
 			return
 		}
 
