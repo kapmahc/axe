@@ -1,0 +1,102 @@
+{{define "forum-articles-index"}}
+  {{template "application-head" .}}
+  <br/>
+  <div class="container">
+    {{template "forum-articles-list" dict "items" .items "locale" .locale}}
+  </div>
+  {{template "application-tail" .}}
+{{end}}
+
+{{define "forum-articles-show"}}
+  {{template "application-head" .}}
+  <br/>
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1>{{.item.Title}}</h1>
+        <hr/>
+        {{template "forum-tags-list" .item.Tags}}
+        {{str2htm .item.Body}}
+        {{if .item.Comments}}
+          <h2>{{t .locale "forum.articles.show.comments"}}</h2>
+          <hr/>
+          {{range .item.Comments}}
+            {{str2htm .Body}}
+          {{end}}
+        {{end}}
+      </div>
+    </div>
+  </div>
+  {{template "application-tail" .}}
+{{end}}
+
+{{define "forum-comments-index"}}
+  {{template "application-head" .}}
+  <br/>
+  <div class="container">
+    <div class="row">
+      {{range .items}}
+        <div class="col-12">
+          <h1>
+            {{dtf .UpdatedAt}}
+            <a target="_blank" href="/forum/articles/show/{{.ArticleID}}" class="text-muted">
+              {{t $.locale "forum.buttons.view-more"}}
+            </a>
+          </h1>
+          <hr/>
+          {{str2htm .Body}}
+        </div>
+      {{end}}
+    </div>
+  </div>
+  {{template "application-tail" .}}
+{{end}}
+
+{{define "forum-tags-index"}}
+  {{template "application-head" .}}
+  <br/>
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1>{{.title}}</h1>
+        <hr/>
+        {{template "forum-tags-list" .items}}
+      </div>
+    </div>
+  </div>
+  {{template "application-tail" .}}
+{{end}}
+
+{{define "forum-tags-show"}}
+  {{template "application-head" .}}
+  <br/>
+  <div class="container">
+    {{template "forum-articles-list" dict "items" .item.Articles "locale" .locale}}
+  </div>
+  {{template "application-tail" .}}
+{{end}}
+
+{{define "forum-articles-list"}}
+  <div class="row">
+    {{range .items}}
+      <div class="col-12">
+        <h1>{{.Title}}</h1>
+        <hr/>
+        <div class="float-right">
+          <span class="text-muted">{{dtf .UpdatedAt}}</span>
+          <a target="_blank" href="/forum/articles/show/{{.ID}}" class="text-muted">
+            {{t $.locale "forum.buttons.view-more"}}
+          </a>
+        </div>
+        {{str2htm .Body}}
+      </div>
+    {{end}}
+  </div>
+{{end}}
+
+
+{{define "forum-tags-list"}}
+  {{range .}}
+  <a class="badge badge-secondary" href="/forum/tags/show/{{.ID}}">{{.Name}}</a>
+  {{end}}
+{{end}}

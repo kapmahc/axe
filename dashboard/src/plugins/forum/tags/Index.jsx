@@ -46,12 +46,12 @@ class Widget extends Component {
               {
                 title: <FormattedMessage id="attributes.name"/>,
                 key: 'name',
-                dataIndex: 'name'
+                render: (text, record) => (<a href={`/forum/tags/show/${record.id}`} target="_blank">{record.name}</a>)
               }, {
                 title: 'Action',
                 key: 'action',
                 render: (text, record) => (<span>
-                  <CopyToClipboard text={`/forum/tags/${record.id}`}><Button shape="circle" icon="copy"/></CopyToClipboard>
+                  <CopyToClipboard text={`/forum/tags/show/${record.id}`}><Button shape="circle" icon="copy"/></CopyToClipboard>
                   <Button onClick={(e) => push(`/forum/tags/edit/${record.id}`)} shape="circle" icon="edit"/>
                   <Popconfirm title={<FormattedMessage id = "messages.are-you-sure" />} onConfirm={(e) => this.handleRemove(record.id)}>
                     <Button type="danger" shape="circle" icon="delete"/>
