@@ -11,7 +11,7 @@ COPYRIGHT=`head -n 1 LICENSE`
 USAGE=`sed -n '3p' README.md`
 
 build: backend frontend
-	cd $(dist) && tar jcf ../$(dist).tar.bz2 *
+	cd $(dist) && tar cfJ ../$(dist).tar.xz *
 
 
 backend:
@@ -25,5 +25,5 @@ frontend:
 
 
 clean:
-	-rm -r $(dist) $(dist).tar.bz2
+	-rm -r $(dist) $(dist).tar.xz
 	-rm -r dashboard/build

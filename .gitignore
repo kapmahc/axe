@@ -5,8 +5,7 @@
 /node_modules/
 
 # Build
-/dist
-/dist.tar.bz2
+/dist*
 
 # Editor
 .*.swp
