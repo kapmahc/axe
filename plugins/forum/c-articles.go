@@ -109,12 +109,14 @@ func (p *Plugin) createArticle(l string, c *gin.Context) (interface{}, error) {
 		if err := tx.Insert(&it); err != nil {
 			return err
 		}
-		var ats []interface{}
-		for _, t := range fm.Tags {
-			ats = append(ats, &ArticleTag{TagID: t, ArticleID: it.ID})
-		}
-		if err := tx.Insert(ats...); err != nil {
-			return err
+		if len(fm.Tags) > 0 {
+			var ats []interface{}
+			for _, t := range fm.Tags {
+				ats = append(ats, &ArticleTag{TagID: t, ArticleID: it.ID})
+			}
+			if err := tx.Insert(ats...); err != nil {
+				return err
+			}
 		}
 
 		return nil
@@ -147,12 +149,14 @@ func (p *Plugin) updateArticle(l string, c *gin.Context) (interface{}, error) {
 		if _, er := tx.Model(&ArticleTag{}).Where("article_id = ?", aid).Delete(); er != nil {
 			return er
 		}
-		var ats []interface{}
-		for _, t := range fm.Tags {
-			ats = append(ats, &ArticleTag{TagID: t, ArticleID: uint(aid)})
-		}
-		if er := tx.Insert(ats...); er != nil {
-			return er
+		if len(fm.Tags) > 0 {
+			var ats []interface{}
+			for _, t := range fm.Tags {
+				ats = append(ats, &ArticleTag{TagID: t, ArticleID: uint(aid)})
+			}
+			if er := tx.Insert(ats...); er != nil {
+				return er
+			}
 		}
 		return nil
 	})
