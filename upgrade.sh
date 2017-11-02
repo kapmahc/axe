@@ -20,6 +20,5 @@ govendor fetch github.com/sirupsen/logrus/hooks/syslog
 govendor fetch github.com/BurntSushi/toml
 govendor fetch gopkg.in/gomail.v2
 govendor fetch github.com/gin-contrib/sessions
-govendor fetch github.com/aws/aws-sdk-go/aws
 govendor fetch github.com/aws/aws-sdk-go/aws/session
 govendor fetch github.com/aws/aws-sdk-go/service/s3
