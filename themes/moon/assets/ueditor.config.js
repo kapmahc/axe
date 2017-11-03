@@ -9,7 +9,6 @@
  * 当升级编辑器时，可直接使用旧版配置文件替换新版配置文件,不用担心旧版配置文件中因缺少新功能所需的参数而导致脚本报错。
  **************************提示********************************/
 window.UEDITOR_HOME_URL = "/3rd/ueditor/dist/utf8-php/";
-
 (function() {
 
   /**
@@ -30,8 +29,8 @@ window.UEDITOR_HOME_URL = "/3rd/ueditor/dist/utf8-php/";
     //为编辑器实例添加一个路径，这个不能被注释
     UEDITOR_HOME_URL: URL,
     // 服务器统一请求接口路径
-    serverUrl: URL + "/attachments/ueditor",
-    //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的从新定义
+    serverUrl: "/attachments/ueditor",
+    //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
     toolbars: [
       [
         'fullscreen',
@@ -131,10 +130,10 @@ window.UEDITOR_HOME_URL = "/3rd/ueditor/dist/utf8-php/";
         'print',
         'preview',
         'searchreplace',
-        'help',
-        'drafts'
+        'drafts',
+        'help'
       ]
-    ]
+    ],
     //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
     //,labelMap:{
     //    'anchor':'', 'undo':''
@@ -172,7 +171,7 @@ window.UEDITOR_HOME_URL = "/3rd/ueditor/dist/utf8-php/";
     //如果自定义，最好给p标签如下的行高，要不输入中文时，会有跳动感
     //,initialStyle:'p{line-height:1em}'//编辑器层级的基数,可以用来改变字体等
 
-    //,iframeCssUrl: URL + '/themes/iframe.css' 给编辑器内部引入一个css文件
+    //,iframeCssUrl: URL + '/themes/iframe.css' 给编辑区域的iframe引入一个css文件
 
     //indentValue
     //首行缩进距离,默认是2em
@@ -382,6 +381,9 @@ window.UEDITOR_HOME_URL = "/3rd/ueditor/dist/utf8-php/";
     //编辑器底部距离工具栏高度(如果参数大于等于编辑器高度，则设置无效)
     //,toolbarTopOffset:400
 
+    //设置远程图片是否抓取到本地保存
+    //,catchRemoteImageEnable: true 设置是否抓取远程图片
+
     //pageBreakTag
     //分页标识符,默认是_ueditor_page_break_tag_
     //,pageBreakTag:'_ueditor_page_break_tag_'
@@ -410,8 +412,6 @@ window.UEDITOR_HOME_URL = "/3rd/ueditor/dist/utf8-php/";
     //表格是否可以拖拽
     //,tableDragable: true
 
-    //,disabledTableInTable:true  禁止表格嵌套
-
     //sourceEditor
     //源码的查看方式,codemirror 是代码高亮，textarea是文本框,默认是codemirror
     //注意默认codemirror只能在ie8+和非ie中使用
@@ -430,8 +430,223 @@ window.UEDITOR_HOME_URL = "/3rd/ueditor/dist/utf8-php/";
     //    'anchor':'~/dialogs/anchor/anchor.html',
     //}
 
+    //allowLinkProtocol 允许的链接地址，有这些前缀的链接地址不会自动添加http
+    //, allowLinkProtocols: ['http:', 'https:', '#', '/', 'ftp:', 'mailto:', 'tel:', 'git:', 'svn:']
+
     //webAppKey 百度应用的APIkey，每个站长必须首先去百度官网注册一个key后方能正常使用app功能，注册介绍，http://app.baidu.com/static/cms/getapikey.html
     //, webAppKey: ""
+
+    //默认过滤规则相关配置项目
+    //,disabledTableInTable:true  禁止表格嵌套
+    //,allowDivTransToP:true      允许进入编辑器的div标签自动变成p标签
+    //,rgb2Hex:true               默认产出的数据中的color自动从rgb格式变成16进制格式
+
+    // xss 过滤是否开启,inserthtml等操作
+    xssFilterRules: true,
+    //input xss过滤
+    inputXssFilter: true,
+    //output xss过滤
+    outputXssFilter: true,
+    // xss过滤白名单 名单来源: https://raw.githubusercontent.com/leizongmin/js-xss/master/lib/default.js
+    whitList: {
+      a: [
+        'target', 'href', 'title', 'class', 'style'
+      ],
+      abbr: [
+        'title', 'class', 'style'
+      ],
+      address: [
+        'class', 'style'
+      ],
+      area: [
+        'shape', 'coords', 'href', 'alt'
+      ],
+      article: [],
+      aside: [],
+      audio: [
+        'autoplay',
+        'controls',
+        'loop',
+        'preload',
+        'src',
+        'class',
+        'style'
+      ],
+      b: [
+        'class', 'style'
+      ],
+      bdi: ['dir'],
+      bdo: ['dir'],
+      big: [],
+      blockquote: [
+        'cite', 'class', 'style'
+      ],
+      br: [],
+      caption: [
+        'class', 'style'
+      ],
+      center: [],
+      cite: [],
+      code: [
+        'class', 'style'
+      ],
+      col: [
+        'align',
+        'valign',
+        'span',
+        'width',
+        'class',
+        'style'
+      ],
+      colgroup: [
+        'align',
+        'valign',
+        'span',
+        'width',
+        'class',
+        'style'
+      ],
+      dd: [
+        'class', 'style'
+      ],
+      del: ['datetime'],
+      details: ['open'],
+      div: [
+        'class', 'style'
+      ],
+      dl: [
+        'class', 'style'
+      ],
+      dt: [
+        'class', 'style'
+      ],
+      em: [
+        'class', 'style'
+      ],
+      font: [
+        'color', 'size', 'face'
+      ],
+      footer: [],
+      h1: [
+        'class', 'style'
+      ],
+      h2: [
+        'class', 'style'
+      ],
+      h3: [
+        'class', 'style'
+      ],
+      h4: [
+        'class', 'style'
+      ],
+      h5: [
+        'class', 'style'
+      ],
+      h6: [
+        'class', 'style'
+      ],
+      header: [],
+      hr: [],
+      i: [
+        'class', 'style'
+      ],
+      img: [
+        'src',
+        'alt',
+        'title',
+        'width',
+        'height',
+        'id',
+        '_src',
+        'loadingclass',
+        'class',
+        'data-latex'
+      ],
+      ins: ['datetime'],
+      li: [
+        'class', 'style'
+      ],
+      mark: [],
+      nav: [],
+      ol: [
+        'class', 'style'
+      ],
+      p: [
+        'class', 'style'
+      ],
+      pre: [
+        'class', 'style'
+      ],
+      s: [],
+      section: [],
+      small: [],
+      span: [
+        'class', 'style'
+      ],
+      sub: [
+        'class', 'style'
+      ],
+      sup: [
+        'class', 'style'
+      ],
+      strong: [
+        'class', 'style'
+      ],
+      table: [
+        'width',
+        'border',
+        'align',
+        'valign',
+        'class',
+        'style'
+      ],
+      tbody: [
+        'align', 'valign', 'class', 'style'
+      ],
+      td: [
+        'width',
+        'rowspan',
+        'colspan',
+        'align',
+        'valign',
+        'class',
+        'style'
+      ],
+      tfoot: [
+        'align', 'valign', 'class', 'style'
+      ],
+      th: [
+        'width',
+        'rowspan',
+        'colspan',
+        'align',
+        'valign',
+        'class',
+        'style'
+      ],
+      thead: [
+        'align', 'valign', 'class', 'style'
+      ],
+      tr: [
+        'rowspan', 'align', 'valign', 'class', 'style'
+      ],
+      tt: [],
+      u: [],
+      ul: [
+        'class', 'style'
+      ],
+      video: [
+        'autoplay',
+        'controls',
+        'loop',
+        'preload',
+        'src',
+        'height',
+        'width',
+        'class',
+        'style'
+      ]
+    }
   };
 
   function getUEBasePath(docUrl, confUrl) {
