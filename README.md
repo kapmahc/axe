@@ -37,7 +37,7 @@ go get -d -u github.com:kapmahc/axe
 $GOPATH/src/github.com/kapmahc/axe
 govendor sync
 npm install
-cd dashboard && npm install 
+cd dashboard && npm install
 make
 ```
 
@@ -117,5 +117,7 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 - [nvm](https://github.com/creationix/nvm)
 
 - [ant design](https://ant.design/docs/react/introduce)
+
+- [ant-design-pro](https://pro.ant.design/components/AvatarList)
 
 - [smver](http://semver.org/)

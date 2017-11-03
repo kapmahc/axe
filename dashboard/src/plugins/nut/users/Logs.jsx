@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {Row, Col, Table, message} from 'antd'
 import {injectIntl, intlShape, FormattedMessage} from 'react-intl'
 import {connect} from 'react-redux'
@@ -49,9 +50,10 @@ class Widget extends Component {
 }
 
 Widget.propTypes = {
-  intl: intlShape.isRequired
+  intl: intlShape.isRequired,
+  user: PropTypes.object.isRequired
 }
 
 const WidgetI = injectIntl(Widget)
 
-export default connect(state => ({}), {},)(WidgetI)
+export default connect(state => ({user: state.currentUser}), {},)(WidgetI)
