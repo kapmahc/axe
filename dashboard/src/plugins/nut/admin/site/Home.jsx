@@ -64,7 +64,7 @@ class Widget extends Component {
             <FormItem {...formItemLayout} label={<FormattedMessage id = "nut.admin.site.home.theme" />}>
               {
                 getFieldDecorator('theme')(<Select>
-                  {["off-canvas", "carousel"].map((p) => (<Option key={p} value={p}>{p}</Option>))}
+                  {["off-canvas", "carousel", "album"].map((p) => (<Option key={p} value={p}>{p}</Option>))}
                 </Select>)
               }
             </FormItem>

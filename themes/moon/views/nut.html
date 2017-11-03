@@ -32,6 +32,39 @@
   {{template "application-tail" .}}
 {{end}}
 
+{{define "nut-home-album"}}
+  {{template "application-head" .}}
+  <main role="main">
+    {{range (cards .locale "jumbotron")}}
+      <section class="jumbotron text-center">
+        <div class="container">
+          <h1 class="jumbotron-heading">{{.Title}}</h1>
+          <p class="lead text-muted">{{str2htm .Summary}}</p>
+          <p>
+            <a href="{{.Href}}" target="_blank" class="btn btn-secondary">{{.Action}}</a>
+          </p>
+        </div>
+      </section>
+    {{end}}
+    <div class="text-muted">
+      <div class="container">
+        <div class="row">
+          {{range (cards .locale "main")}}
+            <div class="col-md-3">
+              <div class="card">
+                <a href="{{.Href}}" target="_blank"><img src="{{.Logo}}" alt="{{.Logo}}"></a>
+                <p class="card-text">{{str2htm .Summary}}</p>
+              </div>
+              <br/>
+            </div>
+          {{end}}
+        </div>
+      </div>
+    </div>
+  </main>
+  {{template "application-tail" .}}
+{{end}}
+
 {{define "nut-home-off-canvas"}}
   {{template "application-head" .}}
   <main role="main" class="container">
