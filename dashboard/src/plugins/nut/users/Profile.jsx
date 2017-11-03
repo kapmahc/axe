@@ -14,7 +14,10 @@ const FormItem = Form.Item
 class Widget extends Component {
   componentDidMount() {
     const {setFieldsValue} = this.props.form
-    get('/api/users/profile').then((rst) => setFieldsValue({name: rst.name, email: rst.email})).catch(message.error)
+    const {user} = this.props
+    if (user.uid) {
+      get('/api/users/profile').then((rst) => setFieldsValue({name: rst.name, email: rst.email})).catch(message.error)
+    }
   }
   handleSubmit = (e) => {
     const {formatMessage} = this.props.intl
@@ -66,11 +69,12 @@ class Widget extends Component {
 
 Widget.propTypes = {
   intl: intlShape.isRequired,
+  user: PropTypes.object.isRequired,
   push: PropTypes.func.isRequired
 }
 
 const WidgetF = Form.create()(injectIntl(Widget))
 
-export default connect(state => ({}), {
+export default connect(state => ({user: state.currentUser}), {
   push
 },)(WidgetF)

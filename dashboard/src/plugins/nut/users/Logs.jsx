@@ -13,9 +13,12 @@ class Widget extends Component {
     items: []
   }
   componentDidMount() {
-    get('/api/users/logs').then((rst) => {
-      this.setState({items: rst})
-    }).catch(message.error);
+    const {user} = this.props
+    if (user.uid) {
+      get('/api/users/logs').then((rst) => {
+        this.setState({items: rst})
+      }).catch(message.error);
+    }
   }
   render() {
     return (<Layout breads={[{
