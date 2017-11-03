@@ -26,18 +26,16 @@ const store = createStore(combineReducers({
   router: routerReducer
 }), applyMiddleware(middleware))
 
-const Widget = () => (
-  <LocaleProvider locale={user.antd}>
-    <IntlProvider locale={user.locale} messages={user.messages}>
-      <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <Switch>
-            {plugins.routes}
-          </Switch>
-        </ConnectedRouter>
-      </Provider>
-    </IntlProvider>
-  </LocaleProvider>
-)
+const Widget = () => (<LocaleProvider locale={user.antd}>
+  <IntlProvider locale={user.locale} messages={user.messages}>
+    <Provider store={store}>
+      <ConnectedRouter history={history}>
+        <Switch>
+          {plugins.routes}
+        </Switch>
+      </ConnectedRouter>
+    </Provider>
+  </IntlProvider>
+</LocaleProvider>)
 
 export default Widget
