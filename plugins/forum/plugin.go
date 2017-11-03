@@ -6,7 +6,6 @@ import (
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/plugins/nut"
 	"github.com/kapmahc/axe/web"
-	"github.com/urfave/cli"
 )
 
 // Plugin plugin
@@ -25,11 +24,6 @@ type Plugin struct {
 // Init init beans
 func (p *Plugin) Init(*inject.Graph) error {
 	return nil
-}
-
-// Shell console commands
-func (p *Plugin) Shell() []cli.Command {
-	return []cli.Command{}
 }
 
 // Mount register

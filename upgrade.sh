@@ -22,3 +22,4 @@ govendor fetch gopkg.in/gomail.v2
 govendor fetch github.com/gin-contrib/sessions
 govendor fetch github.com/aws/aws-sdk-go/aws/session
 govendor fetch github.com/aws/aws-sdk-go/service/s3
+govendor fetch gopkg.in/russross/blackfriday.v2

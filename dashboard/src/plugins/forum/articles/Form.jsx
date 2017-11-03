@@ -33,7 +33,9 @@ class Widget extends Component {
         setFieldsValue({title: rst.title})
         this.setState({
           body: rst.body,
-          tagValues: rst.tags.map((t) => t.id)
+          tagValues: rst.tags
+            ? rst.tags.map((t) => t.id)
+            : []
         })
       }).catch(message.error)
     }
