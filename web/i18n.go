@@ -1,5 +1,6 @@
 package web
 
+// http://www.gnu.org/software/gettext/manual/gettext.html#Language-Codes
 import (
 	"bytes"
 	"errors"
