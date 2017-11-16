@@ -333,6 +333,12 @@
 			"revisionTime": "2016-08-17T18:46:32Z"
 		},
 		{
+			"checksumSHA1": "3HFUqdhX43kNPJe18WJWCVkthKI=",
+			"path": "github.com/gorilla/mux",
+			"revision": "2d5fef06b891c971b14aa6f71ca5ab6c03a36e0e",
+			"revisionTime": "2017-11-09T03:54:02Z"
+		},
+		{
 			"checksumSHA1": "ucTBCc7dDRKLGPsYfAzu/Gq63qA=",
 			"path": "github.com/gorilla/securecookie",
 			"revision": "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983",
@@ -523,6 +529,12 @@
 			"path": "github.com/ugorji/go/codec",
 			"revision": "3ae9bb479bff2e598f341c5d9613c2c46d13cfc2",
 			"revisionTime": "2017-11-16T07:26:56Z"
+		},
+		{
+			"checksumSHA1": "/CkShsXSmW4032TjVej9ZwhjxOY=",
+			"path": "github.com/unrolled/render",
+			"revision": "65450fb6b2d3595beca39f969c411db8f8d5c806",
+			"revisionTime": "2017-11-02T16:21:32Z"
 		},
 		{
 			"checksumSHA1": "uJI6eTV5WTQC57b+1OaQmQH7oLI=",

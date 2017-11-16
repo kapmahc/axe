@@ -6,12 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-ini/ini"
 	"github.com/go-pg/pg"
 	log "github.com/sirupsen/logrus"
@@ -29,9 +27,6 @@ func NewI18n(path string, db *pg.DB) (*I18n, error) {
 	}
 	return &it, nil
 }
-
-// LOCALE locale context key
-const LOCALE = "locale"
 
 // Locale locale
 type Locale struct {
@@ -168,38 +163,4 @@ func (p *I18n) get(lang, code string) (string, error) {
 		return msg, nil
 	}
 	return "", errors.New(key)
-}
-
-// Middleware parse locales
-func (p *I18n) Middleware(tags ...language.Tag) gin.HandlerFunc {
-	matcher := language.NewMatcher(tags)
-	return func(c *gin.Context) {
-
-		lang, written := p.detect(c.Request, LOCALE)
-		tag, _, _ := matcher.Match(language.Make(lang))
-		if lang != tag.String() {
-			written = true
-			lang = tag.String()
-		}
-		c.Set(LOCALE, lang)
-		c.Set("languages", tags)
-		if written {
-			c.SetCookie(LOCALE, lang, 1<<32-1, "/", "", c.Request.TLS != nil, false)
-		}
-	}
-}
-
-func (p *I18n) detect(r *http.Request, k string) (string, bool) {
-	// 1. Check URL arguments.
-	if lang := r.URL.Query().Get(k); lang != "" {
-		return lang, true
-	}
-
-	// 2. Get language information from cookies.
-	if ck, er := r.Cookie(k); er == nil {
-		return ck.Value, false
-	}
-
-	// 3. Get language information from 'Accept-Language'.
-	return r.Header.Get("Accept-Language"), true
 }

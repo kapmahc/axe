@@ -2,8 +2,9 @@
 go get -u github.com/kardianos/govendor
 rm -r vendor
 govendor init
+govendor fetch github.com/unrolled/render
+govendor fetch github.com/gorilla/mux
 govendor fetch golang.org/x/crypto/bcrypt
-govendor fetch github.com/gin-gonic/gin
 govendor fetch github.com/SermoDigital/jose/jwt
 govendor fetch github.com/SermoDigital/jose/jws
 govendor fetch github.com/SermoDigital/jose/crypto
@@ -20,7 +21,6 @@ govendor fetch github.com/sirupsen/logrus
 govendor fetch github.com/sirupsen/logrus/hooks/syslog
 govendor fetch github.com/BurntSushi/toml
 govendor fetch gopkg.in/gomail.v2
-govendor fetch github.com/gin-contrib/sessions
 govendor fetch github.com/aws/aws-sdk-go/aws/session
 govendor fetch github.com/aws/aws-sdk-go/service/s3
 govendor fetch gopkg.in/russross/blackfriday.v2
