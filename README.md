@@ -1,43 +1,15 @@
 # AXE
 
-A complete open source e-commerce solution by Go and React.
-
-## Install nodejs
-
-```
-curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | zsh
-nvm install node
-nvm alias default node
-```
-
-- upgrade nvm
-
-  ```
-  (
-  cd "$NVM_DIR"
-  git fetch origin
-  git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
-  ) && . "$NVM_DIR/nvm.sh"
-  ```
-
-## Install go
-
-```
-zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
-gvm install go1.9.2 -B
-gvm use go1.9.2 --default
-go get -u github.com/kardianos/govendor
-```
+A complete open source e-commerce solution by Go.
 
 ## Usage
 
 ```
 go get -u github.com/kardianos/govendor
-go get -d -u github.com:kapmahc/axe
-$GOPATH/src/github.com/kapmahc/axe
+go get -d -u github.com/kapmahc/axe
+cd $GOPATH/src/github.com/kapmahc/axe
 govendor sync
 npm install
-cd dashboard && npm install
 make
 ```
 
@@ -112,12 +84,8 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 
 - [govendor](https://github.com/kardianos/govendor)
 
-- [gvm](https://github.com/moovweb/gvm)
+- [bootstrap](http://getbootstrap.com/docs/4.0/getting-started/introduction/)
 
-- [nvm](https://github.com/creationix/nvm)
-
-- [ant design](https://ant.design/docs/react/introduce)
-
-- [ant-design-pro](https://pro.ant.design/components/AvatarList)
+- [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
 
 - [smver](http://semver.org/)
