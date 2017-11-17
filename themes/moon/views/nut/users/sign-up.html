@@ -5,15 +5,7 @@
       {{template "layouts/application/flashes" .}}
       <h2>{{.title}}</h2>
       <hr/>
-      <form action="/install" method="post" data-next="/users/sign-in" data-confirm="{{t .locale "helpers.are-you-sure"}}">
-        <div class="form-group">
-          <label for="title">{{t .locale "attributes.title"}}</label>
-          <input type="text" class="form-control" id="title" name="title">
-        </div>
-        <div class="form-group">
-          <label for="subhead">{{t .locale "attributes.subhead"}}</label>
-          <input type="text" class="form-control" id="subhead" name="subhead">
-        </div>
+      <form action="/users/sign-up" data-next="/users/sign-in" method="post" data-confirm="{{t .locale "helpers.are-you-sure"}}">
         <div class="form-group">
           <label for="name">{{t .locale "attributes.username"}}</label>
           <input type="text" class="form-control" id="name" name="name">
@@ -35,6 +27,8 @@
         </div>
         {{template "layouts/application/form-buttons" .}}
       </form>
+      <br/>
+      {{template "nut/users/shared-links" .}}
     </div>
   </div>
 </div>

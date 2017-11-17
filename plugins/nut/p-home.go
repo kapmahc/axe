@@ -26,7 +26,7 @@ type HomePlugin struct {
 func (p *HomePlugin) Mount() error {
 	p.Router.GET("/", p.getHome)
 	p.Router.Form("/install", web.APPLICATION, "nut/install", p.getInstall, p.postInstall)
-	p.Router.Crud("/leave-words", web.APPLICATION, "leave-words", nil, p.newLeaveWord, p.createLeaveWord, nil, nil, nil, nil)
+	p.Router.Crud("/leave-words", web.APPLICATION, "nut/leave-words", nil, p.newLeaveWord, p.createLeaveWord, nil, nil, nil, nil)
 	return nil
 }
 

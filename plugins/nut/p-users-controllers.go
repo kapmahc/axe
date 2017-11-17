@@ -28,9 +28,9 @@ func (p *UsersPlugin) getChangePassword(l string, c *web.Context) (web.H, error)
 }
 
 type fmUsersChangePassword struct {
-	CurrentPassword      string `json:"currentPassword" binding:"required"`
-	NewPassword          string `json:"newPassword" binding:"required,min=6"`
-	PasswordConfirmation string `json:"passwordConfirmation" binding:"eqfield=NewPassword"`
+	CurrentPassword      string `form:"currentPassword" validate:"required"`
+	NewPassword          string `form:"newPassword" validate:"required,min=6"`
+	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=NewPassword"`
 }
 
 func (p *UsersPlugin) postChangePassword(l string, c *web.Context) (interface{}, error) {
@@ -61,7 +61,7 @@ func (p *UsersPlugin) getProfile(l string, c *web.Context) (web.H, error) {
 }
 
 type fmUsersProfile struct {
-	Name string `json:"name" binding:"required"`
+	Name string `form:"name" validate:"required"`
 }
 
 func (p *UsersPlugin) postProfile(l string, c *web.Context) (interface{}, error) {
@@ -100,8 +100,8 @@ func (p *UsersPlugin) getSignIn(l string, c *web.Context) (web.H, error) {
 }
 
 type fmUsersSignIn struct {
-	Email    string `json:"email" binding:"email"`
-	Password string `json:"password" binding:"required"`
+	Email    string `form:"email" validate:"email"`
+	Password string `form:"password" validate:"required"`
 }
 
 func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) {
@@ -130,10 +130,10 @@ func (p *UsersPlugin) getSignUp(l string, c *web.Context) (web.H, error) {
 }
 
 type fmUsersSignUp struct {
-	Name                 string `json:"name" binding:"required"`
-	Email                string `json:"email" binding:"email"`
-	Password             string `json:"password" binding:"required,min=6"`
-	PasswordConfirmation string `json:"passwordConfirmation" binding:"eqfield=Password"`
+	Name                 string `form:"name" validate:"required"`
+	Email                string `form:"email" validate:"email"`
+	Password             string `form:"password" validate:"required,min=6"`
+	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
 func (p *UsersPlugin) postSignUp(l string, c *web.Context) (interface{}, error) {
@@ -159,15 +159,20 @@ func (p *UsersPlugin) postSignUp(l string, c *web.Context) (interface{}, error) 
 		return nil, err
 	}
 
-	return web.H{}, nil
+	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.confirm.notice")}, nil
 }
 
 type fmUsersEmail struct {
-	Email string `json:"email" binding:"email"`
+	Email string `form:"email" validate:"email"`
 }
 
-func (p *UsersPlugin) getConfirm(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.users.confirm.title")}, nil
+func (p *UsersPlugin) getEmailForm(act string) web.HTMLHandlerFunc {
+	return func(l string, c *web.Context) (web.H, error) {
+		return web.H{
+			"action":  act,
+			web.TITLE: p.I18n.T(l, "nut.users."+act+".title"),
+		}, nil
+	}
 }
 
 func (p *UsersPlugin) getConfirmToken(l string, c *web.Context) error {
@@ -230,11 +235,7 @@ func (p *UsersPlugin) postConfirm(l string, c *web.Context) (interface{}, error)
 		log.Error(err)
 	}
 
-	return web.H{}, nil
-}
-
-func (p *UsersPlugin) getUnlock(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.users.unlock.title")}, nil
+	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.confirm.notice")}, nil
 }
 
 func (p *UsersPlugin) getUnlockToken(l string, c *web.Context) error {
@@ -296,11 +297,7 @@ func (p *UsersPlugin) postUnlock(l string, c *web.Context) (interface{}, error) 
 		log.Error(err)
 	}
 
-	return web.H{}, nil
-}
-
-func (p *UsersPlugin) getForgotPassword(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.users.forgot-password.title")}, nil
+	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.unlock.notice")}, nil
 }
 
 func (p *UsersPlugin) postForgotPassword(l string, c *web.Context) (interface{}, error) {
@@ -321,7 +318,7 @@ func (p *UsersPlugin) postForgotPassword(l string, c *web.Context) (interface{},
 		log.Error(err)
 	}
 
-	return web.H{}, nil
+	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.forgot-password.notice")}, nil
 }
 
 func (p *UsersPlugin) getResetPassword(l string, c *web.Context) (web.H, error) {
@@ -329,8 +326,8 @@ func (p *UsersPlugin) getResetPassword(l string, c *web.Context) (web.H, error) 
 }
 
 type fmUsersResetPassword struct {
-	Password             string `json:"password" binding:"required"`
-	PasswordConfirmation string `json:"passwordConfirmation" binding:"eqfield=Password"`
+	Password             string `form:"password" validate:"required"`
+	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
 func (p *UsersPlugin) postResetPassword(l string, c *web.Context) (interface{}, error) {
@@ -369,7 +366,7 @@ func (p *UsersPlugin) postResetPassword(l string, c *web.Context) (interface{}, 
 	}); err != nil {
 		return nil, err
 	}
-	return web.H{}, nil
+	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.reset-password.success")}, nil
 }
 
 const (

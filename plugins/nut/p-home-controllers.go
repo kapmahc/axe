@@ -89,7 +89,7 @@ func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) 
 }
 
 func (p *HomePlugin) newLeaveWord(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.leave-wods.new.title")}, nil
+	return web.H{web.TITLE: p.I18n.T(l, "nut.leave-words.new.title")}, nil
 }
 
 type fmLeaveWord struct {

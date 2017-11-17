@@ -5,14 +5,10 @@
       {{template "layouts/application/flashes" .}}
       <h2>{{.title}}</h2>
       <hr/>
-      <form action="/users/sign-in" method="post">
+      <form action="/users/{{.action}}" data-next="/users/sign-in" method="post" data-confirm="{{t .locale "helpers.are-you-sure"}}">
         <div class="form-group">
           <label for="email">{{t .locale "attributes.email"}}</label>
           <input type="email" class="form-control" id="email" name="email">
-        </div>
-        <div class="form-group">
-          <label for="password">{{t .locale "attributes.password"}}</label>
-          <input type="password" class="form-control" id="password" name="password">
         </div>
         {{template "layouts/application/form-buttons" .}}
       </form>
