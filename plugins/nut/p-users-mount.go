@@ -20,6 +20,7 @@ func (p *UsersPlugin) Mount() error {
 	rt.Form("/change-password", web.APPLICATION, "nut/users/change-password", p.getChangePassword, p.postChangePassword)
 
 	rt.Form("/sign-in", web.APPLICATION, "nut/users/sign-in", p.getSignIn, p.postSignIn)
+	rt.Form("/sign-up", web.APPLICATION, "nut/users/sign-up", p.getSignUp, p.postSignUp)
 	rt.Form("/confirm", web.APPLICATION, "nut/users/confirm", p.getConfirm, p.postConfirm)
 	rt.GET("/confirm/{token}", web.Redirect(signInURL, p.getConfirmToken))
 	rt.Form("/unlock", web.APPLICATION, "nut/users/unlock", p.getUnlock, p.postUnlock)

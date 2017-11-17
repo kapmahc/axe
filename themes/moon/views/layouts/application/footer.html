@@ -1,7 +1,7 @@
 <hr/>
 <footer>
   <p class="float-right">
-    {{range .languages}}
+    {{range site "languages"}}
     <a href="/?locale={{.}}">{{t $.locale (fmt "languages.%s" .)}}</a>
     {{end}}
   </p>

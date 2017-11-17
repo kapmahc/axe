@@ -3,5 +3,6 @@
 <meta name="keywords" content="{{t .locale "site.keywords"}}">
 {{$author := site "author"}}
 <meta name="author" content="{{$author.name}}&lt;{{$author.email}}&gt;">
+<meta name="X-CSRF-Token" content="{{.csrfToken}}">
 <title>{{.title}}|{{t .locale "site.subhead"}}|{{t .locale "site.title"}}</title>
 <link rel="icon" type="image/png" href="{{site "favicon"}}"/>

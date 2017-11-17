@@ -20,6 +20,7 @@ make
 - file-icons
 - atom-beautify
 - language-babel
+- language-ini
 
 ## Notes
 

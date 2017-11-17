@@ -212,7 +212,10 @@ func (p *Router) Crud(
 func (p *Router) add(method, pattern string, handler HandlerFunc) {
 	p.router.
 		HandleFunc(pattern, func(wrt http.ResponseWriter, req *http.Request) {
+			now := time.Now()
+			log.Infof("%s %s %s", req.Proto, req.Method, req.URL)
 			handler(NewContext(req, wrt, p.store, p.matcher, p.render, p.validate, p.decoder))
+			log.Infof("Done %v", time.Now().Sub(now))
 		}).
 		Methods(method)
 }

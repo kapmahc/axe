@@ -85,7 +85,7 @@ func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) 
 	}); err != nil {
 		return nil, err
 	}
-	return web.H{}, nil
+	return web.H{web.MESSAGE: p.I18n.T(l, "nut.install.success")}, nil
 }
 
 func (p *HomePlugin) newLeaveWord(l string, c *web.Context) (web.H, error) {

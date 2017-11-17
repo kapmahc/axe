@@ -90,6 +90,8 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n) (*web.
 					favicon = "/assets/favicon.png"
 				}
 				return favicon
+			case "languages":
+				return Languages()
 			default:
 				return k
 			}

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/csrf"
 	log "github.com/sirupsen/logrus"
 	validator "gopkg.in/go-playground/validator.v9"
 )
@@ -20,6 +21,8 @@ const (
 
 	// TITLE title
 	TITLE = "title"
+	// MESSAGE message
+	MESSAGE = "message"
 
 	// APPLICATION application layout
 	APPLICATION = "layouts/application/index"
@@ -97,8 +100,14 @@ func HTML(layout, name string, handler HTMLHandlerFunc) HandlerFunc {
 		c.Save(ss)
 
 		payload, err := handler(lang, c)
+		if err != nil {
+			payload = H{}
+		}
 		payload["locale"] = lang
 		payload["flashes"] = flashes
+		payload["session"] = c.Session().Values
+		payload[csrf.TemplateTag] = csrf.TemplateField(c.Request)
+		payload["csrfToken"] = csrf.Token(c.Request)
 		if err == nil {
 			c.HTML(http.StatusOK, layout, name, payload)
 		} else {
