@@ -110,18 +110,18 @@ func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) 
 		return nil, err
 	}
 
+	ss := c.Session()
 	if err := p.DB.RunInTransaction(func(tx *pg.Tx) error {
 		user, err := p.Dao.SignIn(tx, l, c.ClientIP(), fm.Email, fm.Password)
 		if err != nil {
 			return err
 		}
-		ss := c.Session()
-		ss.Values["user"] = user.ID
-		c.Save(ss)
+		ss.Values["currentUser"] = web.H{"uid": user.UID, "name": user.Name}
 		return nil
 	}); err != nil {
 		return nil, err
 	}
+	c.Save(ss)
 	return web.H{}, nil
 }
 

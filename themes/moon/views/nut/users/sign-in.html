@@ -5,7 +5,7 @@
       {{template "layouts/application/flashes" .}}
       <h2>{{.title}}</h2>
       <hr/>
-      <form action="/users/sign-in" method="post">
+      <form action="/users/sign-in" data-next="/users/logs" method="post">
         <div class="form-group">
           <label for="email">{{t .locale "attributes.email"}}</label>
           <input type="email" class="form-control" id="email" name="email">

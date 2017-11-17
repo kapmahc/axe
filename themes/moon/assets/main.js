@@ -10,26 +10,34 @@ $(function() {
     $(this).html(marked(txt));
   });
 
-  $("form[data-confirm]").submit(function(e) {
+  $("form[data-next]").submit(function(e) {
     e.preventDefault();
-    if (!confirm($(this).data('confirm'))) {
-      return
-    }
+    var msg = $(this).data('confirm');
     var method = $(this).attr('method');
     var next = $(this).data('next');
     var action = $(this).attr('action');
     var data = $(this).serialize();
-    // console.log(method, next, action, data);
-    $.ajax({type: method, data: data, url: action}).done(function(rst) {
-      if (rst.message) {
-        alert(rst.message);
+
+    var ok = true;
+    if (msg) {
+      if (!confirm(msg)) {
+        ok = false;
       }
-      if (next) {
-        window.location.href = next;
-      }
-    }).fail(function(xhr, textStatus, errorThrown) {
-      alert(xhr.responseText);
-    });
+    }
+    if (ok) {
+      // console.log(method, next, action, data);
+      $.ajax({type: method, data: data, url: action}).done(function(rst) {
+        console.log(rst)
+        if (rst.message) {
+          alert(rst.message);
+        }
+        if (next) {
+          window.location.href = next;
+        }
+      }).fail(function(xhr, textStatus, errorThrown) {
+        alert(xhr.responseText);
+      });
+    }
   });
 
   $("a[data-method]").click(function(e) {

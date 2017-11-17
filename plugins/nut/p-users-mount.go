@@ -15,7 +15,7 @@ func (p *UsersPlugin) Mount() error {
 	const signInURL = "/users/sign-in"
 	rt := p.Router.Group("/users")
 	rt.DELETE("/sign-out", web.JSON(p.deleteSignOut))
-	rt.GET("/logs", web.HTML(web.APPLICATION, "nut/users/logs", p.getLogs))
+	rt.GET("/logs", web.HTML(web.DASHBOARD, "nut/users/logs", p.getLogs))
 	rt.Form("/profile", web.DASHBOARD, "nut/users/profile", p.getProfile, p.postProfile)
 	rt.Form("/change-password", web.APPLICATION, "nut/users/change-password", p.getChangePassword, p.postChangePassword)
 

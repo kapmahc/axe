@@ -40,11 +40,13 @@ func NewRouter(secure bool, secret []byte, theme string, helpers template.FuncMa
 			Directory:  path.Join("themes", theme, "views"),
 			Extensions: []string{".html"},
 			Funcs:      []template.FuncMap{helpers},
+			// IsDevelopment: true,
 		}),
 
 		router: router,
 		csrf: csrf.Protect(
 			secret,
+			csrf.Path("/"),
 			csrf.Secure(secure),
 			csrf.CookieName("csrf"),
 			csrf.RequestHeader("Authenticity-Token"),

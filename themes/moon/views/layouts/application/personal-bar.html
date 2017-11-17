@@ -1,9 +1,9 @@
 <li class="nav-item dropdown">
   <a class="nav-link dropdown-toggle" href="#" id="personal-bar" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    {{if .session.uid}}{{t .locale "personal-bar.welcome" .currentUser.Name}}{{else}}{{t .locale "personal-bar.sign-in-or-up"}}{{end}}
+    {{if .session.currentUser}}{{t .locale "personal-bar.welcome" .session.currentUser.name}}{{else}}{{t .locale "personal-bar.sign-in-or-up"}}{{end}}
   </a>
   <div class="dropdown-menu" aria-labelledby="personal-bar">
-    {{if .session.uid}}
+    {{if .session.currentUser}}
     <a class="dropdown-item" href="/dashboard">{{t .locale "nut.dashboard.title"}}</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" data-next="/" data-method="delete" href="/users/sign-out" data-confirm="{{t .locale "helpers.are-you-sure"}}" rel="nofollow">{{t .locale "nut.users.sign-out.title"}}</a>

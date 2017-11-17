@@ -44,11 +44,18 @@ func (p *Layout) checkToken(act string, c *web.Context, check func(*User, uint) 
 
 // CurrentUser current user
 func (p *Layout) CurrentUser(c *web.Context) (*User, error) {
-	cm, err := p.Jwt.Parse(c.Request)
-	if err == nil {
+	var uid string
+	if cm, err := p.Jwt.Parse(c.Request); err == nil {
+		uid = cm.Get("uid").(string)
+	}
+	// log.Printf("%+v", c.Session().Values)
+	if cur, ok := c.Session().Values["currentUser"].(web.H); ok {
+		uid = cur["uid"].(string)
+	}
+	if uid != "" {
 		var it User
-		if err = p.DB.Model(&it).
-			Where("uid = ?", cm.Get("uid")).
+		if err := p.DB.Model(&it).
+			Where("uid = ?", uid).
 			Limit(1).Select(); err == nil && it.IsConfirm() && !it.IsLock() {
 			return &it, nil
 		}

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/gob"
 	"math"
 	"net"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/go-playground/form"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	log "github.com/sirupsen/logrus"
 	"github.com/unrolled/render"
 	"golang.org/x/text/language"
 	validator "gopkg.in/go-playground/validator.v9"
@@ -64,12 +66,14 @@ func (p *Context) Session() *sessions.Session {
 }
 
 // Save save session
-func (p *Context) Save(s *sessions.Session) error {
+func (p *Context) Save(s *sessions.Session) {
 	s.Options.Path = "/"
 	s.Options.MaxAge = 0
 	s.Options.HttpOnly = true
 	s.Options.Secure = p.Secure()
-	return s.Save(p.Request, p.Writer)
+	if err := s.Save(p.Request, p.Writer); err != nil {
+		log.Error(err)
+	}
 }
 
 // Header get http request header
@@ -137,6 +141,7 @@ func (p *Context) Locale() string {
 				Value:    lang,
 				Secure:   p.Secure(),
 				MaxAge:   math.MaxInt32,
+				Path:     "/",
 				HttpOnly: false,
 			},
 		)
@@ -187,4 +192,8 @@ func (p *Context) Redirect(status int, url string) {
 // Text render plain text
 func (p *Context) Text(status int, value string) {
 	p.render.Text(p.Writer, status, value)
+}
+
+func init() {
+	gob.Register(H{})
 }
