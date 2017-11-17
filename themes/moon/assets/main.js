@@ -1,6 +1,6 @@
 $.ajaxSetup({
   beforeSend: function(xhr) {
-    xhr.setRequestHeader('X-Xsrftoken', $('meta[name=_xsrf]').attr('content'));
+    xhr.setRequestHeader('Authenticity-Token', $('meta[name=X-CSRF-Token]').attr('content'));
   }
 });
 
@@ -34,7 +34,7 @@ $(function() {
         if (next) {
           window.location.href = next;
         }
-      }).fail(function(xhr, textStatus, errorThrown) {
+      }).fail(function(xhr) {
         alert(xhr.responseText);
       });
     }
@@ -56,14 +56,14 @@ $(function() {
     if (ok) {
       // console.log(method, url, next);
       $.ajax({type: method, url: url}).done(function(rst) {
-        // FIXME
-        if (rst.ok) {
-          window.location.href = next;
-        } else {
-          alert(rst);
+        if (rst.message) {
+          alert(rst.message);
         }
-      }).fail(function(jqXHR, textStatus, errorThrown) {
-        alert(textStatus);
+        if (next) {
+          window.location.href = next;
+        }
+      }).fail(function(xhr) {
+        alert(xhr.responseText);
       });
     }
   });

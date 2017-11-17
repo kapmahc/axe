@@ -20,6 +20,10 @@ func (p *UsersPlugin) deleteSignOut(l string, c *web.Context) (interface{}, erro
 	}); err != nil {
 		return nil, err
 	}
+	ss := c.Session()
+	ss.Values = make(map[interface{}]interface{})
+	c.Save(ss)
+
 	return web.H{}, nil
 }
 
