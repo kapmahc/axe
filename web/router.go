@@ -32,12 +32,10 @@ func NewRouter(secure bool, secret []byte, theme string, helpers template.FuncMa
 		pat := "/" + k + "/"
 		router.PathPrefix(pat).
 			Handler(http.StripPrefix(pat, http.FileServer(http.Dir(v)))).
-			Methods(http.MethodGet).
-			Name(k)
+			Methods(http.MethodGet)
 	}
 
 	return &Router{
-		name: "",
 		render: render.New(render.Options{
 			Directory:  path.Join("themes", theme, "views"),
 			Extensions: []string{".html"},
@@ -61,7 +59,6 @@ func NewRouter(secure bool, secret []byte, theme string, helpers template.FuncMa
 
 // Router http router
 type Router struct {
-	name     string
 	router   *mux.Router
 	csrf     func(http.Handler) http.Handler
 	render   *render.Render
@@ -116,14 +113,14 @@ func (p *Router) Handler() http.Handler {
 }
 
 // Walk walk routes
-func (p *Router) Walk(f func(string, string, ...string) error) error {
+func (p *Router) Walk(f func(string, ...string) error) error {
 	return p.router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
-		tpl, err := route.GetPathTemplate()
+		pattern, err := route.GetPathTemplate()
 		// '/articles/{id}' will be '^/articles/(?P<v0>[^/]+)$'
-		// tpl, err := route.GetPathRegexp() {"^surname=(?P<v0>.*)$}
+		// name, err := route.GetPathRegexp() {"^surname=(?P<v0>.*)$}
 		// 'Queries("surname", "{surname}") will return
-		// tpl, err := route.GetQueriesTemplates()
-		// tpl, err := route.GetQueriesRegexp()
+		// name, err := route.GetQueriesTemplates()
+		// name, err := route.GetQueriesRegexp()
 		if err != nil {
 			return err
 		}
@@ -131,17 +128,16 @@ func (p *Router) Walk(f func(string, string, ...string) error) error {
 		if err != nil {
 			return err
 		}
-		return f(route.GetName(), tpl, methods...)
+		if len(methods) == 0 {
+			return nil
+		}
+		return f(pattern, methods...)
 	})
 }
 
 // Group group
-func (p *Router) Group(name, prefix string) *Router {
-	if p.name != "" {
-		name = p.name + "." + name
-	}
+func (p *Router) Group(prefix string) *Router {
 	return &Router{
-		name:     name,
 		render:   p.render,
 		csrf:     p.csrf,
 		validate: p.validate,
@@ -153,75 +149,70 @@ func (p *Router) Group(name, prefix string) *Router {
 }
 
 // GET http get
-func (p *Router) GET(name, pattern string, handler HandlerFunc) {
-	p.add(http.MethodGet, name, pattern, handler)
+func (p *Router) GET(pattern string, handler HandlerFunc) {
+	p.add(http.MethodGet, pattern, handler)
 }
 
 // POST http post
-func (p *Router) POST(name, pattern string, handler HandlerFunc) {
-	p.add(http.MethodPost, name, pattern, handler)
+func (p *Router) POST(pattern string, handler HandlerFunc) {
+	p.add(http.MethodPost, pattern, handler)
 }
 
 // PATCH http patch
-func (p *Router) PATCH(name, pattern string, handler HandlerFunc) {
-	p.add(http.MethodPatch, name, pattern, handler)
+func (p *Router) PATCH(pattern string, handler HandlerFunc) {
+	p.add(http.MethodPatch, pattern, handler)
 }
 
 // DELETE http delete
-func (p *Router) DELETE(name, pattern string, handler HandlerFunc) {
-	p.add(http.MethodDelete, name, pattern, handler)
+func (p *Router) DELETE(pattern string, handler HandlerFunc) {
+	p.add(http.MethodDelete, pattern, handler)
 }
 
 // Form handle form
 func (p *Router) Form(
-	name, pattern,
-	layout, tpl string, get HTMLHandlerFunc,
+	pattern,
+	layout, name string, get HTMLHandlerFunc,
 	post ObjectHandlerFunc) {
-	p.GET(name+".get", pattern, HTML(layout, tpl, get))
-	p.POST(name+".post", pattern, JSON(post))
+	p.GET(pattern, HTML(layout, name, get))
+	p.POST(pattern, JSON(post))
 }
 
 // Crud handle crud
 func (p *Router) Crud(
-	name,
 	prefix,
-	layout, tpl string,
+	layout, name string,
 	index HTMLHandlerFunc,
 	_new HTMLHandlerFunc, create ObjectHandlerFunc,
 	show HTMLHandlerFunc,
 	edit HTMLHandlerFunc, update ObjectHandlerFunc,
 	destroy ObjectHandlerFunc) {
 	if index != nil {
-		p.GET(name+".index", prefix, HTML(layout, tpl+"/index", index))
+		p.GET(prefix, HTML(layout, name+"/index", index))
 	}
 	if _new != nil {
-		p.GET(name+".new", prefix+"/new", HTML(layout, tpl+"/new", _new))
+		p.GET(prefix+"/new", HTML(layout, name+"/new", _new))
 	}
 	if create != nil {
-		p.POST(name+".create", prefix+"", JSON(create))
+		p.POST(prefix+"", JSON(create))
 	}
 	if show != nil {
-		p.GET(name+".show", prefix+"/{id}", HTML(layout, tpl+"/show", show))
+		p.GET(prefix+"/{id}", HTML(layout, name+"/show", show))
 	}
 	if edit != nil {
-		p.GET(name+".edit", prefix+"/{id}/edit", HTML(layout, tpl+"/edit", edit))
+		p.GET(prefix+"/{id}/edit", HTML(layout, name+"/edit", edit))
 	}
 	if update != nil {
-		p.POST(name+".update", prefix+"/{id}", JSON(update))
+		p.POST(prefix+"/{id}", JSON(update))
 	}
 	if destroy != nil {
-		p.DELETE(name+".destroy", prefix+"/{id}", JSON(destroy))
+		p.DELETE(prefix+"/{id}", JSON(destroy))
 	}
 }
 
-func (p *Router) add(method, name, pattern string, handler HandlerFunc) {
-	if p.name != "" {
-		name = p.name + "." + name
-	}
+func (p *Router) add(method, pattern string, handler HandlerFunc) {
 	p.router.
 		HandleFunc(pattern, func(wrt http.ResponseWriter, req *http.Request) {
 			handler(NewContext(req, wrt, p.store, p.matcher, p.render, p.validate, p.decoder))
 		}).
-		Methods(method).
-		Name(name)
+		Methods(method)
 }

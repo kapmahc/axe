@@ -24,9 +24,9 @@ type HomePlugin struct {
 
 // Mount register
 func (p *HomePlugin) Mount() error {
-	p.Router.GET("nut.home", "/", p.getHome)
-	p.Router.Form("nut.install", "/install", web.APPLICATION, "nut/install", p.getInstall, p.postInstall)
-	p.Router.Crud("nut.leave-words", "/leave-words", web.APPLICATION, "leave-words", nil, p.newLeaveWord, p.createLeaveWord, nil, nil, nil, nil)
+	p.Router.GET("/", p.getHome)
+	p.Router.Form("/install", web.APPLICATION, "nut/install", p.getInstall, p.postInstall)
+	p.Router.Crud("/leave-words", web.APPLICATION, "leave-words", nil, p.newLeaveWord, p.createLeaveWord, nil, nil, nil, nil)
 	return nil
 }
 

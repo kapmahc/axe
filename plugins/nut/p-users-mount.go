@@ -13,19 +13,19 @@ import (
 // Mount register
 func (p *UsersPlugin) Mount() error {
 	const signInURL = "/users/sign-in"
-	rt := p.Router.Group("nut.users", "/users")
-	rt.DELETE("sign-out", "/sign-out", web.JSON(p.deleteSignOut))
-	rt.GET("logs", "/logs", web.HTML(web.APPLICATION, "nut/users/logs", p.getLogs))
-	rt.Form("profile", "/profile", web.DASHBOARD, "nut/users/profile", p.getProfile, p.postProfile)
-	rt.Form("change-password", "/change-password", web.APPLICATION, "nut/users/change-password", p.getChangePassword, p.postChangePassword)
+	rt := p.Router.Group("/users")
+	rt.DELETE("/sign-out", web.JSON(p.deleteSignOut))
+	rt.GET("/logs", web.HTML(web.APPLICATION, "nut/users/logs", p.getLogs))
+	rt.Form("/profile", web.DASHBOARD, "nut/users/profile", p.getProfile, p.postProfile)
+	rt.Form("/change-password", web.APPLICATION, "nut/users/change-password", p.getChangePassword, p.postChangePassword)
 
-	rt.Form("sign-in", "/sign-in", web.APPLICATION, "nut/users/sign-in", p.getSignIn, p.postSignIn)
-	rt.Form("confirm", "/confirm", web.APPLICATION, "nut/users/confirm", p.getConfirm, p.postConfirm)
-	rt.GET("confirm.token", "/confirm/{token}", web.Redirect(signInURL, p.getConfirmToken))
-	rt.Form("unlock", "/unlock", web.APPLICATION, "nut/users/unlock", p.getUnlock, p.postUnlock)
-	rt.GET("unlock.token", "/unlock/{token}", web.Redirect(signInURL, p.getUnlockToken))
-	rt.Form("forgot-password", "/forgot-password", web.APPLICATION, "nut/users/forgot-password", p.getForgotPassword, p.postForgotPassword)
-	rt.Form("reset-password", "/reset-password/{token}", web.APPLICATION, "nut/users/reset-password", p.getResetPassword, p.postResetPassword)
+	rt.Form("/sign-in", web.APPLICATION, "nut/users/sign-in", p.getSignIn, p.postSignIn)
+	rt.Form("/confirm", web.APPLICATION, "nut/users/confirm", p.getConfirm, p.postConfirm)
+	rt.GET("/confirm/{token}", web.Redirect(signInURL, p.getConfirmToken))
+	rt.Form("/unlock", web.APPLICATION, "nut/users/unlock", p.getUnlock, p.postUnlock)
+	rt.GET("/unlock/{token}", web.Redirect(signInURL, p.getUnlockToken))
+	rt.Form("/forgot-password", web.APPLICATION, "nut/users/forgot-password", p.getForgotPassword, p.postForgotPassword)
+	rt.Form("/reset-password/{token}", web.APPLICATION, "nut/users/reset-password", p.getResetPassword, p.postResetPassword)
 
 	p.Jobber.Register(SendEmailJob, func(id string, payload []byte) error {
 		var buf bytes.Buffer

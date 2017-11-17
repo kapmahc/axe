@@ -206,10 +206,10 @@ func (p *HomePlugin) Shell() []cli.Command {
 			Aliases: []string{"rt"},
 			Usage:   "print out all defined routes",
 			Action: web.InjectAction(func(_ *cli.Context) error {
-				tpl := "%-16s %-16s %s\n"
-				fmt.Printf(tpl, "NAME", "METHODS", "PATH")
-				return p.Router.Walk(func(name string, pattern string, methods ...string) error {
-					fmt.Printf(tpl, name, strings.Join(methods, ","), pattern)
+				tpl := "%-16s %s\n"
+				fmt.Printf(tpl, "METHODS", "PATH")
+				return p.Router.Walk(func(pattern string, methods ...string) error {
+					fmt.Printf(tpl, strings.Join(methods, ","), pattern)
 					return nil
 				})
 			}),
