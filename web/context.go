@@ -181,7 +181,7 @@ func (p *Context) XML(status int, value interface{}) {
 
 // HTML render html
 func (p *Context) HTML(status int, layout, name string, data interface{}) {
-	p.render.HTML(p.Writer, status, name, data, render.HTMLOptions{Layout: layout})
+	p.render.HTML(p.Writer, status, name, data, render.HTMLOptions{Layout: layout + "/index"})
 }
 
 // Redirect redirect

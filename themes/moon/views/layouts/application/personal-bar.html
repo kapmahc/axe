@@ -4,7 +4,7 @@
   </a>
   <div class="dropdown-menu" aria-labelledby="personal-bar">
     {{if .session.currentUser}}
-    <a class="dropdown-item" href="/dashboard">{{t .locale "nut.dashboard.title"}}</a>
+    <a class="dropdown-item" href="/users/logs">{{t .locale "nut.dashboard.title"}}</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" data-next="/" data-method="delete" href="/users/sign-out" data-confirm="{{t .locale "helpers.are-you-sure"}}" rel="nofollow">{{t .locale "nut.users.sign-out.title"}}</a>
     {{else}}

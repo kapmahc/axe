@@ -70,11 +70,16 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n) (*web.
 		"eq": func(a interface{}, b interface{}) bool {
 			return a == b
 		},
+		"substr": func(s string, l int) string {
+			return s[0:l]
+		},
 		"str2htm": func(s string) template.HTML {
 			return template.HTML(s)
 		},
 		"site": func(k string) interface{} {
 			switch k {
+			case "version":
+				return web.Version
 			case "author":
 				var author map[string]string
 				if err := p.Settings.Get("site.author", &author); err != nil {

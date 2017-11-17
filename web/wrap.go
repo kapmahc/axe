@@ -25,9 +25,9 @@ const (
 	MESSAGE = "message"
 
 	// APPLICATION application layout
-	APPLICATION = "layouts/application/index"
+	APPLICATION = "layouts/application"
 	// DASHBOARD dashboard layout
-	DASHBOARD = "layouts/dashboard/index"
+	DASHBOARD = "layouts/dashboard"
 )
 
 // HTMLHandlerFunc html handler func
@@ -114,7 +114,7 @@ func HTML(layout, name string, handler HTMLHandlerFunc) HandlerFunc {
 			status, body := detectError(err)
 			payload["reason"] = body
 			payload["createdAt"] = time.Now()
-			c.HTML(status, layout, "error", payload)
+			c.HTML(status, layout, layout+"/error", payload)
 		}
 	}
 }
