@@ -1,0 +1,14 @@
+<hr/>
+<footer>
+  <p class="float-right">
+    {{range .languages}}
+    <a href="/?locale={{.}}">{{t $.locale (fmt "languages.%s" .)}}</a>
+    {{end}}
+  </p>
+  <p>
+    &copy; {{t .locale "site.copyright"}}
+    {{range (links .locale "footer")}}
+    &middot; <a href="{{.Href}}">{{.Label}}</a>
+    {{end}}
+  </p>
+</footer>

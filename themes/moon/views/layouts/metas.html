@@ -1,0 +1,7 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="description" content="{{t .locale "site.description"}}">
+<meta name="keywords" content="{{t .locale "site.keywords"}}">
+{{$author := site "author"}}
+<meta name="author" content="{{$author.name}}&lt;{{$author.email}}&gt;">
+<title>{{.title}}|{{t .locale "site.subhead"}}|{{t .locale "site.title"}}</title>
+<link rel="icon" type="image/png" href="{{site "favicon"}}"/>

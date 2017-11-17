@@ -73,6 +73,27 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n) (*web.
 		"str2htm": func(s string) template.HTML {
 			return template.HTML(s)
 		},
+		"site": func(k string) interface{} {
+			switch k {
+			case "author":
+				var author map[string]string
+				if err := p.Settings.Get("site.author", &author); err != nil {
+					author = map[string]string{
+						"name":  "",
+						"email": "",
+					}
+				}
+				return author
+			case "favicon":
+				var favicon string
+				if err := p.Settings.Get("site.favicon", &favicon); err != nil {
+					favicon = "/assets/favicon.png"
+				}
+				return favicon
+			default:
+				return k
+			}
+		},
 		"dict": func(values ...interface{}) (map[string]interface{}, error) {
 			if len(values)%2 != 0 {
 				return nil, errors.New("invalid dict call")

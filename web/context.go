@@ -24,6 +24,7 @@ func NewContext(req *http.Request, wrt http.ResponseWriter, ste sessions.Store, 
 		validate: val,
 		decoder:  dec,
 		render:   rdr,
+		store:    ste,
 	}
 }
 

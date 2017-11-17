@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="/">{{t .locale "site.subhead"}}</a>
+    <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse"
+            data-target="#header-nav-bar" aria-controls="header-nav-bar" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="header-nav-bar">
+        <ul class="navbar-nav mr-auto">
+            {{range $k, $v := (links .locale "header")}}
+              {{$items := (links $.locale (fmt "%s.%d" $v.Loc $v.SortOrder))}}
+              {{if $items}}
+                {{$id := (fmt "nav-header-dropdown-%d" $v.ID)}}
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="{{$v.Href}}" id="{{$id}}" data-toggle="dropdown"
+                     aria-haspopup="true" aria-expanded="false">{{$v.Label}}</a>
+                  <div class="dropdown-menu" aria-labelledby="{{$id}}">
+                    {{range $items}}
+                      <a class="dropdown-item" href="{{.Href}}">{{.Label}}</a>
+                    {{end}}
+                  </div>
+                </li>
+              {{else}}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{$v.Href}}">{{$v.Label}}</a>
+                </li>
+              {{end}}
+            {{end}}
+        </ul>
+        {{template "layouts/application/search-form" .}}
+    </div>
+</nav>
