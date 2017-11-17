@@ -1,7 +1,6 @@
 package nut
 
 import (
-	"net/http"
 	"time"
 
 	"github.com/go-pg/pg"
@@ -16,8 +15,11 @@ func (p *HomePlugin) getHome(c *web.Context) {
 			theme = "off-canvas"
 		}
 	}
-	c.Payload[TITLE] = p.I18n.T(lang, "nut.home.title")
-	c.HTML(http.StatusOK, APPLICATION, "nut/home/"+theme)
+	web.HTML(web.APPLICATION, "nut/home/"+theme, func(_ string, _ *web.Context) (web.H, error) {
+		return web.H{
+			web.TITLE: p.I18n.T(lang, "nut.home.title"),
+		}, nil
+	})(c)
 }
 
 type fmInstall struct {
@@ -27,6 +29,10 @@ type fmInstall struct {
 	Email                string `form:"email" validate:"email"`
 	Password             string `form:"password" validate:"required"`
 	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=Password"`
+}
+
+func (p *HomePlugin) getInstall(l string, c *web.Context) (web.H, error) {
+	return web.H{web.TITLE: p.I18n.T(l, "nut.install.title")}, nil
 }
 
 func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) {
@@ -80,6 +86,10 @@ func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) 
 		return nil, err
 	}
 	return web.H{}, nil
+}
+
+func (p *HomePlugin) newLeaveWord(l string, c *web.Context) (web.H, error) {
+	return web.H{web.TITLE: p.I18n.T(l, "nut.leave-wods.new.title")}, nil
 }
 
 type fmLeaveWord struct {

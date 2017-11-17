@@ -1,10 +1,10 @@
 package web
 
 const (
-	// HTML html
-	HTML = "html"
-	// MARKDOWN markdown
-	MARKDOWN = "markdown"
-	// TEXT text
-	TEXT = "text"
+	// TypeHTML html
+	TypeHTML = "html"
+	// TypeMARKDOWN markdown
+	TypeMARKDOWN = "markdown"
+	// TypeTEXT text
+	TypeTEXT = "text"
 )

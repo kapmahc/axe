@@ -9,15 +9,6 @@ import (
 	"golang.org/x/text/language"
 )
 
-const (
-	// TITLE page title
-	TITLE = "title"
-	// APPLICATION application layout
-	APPLICATION = "layouts/application/index"
-	// DASHBOARD dashboard layout
-	DASHBOARD = "layouts/dashboard/index"
-)
-
 // HomePlugin admin plugin
 type HomePlugin struct {
 	I18n     *web.I18n     `inject:""`
@@ -28,19 +19,14 @@ type HomePlugin struct {
 	Router   *web.Router   `inject:""`
 	DB       *pg.DB        `inject:""`
 	Dao      *Dao          `inject:""`
+	Layout   *Layout       `inject:""`
 }
 
 // Mount register
 func (p *HomePlugin) Mount() error {
-	// htm := p.Router
-	// htm.GET("/", p.getHome)
-	//
-	// api := p.Router.Group("/api")
-	// api.POST("/token", p.Layout.MustSignInMiddleware, p.Layout.JSON(p.postToken))
-	// api.GET("/site/info", p.Layout.JSON(p.getSiteInfo))
-	// api.POST("/install", p.Layout.JSON(p.postInstall))
-	// api.POST("/leave-words", p.Layout.JSON(p.createLeaveWord))
-
+	p.Router.GET("nut.home", "/", p.getHome)
+	p.Router.Form("nut.install", "/install", web.APPLICATION, "nut/install", p.getInstall, p.postInstall)
+	p.Router.Crud("nut.leave-words", "/leave-words", web.APPLICATION, "leave-words", nil, p.newLeaveWord, p.createLeaveWord, nil, nil, nil, nil)
 	return nil
 }
 

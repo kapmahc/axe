@@ -61,12 +61,12 @@ func (p *Plugin) Shell() []cli.Command {
 							for _, it := range items {
 								a := Article{
 									Title:     it[0],
-									Type:      web.HTML,
+									Type:      web.TypeHTML,
 									UserID:    u.ID,
 									UpdatedAt: now,
 								}
 
-								if it[1] == web.MARKDOWN {
+								if it[1] == web.TypeMARKDOWN {
 									a.Body = string(blackfriday.Run([]byte(it[2])))
 								} else {
 									a.Body = it[2]

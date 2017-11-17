@@ -21,7 +21,7 @@ import (
 )
 
 // NewRouter new router
-func NewRouter(secure bool, secret []byte, theme string, helpers template.FuncMap, langs ...language.Tag) *Router {
+func NewRouter(secure bool, secret []byte, theme string, helpers template.FuncMap, matcher language.Matcher) *Router {
 	store := sessions.NewCookieStore(secret)
 
 	router := mux.NewRouter()
@@ -52,25 +52,23 @@ func NewRouter(secure bool, secret []byte, theme string, helpers template.FuncMa
 			csrf.RequestHeader("Authenticity-Token"),
 			csrf.FieldName("authenticity_token"),
 		),
-		matcher:   language.NewMatcher(langs),
-		decoder:   form.NewDecoder(),
-		validate:  validator.New(),
-		store:     store,
-		languages: langs,
+		matcher:  matcher,
+		decoder:  form.NewDecoder(),
+		validate: validator.New(),
+		store:    store,
 	}
 }
 
 // Router http router
 type Router struct {
-	name      string
-	router    *mux.Router
-	csrf      func(http.Handler) http.Handler
-	render    *render.Render
-	matcher   language.Matcher
-	validate  *validator.Validate
-	decoder   *form.Decoder
-	languages []language.Tag
-	store     sessions.Store
+	name     string
+	router   *mux.Router
+	csrf     func(http.Handler) http.Handler
+	render   *render.Render
+	matcher  language.Matcher
+	validate *validator.Validate
+	decoder  *form.Decoder
+	store    sessions.Store
 }
 
 // Start start server
@@ -143,43 +141,87 @@ func (p *Router) Group(name, prefix string) *Router {
 		name = p.name + "." + name
 	}
 	return &Router{
-		name:      name,
-		render:    p.render,
-		csrf:      p.csrf,
-		validate:  p.validate,
-		decoder:   p.decoder,
-		matcher:   p.matcher,
-		router:    p.router.PathPrefix(prefix).Subrouter(),
-		languages: p.languages,
-		store:     p.store,
+		name:     name,
+		render:   p.render,
+		csrf:     p.csrf,
+		validate: p.validate,
+		decoder:  p.decoder,
+		matcher:  p.matcher,
+		router:   p.router.PathPrefix(prefix).Subrouter(),
+		store:    p.store,
 	}
 }
 
 // GET http get
-func (p *Router) GET(pattern string, handler HandlerFunc) {
-	p.add(http.MethodGet, pattern, handler)
+func (p *Router) GET(name, pattern string, handler HandlerFunc) {
+	p.add(http.MethodGet, name, pattern, handler)
 }
 
 // POST http post
-func (p *Router) POST(pattern string, handler HandlerFunc) {
-	p.add(http.MethodPost, pattern, handler)
+func (p *Router) POST(name, pattern string, handler HandlerFunc) {
+	p.add(http.MethodPost, name, pattern, handler)
 }
 
 // PATCH http patch
-func (p *Router) PATCH(pattern string, handler HandlerFunc) {
-	p.add(http.MethodPatch, pattern, handler)
+func (p *Router) PATCH(name, pattern string, handler HandlerFunc) {
+	p.add(http.MethodPatch, name, pattern, handler)
 }
 
 // DELETE http delete
-func (p *Router) DELETE(pattern string, handler HandlerFunc) {
-	p.add(http.MethodDelete, pattern, handler)
+func (p *Router) DELETE(name, pattern string, handler HandlerFunc) {
+	p.add(http.MethodDelete, name, pattern, handler)
 }
 
-func (p *Router) add(method, pattern string, handler HandlerFunc) {
+// Form handle form
+func (p *Router) Form(
+	name, pattern,
+	layout, tpl string, get HTMLHandlerFunc,
+	post ObjectHandlerFunc) {
+	p.GET(name+".get", pattern, HTML(layout, tpl, get))
+	p.POST(name+".post", pattern, JSON(post))
+}
+
+// Crud handle crud
+func (p *Router) Crud(
+	name,
+	prefix,
+	layout, tpl string,
+	index HTMLHandlerFunc,
+	_new HTMLHandlerFunc, create ObjectHandlerFunc,
+	show HTMLHandlerFunc,
+	edit HTMLHandlerFunc, update ObjectHandlerFunc,
+	destroy ObjectHandlerFunc) {
+	if index != nil {
+		p.GET(name+".index", prefix, HTML(layout, tpl+"/index", index))
+	}
+	if _new != nil {
+		p.GET(name+".new", prefix+"/new", HTML(layout, tpl+"/new", _new))
+	}
+	if create != nil {
+		p.POST(name+".create", prefix+"", JSON(create))
+	}
+	if show != nil {
+		p.GET(name+".show", prefix+"/{id}", HTML(layout, tpl+"/show", show))
+	}
+	if edit != nil {
+		p.GET(name+".edit", prefix+"/{id}/edit", HTML(layout, tpl+"/edit", edit))
+	}
+	if update != nil {
+		p.POST(name+".update", prefix+"/{id}", JSON(update))
+	}
+	if destroy != nil {
+		p.DELETE(name+".destroy", prefix+"/{id}", JSON(destroy))
+	}
+}
+
+func (p *Router) add(method, name, pattern string, handler HandlerFunc) {
+	if p.name != "" {
+		name = p.name + "." + name
+	}
 	p.router.
 		HandleFunc(pattern, func(wrt http.ResponseWriter, req *http.Request) {
 			handler(NewContext(req, wrt, p.store, p.matcher, p.render, p.validate, p.decoder))
 		}).
 		Methods(method).
-		Name(p.name)
+		Name(name)
 }

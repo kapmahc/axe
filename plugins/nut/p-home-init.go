@@ -135,7 +135,7 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n) (*web.
 		langs = append(langs, t)
 	}
 
-	return web.NewRouter(viper.GetBool("server.secure"), secret, theme, helpers), nil
+	return web.NewRouter(viper.GetBool("server.secure"), secret, theme, helpers, language.NewMatcher(langs)), nil
 }
 
 func (p *HomePlugin) openRedis() *redis.Pool {

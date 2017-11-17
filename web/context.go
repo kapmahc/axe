@@ -7,32 +7,23 @@ import (
 	"strings"
 
 	"github.com/go-playground/form"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/unrolled/render"
 	"golang.org/x/text/language"
 	validator "gopkg.in/go-playground/validator.v9"
 )
 
-const (
-	// NOTICE notice
-	NOTICE = "notice"
-	// WARNING warning
-	WARNING = "warning"
-	// ERROR = error
-	ERROR = "error"
-)
-
 // NewContext create an context
 func NewContext(req *http.Request, wrt http.ResponseWriter, ste sessions.Store, mch language.Matcher, rdr *render.Render, val *validator.Validate, dec *form.Decoder, langs ...language.Tag) *Context {
 	return &Context{
-		Writer:    wrt,
-		Request:   req,
-		Payload:   H{},
-		matcher:   mch,
-		validate:  val,
-		decoder:   dec,
-		render:    rdr,
-		languages: langs,
+		Writer:   wrt,
+		Request:  req,
+		Params:   mux.Vars(req),
+		matcher:  mch,
+		validate: val,
+		decoder:  dec,
+		render:   rdr,
 	}
 }
 
@@ -46,7 +37,6 @@ type HandlerFunc func(*Context)
 type Context struct {
 	Request *http.Request
 	Writer  http.ResponseWriter
-	Payload H
 
 	render   *render.Render
 	matcher  language.Matcher
@@ -54,19 +44,16 @@ type Context struct {
 	decoder  *form.Decoder
 	store    sessions.Store
 
-	locale    string
-	languages []language.Tag
+	Params map[string]string
 }
 
-// Flashes read flashes
-func (p *Context) Flashes() {
-	flashes := H{}
-	ss := p.Session()
-	for _, k := range []string{NOTICE, WARNING, ERROR} {
-		flashes[k] = ss.Flashes(k)
+// Home home url
+func (p *Context) Home() string {
+	scheme := "http"
+	if p.Secure() {
+		scheme += "s"
 	}
-	p.Save(ss)
-	p.Payload["flashes"] = ss
+	return scheme + "://" + p.Request.Host
 }
 
 // Session get session
@@ -134,9 +121,6 @@ func (p *Context) Secure() bool {
 // Locale parse locale from http-request
 func (p *Context) Locale() string {
 	const k = "locale"
-	if p.locale != "" {
-		return p.locale
-	}
 
 	lang, written := p.detectLocale(k)
 	tag, _, _ := p.matcher.Match(language.Make(lang))
@@ -157,9 +141,6 @@ func (p *Context) Locale() string {
 		)
 	}
 
-	p.locale = lang
-	p.Payload[k] = lang
-	p.Payload["languages"] = p.languages
 	return lang
 }
 func (p *Context) detectLocale(k string) (string, bool) {
@@ -193,6 +174,16 @@ func (p *Context) XML(status int, value interface{}) {
 }
 
 // HTML render html
-func (p *Context) HTML(status int, layout, name string) {
-	p.render.HTML(p.Writer, status, name, p.Payload, render.HTMLOptions{Layout: layout})
+func (p *Context) HTML(status int, layout, name string, data interface{}) {
+	p.render.HTML(p.Writer, status, name, data, render.HTMLOptions{Layout: layout})
+}
+
+// Redirect redirect
+func (p *Context) Redirect(status int, url string) {
+	http.Redirect(p.Writer, p.Request, url, status)
+}
+
+// Text render plain text
+func (p *Context) Text(status int, value string) {
+	p.render.Text(p.Writer, status, value)
 }
