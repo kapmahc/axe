@@ -4,6 +4,10 @@ rm -r vendor
 govendor init
 govendor fetch github.com/unrolled/render
 govendor fetch github.com/gorilla/mux
+govendor fetch github.com/gorilla/sessions
+govendor fetch github.com/gorilla/csrf
+govendor fetch gopkg.in/go-playground/validator.v9
+govendor fetch github.com/go-playground/form
 govendor fetch golang.org/x/crypto/bcrypt
 govendor fetch github.com/SermoDigital/jose/jwt
 govendor fetch github.com/SermoDigital/jose/jws
