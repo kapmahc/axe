@@ -1,5 +1,15 @@
-import Layout from '../layouts/application'
+import React, {Component} from 'react'
 
-export default() => (<Layout>
-  <div>Welcome to next.js1!</div>
-</Layout>)
+import Layout from '../layouts/application'
+import pageWithIntl from '../components/PageWithIntl'
+
+class Widget extends Component {
+  render() {
+    return (<Layout>
+      <div>Welcome to next.js!</div>
+    </Layout>)
+
+  }
+}
+
+export default pageWithIntl(Widget)

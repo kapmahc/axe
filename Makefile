@@ -19,7 +19,7 @@ backend:
 
 frontend:
 	cd desktop && npm run build
-	-cp -r desktop/package.json desktop/package-lock.json desktop/.next $(dist)/
+	-cp -r desktop/package.json desktop/package-lock.json desktop/.next desktop/static $(dist)/
 
 
 clean:
