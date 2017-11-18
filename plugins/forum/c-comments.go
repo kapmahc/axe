@@ -24,37 +24,6 @@ func (p *Plugin) canEditComment(c *gin.Context) {
 	}
 }
 
-func (p *Plugin) checkCommentToken(user *nut.User, cid uint) bool {
-	var it Comment
-	if err := p.DB.Model(&it).Column("user_id").Where("id = ?", cid).Limit(1).Select(); err != nil {
-		return false
-	}
-	return it.UserID == user.ID || p.Dao.Is(user.ID, nut.RoleAdmin)
-}
-
-func (p *Plugin) editCommentH(tid uint, token string) (string, string, error) {
-	var it Comment
-	if err := p.DB.Model(&it).
-		Column("id", "body").
-		Where("id = ?", tid).
-		Limit(1).Select(); err != nil {
-		return "", "", err
-	}
-	return strconv.Itoa(int(it.ID)), it.Body, nil
-
-}
-func (p *Plugin) updateCommentH(id uint, body string) error {
-	return p.DB.RunInTransaction(func(tx *pg.Tx) error {
-		_, err := tx.Model(&Comment{
-			ID:        id,
-			Body:      body,
-			Type:      web.HTML,
-			UpdatedAt: time.Now(),
-		}).Column("body", "type", "updated_at").Update()
-		return err
-	})
-}
-
 func (p *Plugin) indexComments(l string, c *gin.Context) (interface{}, error) {
 	var items []Comment
 	user := c.MustGet(nut.CurrentUser).(*nut.User)

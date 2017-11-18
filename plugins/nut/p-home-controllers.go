@@ -3,47 +3,9 @@ package nut
 import (
 	"time"
 
-	"github.com/SermoDigital/jose/jws"
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 )
-
-func (p *HomePlugin) getHome(c *gin.Context) {
-	theme := c.Query("theme")
-	if theme == "" {
-		if err := p.Settings.Get("site.home.theme", &theme); err != nil {
-			theme = "off-canvas"
-		}
-	}
-	p.Layout.Application("nut-home-"+theme, func(l string, d gin.H, c *gin.Context) error {
-		d["title"] = p.I18n.T(l, "nut.home.title")
-		return nil
-	})(c)
-}
-
-type fmToken struct {
-	Act string `json:"act" binding:"required"`
-	Tid uint   `json:"tid" binding:"required"`
-}
-
-func (p *HomePlugin) postToken(l string, c *gin.Context) (interface{}, error) {
-	user := c.MustGet(CurrentUser).(*User)
-	var fm fmToken
-	if err := c.BindJSON(&fm); err != nil {
-		return nil, err
-	}
-	token, err := p.Jwt.Sum(jws.Claims{
-		"act": fm.Act,
-		"tid": fm.Tid,
-		"uid": user.UID,
-	}, time.Hour*3)
-	if err != nil {
-		return nil, err
-	}
-	return gin.H{
-		"token": string(token),
-	}, nil
-}
 
 func (p *HomePlugin) getSiteInfo(l string, c *gin.Context) (interface{}, error) {
 	data := gin.H{"locale": l, "languages": Languages()}

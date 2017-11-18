@@ -36,6 +36,7 @@ make
 - file-icons
 - atom-beautify
 - language-babel
+- language-ini
 
 ## Notes
 
@@ -107,5 +108,7 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 - [ant design](https://ant.design/docs/react/introduce)
 
 - [ant-design-pro](https://pro.ant.design/components/AvatarList)
+
+- [next.js](https://github.com/zeit/next.js/)
 
 - [smver](http://semver.org/)

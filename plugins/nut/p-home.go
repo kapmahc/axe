@@ -25,15 +25,10 @@ type HomePlugin struct {
 
 // Mount register
 func (p *HomePlugin) Mount() error {
-	htm := p.Router
-	htm.GET("/", p.getHome)
-
-	api := p.Router.Group("/api")
-	api.POST("/token", p.Layout.MustSignInMiddleware, p.Layout.JSON(p.postToken))
-	api.GET("/site/info", p.Layout.JSON(p.getSiteInfo))
-	api.POST("/install", p.Layout.JSON(p.postInstall))
-	api.POST("/leave-words", p.Layout.JSON(p.createLeaveWord))
-
+	rt := p.Router
+	rt.GET("/site/info", p.Layout.JSON(p.getSiteInfo))
+	rt.POST("/install", p.Layout.JSON(p.postInstall))
+	rt.POST("/leave-words", p.Layout.JSON(p.createLeaveWord))
 	return nil
 }
 
@@ -78,9 +73,8 @@ func init() {
 
 	secret, _ := web.RandomBytes(32)
 	viper.SetDefault("server", map[string]interface{}{
-		"port":  8080,
-		"name":  "www.change-me.com",
-		"theme": "moon",
+		"port": 8080,
+		"name": "www.change-me.com",
 	})
 
 	viper.SetDefault("secret", base64.StdEncoding.EncodeToString(secret))

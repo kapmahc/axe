@@ -25,37 +25,6 @@ func (p *Plugin) canEditArticle(c *gin.Context) {
 	}
 }
 
-func (p *Plugin) checkArticleToken(user *nut.User, aid uint) bool {
-	var it Article
-	if err := p.DB.Model(&it).Column("user_id").Where("id = ?", aid).Limit(1).Select(); err != nil {
-		return false
-	}
-	return it.UserID == user.ID || p.Dao.Is(user.ID, nut.RoleAdmin)
-}
-
-func (p *Plugin) editArticleH(tid uint, token string) (string, string, error) {
-	var it Article
-	if err := p.DB.Model(&it).
-		Column("id", "title", "body").
-		Where("id = ?", tid).
-		Limit(1).Select(); err != nil {
-		return "", "", err
-	}
-	return it.Title, it.Body, nil
-
-}
-func (p *Plugin) updateArticleH(id uint, body string) error {
-	return p.DB.RunInTransaction(func(tx *pg.Tx) error {
-		_, err := tx.Model(&Article{
-			ID:        id,
-			Body:      body,
-			Type:      web.HTML,
-			UpdatedAt: time.Now(),
-		}).Column("body", "type", "updated_at").Update()
-		return err
-	})
-}
-
 func (p *Plugin) indexArticles(l string, c *gin.Context) (interface{}, error) {
 	user := c.MustGet(nut.CurrentUser).(*nut.User)
 	admin := c.MustGet(nut.IsAdmin).(bool)

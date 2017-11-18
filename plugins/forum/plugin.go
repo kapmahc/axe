@@ -28,32 +28,22 @@ func (p *Plugin) Init(*inject.Graph) error {
 
 // Mount register
 func (p *Plugin) Mount() error {
-	p.Layout.UEditor("/forum/articles/body/edit", p.checkArticleToken, p.editArticleH, p.updateArticleH)
-	p.Layout.UEditor("/forum/comments/body/edit", p.checkCommentToken, p.editCommentH, p.updateCommentH)
-
-	htm := p.Router.Group("/forum")
-	htm.GET("/tags", p.Layout.Application("forum-tags-index", p.indexTagsH))
-	htm.GET("/tags/show/:id", p.Layout.Application("forum-tags-show", p.showTagH))
-	htm.GET("/articles", p.Layout.Application("forum-articles-index", p.indexArticlesH))
-	htm.GET("/articles/show/:id", p.Layout.Application("forum-articles-show", p.showArticleH))
-	htm.GET("/comments", p.Layout.Application("forum-comments-index", p.indexCommentsH))
-
-	api := p.Router.Group("/api/forum", p.Layout.MustSignInMiddleware)
-	api.GET("/articles", p.Layout.JSON(p.indexArticles))
-	api.GET("/articles/:id", p.Layout.JSON(p.showArticle))
-	api.POST("/articles", p.Layout.JSON(p.createArticle))
-	api.POST("/articles/:id", p.canEditArticle, p.Layout.JSON(p.updateArticle))
-	api.DELETE("/articles/:id", p.canEditArticle, p.Layout.JSON(p.destroyArticle))
-	api.GET("/tags", p.Layout.JSON(p.indexTags))
-	api.GET("/tags/:id", p.Layout.JSON(p.showTag))
-	api.POST("/tags", p.Layout.MustAdminMiddleware, p.Layout.JSON(p.createTag))
-	api.POST("/tags/:id", p.Layout.MustAdminMiddleware, p.Layout.JSON(p.updateTag))
-	api.DELETE("/tags/:id", p.Layout.MustAdminMiddleware, p.Layout.JSON(p.destroyTag))
-	api.GET("/comments", p.Layout.JSON(p.indexComments))
-	api.GET("/comments/:id", p.Layout.JSON(p.showComment))
-	api.POST("/comments", p.Layout.JSON(p.createComment))
-	api.POST("/comments/:id", p.canEditComment, p.Layout.JSON(p.updateComment))
-	api.DELETE("/comments/:id", p.canEditComment, p.Layout.JSON(p.destroyComment))
+	rt := p.Router.Group("/forum", p.Layout.MustSignInMiddleware)
+	rt.GET("/articles", p.Layout.JSON(p.indexArticles))
+	rt.GET("/articles/:id", p.Layout.JSON(p.showArticle))
+	rt.POST("/articles", p.Layout.JSON(p.createArticle))
+	rt.POST("/articles/:id", p.canEditArticle, p.Layout.JSON(p.updateArticle))
+	rt.DELETE("/articles/:id", p.canEditArticle, p.Layout.JSON(p.destroyArticle))
+	rt.GET("/tags", p.Layout.JSON(p.indexTags))
+	rt.GET("/tags/:id", p.Layout.JSON(p.showTag))
+	rt.POST("/tags", p.Layout.MustAdminMiddleware, p.Layout.JSON(p.createTag))
+	rt.POST("/tags/:id", p.Layout.MustAdminMiddleware, p.Layout.JSON(p.updateTag))
+	rt.DELETE("/tags/:id", p.Layout.MustAdminMiddleware, p.Layout.JSON(p.destroyTag))
+	rt.GET("/comments", p.Layout.JSON(p.indexComments))
+	rt.GET("/comments/:id", p.Layout.JSON(p.showComment))
+	rt.POST("/comments", p.Layout.JSON(p.createComment))
+	rt.POST("/comments/:id", p.canEditComment, p.Layout.JSON(p.updateComment))
+	rt.DELETE("/comments/:id", p.canEditComment, p.Layout.JSON(p.destroyComment))
 
 	return nil
 }

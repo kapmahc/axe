@@ -12,24 +12,22 @@ import (
 
 // Mount register
 func (p *UsersPlugin) Mount() error {
-	htm := p.Router.Group("/users")
-	htm.GET("/confirm/:token", p.Layout.Redirect("/", p.getConfirmToken))
-	htm.GET("/unlock/:token", p.Layout.Redirect("/", p.getUnlockToken))
+	rtn := p.Router.Group("/users")
+	rtn.GET("/confirm/:token", p.Layout.Redirect("/", p.getConfirmToken))
+	rtn.GET("/unlock/:token", p.Layout.Redirect("/", p.getUnlockToken))
+	rtn.POST("/sign-in", p.Layout.JSON(p.postSignIn))
+	rtn.POST("/sign-up", p.Layout.JSON(p.postSignUp))
+	rtn.POST("/confirm", p.Layout.JSON(p.postConfirm))
+	rtn.POST("/unlock", p.Layout.JSON(p.postUnlock))
+	rtn.POST("/forgot-password", p.Layout.JSON(p.postForgotPassword))
+	rtn.POST("/reset-password", p.Layout.JSON(p.postResetPassword))
 
-	api := p.Router.Group("/api/users")
-	api.POST("/sign-in", p.Layout.JSON(p.postSignIn))
-	api.POST("/sign-up", p.Layout.JSON(p.postSignUp))
-	api.POST("/confirm", p.Layout.JSON(p.postConfirm))
-	api.POST("/unlock", p.Layout.JSON(p.postUnlock))
-	api.POST("/forgot-password", p.Layout.JSON(p.postForgotPassword))
-	api.POST("/reset-password", p.Layout.JSON(p.postResetPassword))
-
-	apiM := p.Router.Group("/api/users", p.Layout.MustSignInMiddleware)
-	apiM.GET("/logs", p.Layout.JSON(p.getLogs))
-	apiM.GET("/profile", p.Layout.JSON(p.getProfile))
-	apiM.POST("/profile", p.Layout.JSON(p.postProfile))
-	apiM.POST("/change-password", p.Layout.JSON(p.postChangePassword))
-	apiM.DELETE("/sign-out", p.Layout.JSON(p.deleteSignOut))
+	rtm := p.Router.Group("/users", p.Layout.MustSignInMiddleware)
+	rtm.GET("/logs", p.Layout.JSON(p.getLogs))
+	rtm.GET("/profile", p.Layout.JSON(p.getProfile))
+	rtm.POST("/profile", p.Layout.JSON(p.postProfile))
+	rtm.POST("/change-password", p.Layout.JSON(p.postChangePassword))
+	rtm.DELETE("/sign-out", p.Layout.JSON(p.deleteSignOut))
 
 	p.Jobber.Register(SendEmailJob, func(id string, payload []byte) error {
 		var buf bytes.Buffer

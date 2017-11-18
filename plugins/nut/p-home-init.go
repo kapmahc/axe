@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"path"
 	"time"
 
 	"github.com/SermoDigital/jose/crypto"
@@ -130,15 +129,6 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n, lyt *L
 			return v%2 == 0
 		},
 	})
-
-	rt.LoadHTMLGlob(path.Join("themes", viper.GetString("server.theme"), "views", "*.html"))
-
-	for k, v := range map[string]string{
-		"3rd":    "node_modules",
-		"assets": path.Join("themes", viper.GetString("server.theme"), "assets"),
-	} {
-		rt.Static("/"+k+"/", v)
-	}
 
 	var langs []language.Tag
 	for _, l := range Languages() {

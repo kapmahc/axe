@@ -245,17 +245,15 @@ func (p *HomePlugin) generateNginxConf(c *cli.Context) error {
 	}
 
 	return tpl.Execute(fd, struct {
-		Port  int
-		Root  string
-		Name  string
-		Theme string
-		Ssl   bool
+		Port int
+		Root string
+		Name string
+		Ssl  bool
 	}{
-		Name:  name,
-		Port:  viper.GetInt("server.port"),
-		Root:  pwd,
-		Theme: viper.GetString("server.theme"),
-		Ssl:   viper.GetBool("server.ssl"),
+		Name: name,
+		Port: viper.GetInt("server.port"),
+		Root: pwd,
+		Ssl:  viper.GetBool("server.ssl"),
 	})
 }
 func (p *HomePlugin) generateSsl(c *cli.Context) error {
