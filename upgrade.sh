@@ -1,4 +1,5 @@
 #!/bin/sh
+go get -u github.com/kardianos/govendor
 rm -r vendor
 govendor init
 govendor fetch golang.org/x/crypto/bcrypt

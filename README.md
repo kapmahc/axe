@@ -10,34 +10,22 @@ nvm install node
 nvm alias default node
 ```
 
-- upgrade nvm
-
-  ```
-  (
-  cd "$NVM_DIR"
-  git fetch origin
-  git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
-  ) && . "$NVM_DIR/nvm.sh"
-  ```
-
 ## Install go
 
 ```
 zsh < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
 gvm install go1.9.2 -B
 gvm use go1.9.2 --default
-go get -u github.com/kardianos/govendor
 ```
 
 ## Usage
 
 ```
 go get -u github.com/kardianos/govendor
-go get -d -u github.com:kapmahc/axe
-$GOPATH/src/github.com/kapmahc/axe
-govendor sync
-npm install
-cd dashboard && npm install
+go get -d -u github.com/kapmahc/axe
+cd $GOPATH/src/github.com/kapmahc/axe
+sh upgrade.sh
+cd desktop && npm install
 make
 ```
 
