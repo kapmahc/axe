@@ -101,9 +101,7 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 
 - [govendor](https://github.com/kardianos/govendor)
 
-- [gvm](https://github.com/moovweb/gvm)
-
-- [nvm](https://github.com/creationix/nvm)
+- [Install npm packages globally without sudo on macOS and Linux](https://github.com/sindresorhus/guides/blob/master/npm-global-without-sudo.md)
 
 - [ant design](https://ant.design/docs/react/introduce)
 
