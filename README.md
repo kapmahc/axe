@@ -16,10 +16,8 @@ A complete open source e-commerce solution by Rust.
   ```
   git clone https://github.com/kapmahc/axe.git
   cd axe
-  rustup update
-  cargo update
-  npm install
-  cargo build --release
+  make init
+  make
   ```
 
 ## Atom plugins
