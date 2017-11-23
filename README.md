@@ -31,6 +31,12 @@ A complete open source e-commerce solution by Rust.
 
 ## Notes
 
+- Generate a random key
+
+  ```
+  openssl rand -base64 32
+  ```
+
 - ~/.npmrc
 
   ```
