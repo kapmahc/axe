@@ -80,6 +80,8 @@ A complete open source e-commerce solution by Rust.
 
 - [rust book](https://doc.rust-lang.org/book/second-edition/)
 - [rocket](https://github.com/SergioBenitez/Rocket)
+- [serde](https://serde.rs/)
+- [crates.io](https://crates.io/)
 - [bootstrap](http://getbootstrap.com/docs/4.0/getting-started/introduction/)
 - [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
 - [For gmail smtp](http://stackoverflow.com/questions/20337040/gmail-smtp-debug-error-please-log-in-via-your-web-browser)
