@@ -1,0 +1,19 @@
+
+# rust
+/target/
+**/*.rs.bk
+
+# Javascript
+/node_modules/
+
+# Build
+/dist
+/dist.tar.xz
+
+# Editor
+.*.swp
+.*.un~
+
+# Test
+/tmp
+/config.toml
