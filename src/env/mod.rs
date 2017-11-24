@@ -3,12 +3,11 @@ use clap::{App, Arg, ArgMatches, SubCommand};
 pub mod app;
 pub mod config;
 pub mod errors;
-
-pub const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+pub mod utils;
 
 pub fn run() {
     let matches = App::new(env!("CARGO_PKG_DESCRIPTION"))
-        .version(VERSION)
+        .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .about(env!("CARGO_PKG_HOMEPAGE"))
         .arg(
@@ -78,19 +77,19 @@ fn _main<'a>(matches: &'a ArgMatches) -> errors::Result<()> {
     match matches.value_of("config") {
         None => Ok(()),
         Some(cfg) => {
-            let app = app::App::new(cfg);
+            let app = app::App::new(cfg.to_string());
             if let Some(matches) = matches.subcommand_matches("generate") {
                 if let Some(_) = matches.subcommand_matches("config") {
-                    let it = config::Config::new();
-                    return it.write(cfg.to_string());
+                    let c = config::Config::new();
+                    return c.write(cfg.to_string());
                 }
                 if let Some(matches) = matches.subcommand_matches("locale") {
                     let name = format!("{}.yaml", matches.value_of("name").unwrap());
-                    return app.generate_locale(&name);
+                    return app.generate_locale(name);
                 }
                 if let Some(matches) = matches.subcommand_matches("migration") {
                     let name = matches.value_of("name").unwrap();
-                    return app.generate_migration(&name);
+                    return app.generate_migration(name.to_string());
                 }
                 if let Some(matches) = matches.subcommand_matches("nginx") {
                     let name = "nginx.conf";
@@ -98,11 +97,9 @@ fn _main<'a>(matches: &'a ArgMatches) -> errors::Result<()> {
                     info!("generate file {} {}", name, ssl);
                     return Ok(());
                 }
-
                 return Ok(());
             }
-            info!("start application server");
-            Ok(())
+            return app.start_server();
         }
     }
 }

@@ -2,33 +2,75 @@ use std::io::{BufWriter, Write};
 use std::os::unix::fs::OpenOptionsExt;
 use std::fs::OpenOptions;
 use std::boxed::Box;
+use std::path::Path;
 use postgres;
 use redis;
 use amqp;
 use base64;
-use rand;
 use toml;
-use rand::Rng;
+use rocket::config::{self, Environment};
 use super::errors::Result;
+use super::utils;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
-    env: &'static str,
+    env: String,
+    workers: u16,
     database: PostgreSQL,
     redis: Redis,
     rabbitmq: RabbitMQ,
     http: HTTP,
 }
 
+
+impl From<Config> for config::ConfigBuilder {
+    fn from(c: Config) -> Self {
+        let env = match c.env.parse::<Environment>() {
+            Ok(v) => v,
+            Err(_) => {
+                error!("bad enviroment {}", c.env);
+                config::Environment::Development
+            }
+        };
+
+        let lev = if env.is_prod() {
+            config::LoggingLevel::Normal
+        } else {
+            config::LoggingLevel::Debug
+        };
+
+        let views = match Path::new("theme").join(c.http.theme).join("views").to_str() {
+            Some(v) => v.to_string(),
+            None => "views".to_string(),
+        };
+        return config::Config::build(env)
+            .address("localhost")
+            .port(c.http.port)
+            .workers(c.workers)
+            .limits(
+                config::Limits::new()
+                    .limit("forms", c.http.limits * (1 << 20))
+                    .limit("json", c.http.limits * (1 << 20)),
+            )
+            .secret_key(c.http.secret)
+            .log_level(lev)
+            .extra("database", c.database.url())
+            .extra("redis", c.redis.url())
+            .extra("rabbitmq", c.rabbitmq.url())
+            .extra("template_dir", views);
+    }
+}
+
 impl Config {
     pub fn new() -> Config {
-        Config {
-            env: "development",
+        return Config {
+            env: "development".to_string(), // Environment::Development.to_string(),
+            workers: 6,
             database: PostgreSQL::new(),
             redis: Redis::new(),
             rabbitmq: RabbitMQ::new(),
             http: HTTP::new(),
-        }
+        };
     }
     pub fn write(&self, name: String) -> Result<()> {
         info!("generate file {}", name);
@@ -49,28 +91,29 @@ impl Config {
     // }
 }
 
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PostgreSQL {
-    host: &'static str,
+    host: String,
     port: u16,
-    user: &'static str,
-    password: &'static str,
-    name: &'static str,
+    user: String,
+    password: String,
+    name: String,
 }
 
 impl PostgreSQL {
     pub fn new() -> PostgreSQL {
         let name = env!("CARGO_PKG_NAME");
         PostgreSQL {
-            host: "localhost",
+            host: "localhost".to_string(),
             port: 5432,
-            user: "postgres",
-            password: "",
-            name: name,
+            user: "postgres".to_string(),
+            password: "".to_string(),
+            name: name.to_string(),
         }
     }
 
-    pub fn host(&mut self, host: &'static str) -> &mut PostgreSQL {
+    pub fn host(&mut self, host: String) -> &mut PostgreSQL {
         self.host = host;
         self
     }
@@ -78,15 +121,15 @@ impl PostgreSQL {
         self.port = port;
         self
     }
-    pub fn name(&mut self, name: &'static str) -> &mut PostgreSQL {
+    pub fn name(&mut self, name: String) -> &mut PostgreSQL {
         self.name = name;
         self
     }
-    pub fn user(&mut self, user: &'static str) -> &mut PostgreSQL {
+    pub fn user(&mut self, user: String) -> &mut PostgreSQL {
         self.user = user;
         self
     }
-    pub fn password(&mut self, password: &'static str) -> &mut PostgreSQL {
+    pub fn password(&mut self, password: String) -> &mut PostgreSQL {
         self.password = password;
         self
     }
@@ -118,7 +161,7 @@ impl PostgreSQL {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Redis {
-    host: &'static str,
+    host: String,
     port: u16,
     db: i64,
 }
@@ -126,12 +169,12 @@ pub struct Redis {
 impl Redis {
     pub fn new() -> Redis {
         Redis {
-            host: "localhost",
+            host: "localhost".to_string(),
             port: 6379,
             db: 0,
         }
     }
-    pub fn host(&mut self, host: &'static str) -> &mut Redis {
+    pub fn host(&mut self, host: String) -> &mut Redis {
         self.host = host;
         self
     }
@@ -158,27 +201,27 @@ impl Redis {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RabbitMQ {
-    host: &'static str,
+    host: String,
     port: u16,
-    user: &'static str,
-    password: &'static str,
+    user: String,
+    password: String,
     #[serde(rename = "virtual")]
-    _virtual: &'static str,
+    _virtual: String,
 }
 
 impl RabbitMQ {
     pub fn new() -> RabbitMQ {
         let name = env!("CARGO_PKG_NAME");
         RabbitMQ {
-            host: "localhost",
+            host: "localhost".to_string(),
             port: 5432,
-            user: "postgres",
-            password: "",
-            _virtual: name,
+            user: "postgres".to_string(),
+            password: "".to_string(),
+            _virtual: name.to_string(),
         }
     }
 
-    pub fn host(&mut self, host: &'static str) -> &mut RabbitMQ {
+    pub fn host(&mut self, host: String) -> &mut RabbitMQ {
         self.host = host;
         self
     }
@@ -186,15 +229,15 @@ impl RabbitMQ {
         self.port = port;
         self
     }
-    pub fn name(&mut self, _virtual: &'static str) -> &mut RabbitMQ {
+    pub fn name(&mut self, _virtual: String) -> &mut RabbitMQ {
         self._virtual = _virtual;
         self
     }
-    pub fn user(&mut self, user: &'static str) -> &mut RabbitMQ {
+    pub fn user(&mut self, user: String) -> &mut RabbitMQ {
         self.user = user;
         self
     }
-    pub fn password(&mut self, password: &'static str) -> &mut RabbitMQ {
+    pub fn password(&mut self, password: String) -> &mut RabbitMQ {
         self.password = password;
         self
     }
@@ -225,40 +268,46 @@ impl RabbitMQ {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HTTP {
     port: u16,
-    name: &'static str,
-    theme: &'static str,
+    name: String,
+    theme: String,
     secret: String,
+    limits: u64,
 }
 
 impl HTTP {
     pub fn new() -> HTTP {
         let name = env!("CARGO_PKG_NAME");
-        let secret: String = rand::thread_rng().gen_iter::<char>().take(32).collect();
         HTTP {
             port: 8080,
-            secret: base64::encode(&secret),
-            theme: "bootstrap",
-            name: name,
+            // a 256-bit base64 encoded string (44 characters)
+            secret: utils::random(256 / 8),
+            theme: "moon".to_string(),
+            name: name.to_string(),
+            limits: 20,
         }
     }
-    pub fn secret(&mut self, secret: &'static str) -> &mut HTTP {
-        self.secret = secret.to_string();
+    pub fn secret(&mut self, secret: String) -> &mut HTTP {
+        self.secret = secret;
         self
     }
     pub fn secret_key(&self) -> Result<Vec<u8>> {
         let key = try!(base64::decode(&self.secret));
         return Ok(key);
     }
-    pub fn name(&mut self, name: &'static str) -> &mut HTTP {
+    pub fn name(&mut self, name: String) -> &mut HTTP {
         self.name = name;
         self
     }
-    pub fn theme(&mut self, theme: &'static str) -> &mut HTTP {
+    pub fn theme(&mut self, theme: String) -> &mut HTTP {
         self.theme = theme;
         self
     }
     pub fn port(&mut self, port: u16) -> &mut HTTP {
         self.port = port;
+        self
+    }
+    pub fn limits(&mut self, limits: u64) -> &mut HTTP {
+        self.limits = limits;
         self
     }
 }

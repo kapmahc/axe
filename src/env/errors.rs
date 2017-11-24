@@ -8,6 +8,7 @@ use postgres;
 use redis;
 use base64;
 use amqp;
+use rocket;
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -21,6 +22,8 @@ pub enum Error {
     AMQP(amqp::AMQPError),
     Redis(redis::RedisError),
     Postgres(postgres::Error),
+    RocketConfig(rocket::config::ConfigError),
+    RocketLaunchError(rocket::error::LaunchError),
 }
 
 impl fmt::Display for Error {
@@ -34,6 +37,8 @@ impl fmt::Display for Error {
             Error::AMQP(ref err) => err.fmt(f),
             Error::Redis(ref err) => err.fmt(f),
             Error::Postgres(ref err) => err.fmt(f),
+            Error::RocketConfig(ref err) => err.fmt(f),
+            Error::RocketLaunchError(ref err) => err.fmt(f),
         }
     }
 }
@@ -49,6 +54,8 @@ impl error::Error for Error {
             Error::AMQP(ref err) => err.description(),
             Error::Redis(ref err) => err.description(),
             Error::Postgres(ref err) => err.description(),
+            Error::RocketConfig(ref err) => err.description(),
+            Error::RocketLaunchError(ref err) => err.description(),
         }
     }
 
@@ -62,6 +69,8 @@ impl error::Error for Error {
             Error::AMQP(ref err) => Some(err),
             Error::Redis(ref err) => Some(err),
             Error::Postgres(ref err) => Some(err),
+            Error::RocketConfig(ref err) => Some(err),
+            Error::RocketLaunchError(ref err) => Some(err),
         }
     }
 }
@@ -109,9 +118,20 @@ impl From<base64::DecodeError> for Error {
     }
 }
 
-
 impl From<amqp::AMQPError> for Error {
     fn from(err: amqp::AMQPError) -> Error {
         Error::AMQP(err)
+    }
+}
+
+impl From<rocket::config::ConfigError> for Error {
+    fn from(err: rocket::config::ConfigError) -> Error {
+        Error::RocketConfig(err)
+    }
+}
+
+impl From<rocket::error::LaunchError> for Error {
+    fn from(err: rocket::error::LaunchError) -> Error {
+        Error::RocketLaunchError(err)
     }
 }
