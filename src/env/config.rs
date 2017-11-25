@@ -1,7 +1,6 @@
 use std::io::{BufWriter, Write, Read};
 use std::os::unix::fs::OpenOptionsExt;
 use std::fs::{File, OpenOptions};
-use std::boxed::Box;
 use std::path::Path;
 use postgres;
 use redis;

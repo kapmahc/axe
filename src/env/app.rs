@@ -11,7 +11,9 @@ use postgres;
 use redis::{self, Commands};
 use super::errors::{Error, Result};
 use super::config;
-use super::router;
+use super::super::nut;
+use super::super::forum;
+use super::super::survey;
 
 pub struct App {
     name: String,
@@ -235,8 +237,12 @@ impl App {
             rocket::config::ConfigBuilder::from(try!(config::Config::load(&self.name)))
                 .finalize()
         );
-        let app = router::mount(cfg);
-        return Err(Error::from(app.launch()));
+        let err = rocket::custom(cfg, false)
+            .mount("/", nut::routes())
+            .mount("/forum", forum::routes())
+            .mount("/survey", survey::routes())
+            .launch();
+        return Err(Error::from(err));
     }
 
     // ------------

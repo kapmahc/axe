@@ -1,19 +1,19 @@
-#[get("/sign-in")]
+#[get("/users/sign-in")]
 pub fn get_sign_in() -> &'static str {
     "sign in"
 }
 
-#[post("/sign-in")]
+#[post("/users/users/sign-in")]
 pub fn post_sign_in() -> &'static str {
     "sign in"
 }
 
-#[get("/sign-up")]
+#[get("/users/sign-up")]
 pub fn get_sign_up() -> &'static str {
     "sign up"
 }
 
-#[post("/sign-up")]
+#[post("/users/sign-up")]
 pub fn post_sign_up() -> &'static str {
     "sign up"
 }

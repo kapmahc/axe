@@ -1,9 +1,9 @@
-#[get("/info")]
+#[get("/admin/site/info")]
 pub fn get_info() -> &'static str {
     "site info"
 }
 
-#[get("/author")]
+#[get("/admin/site/author")]
 pub fn get_author() -> &'static str {
     "site author"
 }

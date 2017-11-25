@@ -4,7 +4,6 @@ pub mod app;
 pub mod config;
 pub mod errors;
 pub mod utils;
-pub mod router;
 
 pub fn run() {
     let matches = App::new(env!("CARGO_PKG_DESCRIPTION"))
