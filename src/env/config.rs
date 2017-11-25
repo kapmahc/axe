@@ -12,6 +12,9 @@ use rocket::config::{self, Environment};
 use super::errors::Result;
 use super::utils;
 
+pub const CACHE_PREFIX: &'static str = "cache://";
+pub const TASK_PREFIX: &'static str = "task://";
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
     env: String,
@@ -199,6 +202,7 @@ impl Redis {
         format!("redis://{}:{}/{}", self.host, self.port, self.db)
     }
     pub fn open(&self) -> Result<redis::Client> {
+        info!("open {}", self.url());
         let con = try!(redis::Client::open(redis::ConnectionInfo {
             addr: Box::new(redis::ConnectionAddr::Tcp(self.host.to_string(), self.port)),
             db: self.db,

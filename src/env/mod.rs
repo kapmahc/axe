@@ -122,10 +122,10 @@ fn _main<'a>(matches: &'a ArgMatches) -> errors::Result<()> {
             }
             if let Some(matches) = matches.subcommand_matches("cache") {
                 if let Some(_) = matches.subcommand_matches("list") {
-                    return app.database_migrate();
+                    return app.cache_list();
                 }
                 if let Some(_) = matches.subcommand_matches("clear") {
-                    return app.database_rollback();
+                    return app.cache_clear();
                 }
                 return Ok(());
             }

@@ -8,6 +8,7 @@ use time;
 use rocket;
 use mustache;
 use postgres;
+use redis::{self, Commands};
 use super::errors::{Error, Result};
 use super::config;
 
@@ -24,14 +25,29 @@ impl App {
     // ---------- cache --------
 
     pub fn cache_list(&self) -> Result<()> {
-        info!("todo");
+        let con = try!(try!(try!(config::Config::load(&self.name)).redis.open()).get_connection());
+        let keys: Vec<String> = try!(con.keys(format!("{}*", config::CACHE_PREFIX)));
+        macro_rules! fmt {() => ("{:<32}{}")};
+        println!(fmt!(), "KEY", "TTL(S)");
+        for k in keys {
+            let t: i64 = try!(redis::cmd("TTL").arg(&k).query(&con));
+            println!(fmt!(), k, t);
+        }
         return Ok(());
     }
 
     pub fn cache_clear(&self) -> Result<()> {
-        info!("todo");
+        let con = try!(try!(try!(config::Config::load(&self.name)).redis.open()).get_connection());
+        let keys: Vec<String> = try!(con.keys(format!("{}*", config::CACHE_PREFIX)));
+        let _: () = try!(con.del(keys));
+        // let mut cmd = &redis::cmd("KEYS");
+        // for k in keys {
+        //     cmd = cmd.arg(k);
+        // }
+        // try!(cmd.query(&con));
         return Ok(());
     }
+
 
     // ---------- database --------
 
