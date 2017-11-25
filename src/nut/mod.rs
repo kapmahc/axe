@@ -1,11 +1,17 @@
 pub mod users;
 pub mod admin;
+pub mod middlewares;
 
-use rocket::Route;
+use rocket::{Route, Request};
 
 #[get("/")]
 pub fn home() -> &'static str {
     "home"
+}
+
+#[error(404)]
+fn not_found(req: &Request) -> &'static str {
+    "not found"
 }
 
 pub fn routes() -> Vec<Route> {

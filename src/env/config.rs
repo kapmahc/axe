@@ -7,6 +7,7 @@ use redis;
 use amqp;
 use base64;
 use toml;
+use log;
 use rocket::config::{self, Environment};
 use super::errors::Result;
 use super::utils;
@@ -30,7 +31,7 @@ impl From<Config> for config::ConfigBuilder {
         let env = match c.env.parse::<Environment>() {
             Ok(v) => v,
             Err(_) => {
-                error!("bad enviroment {}", c.env);
+                log::error!("bad enviroment {}", c.env);
                 config::Environment::Development
             }
         };
@@ -65,7 +66,7 @@ impl From<Config> for config::ConfigBuilder {
 
 impl Config {
     pub fn load(name: &str) -> Result<Config> {
-        info!("read config from file {:?}", name);
+        log::info!("read config from file {:?}", name);
         let mut file = try!(File::open(&name));
         let mut data = String::new();
         try!(file.read_to_string(&mut data));
@@ -84,7 +85,7 @@ impl Config {
         };
     }
     pub fn write(&self, name: String) -> Result<()> {
-        info!("generate file {}", name);
+        log::info!("generate file {}", name);
         let fd = try!(
             OpenOptions::new()
                 .write(true)
@@ -154,7 +155,7 @@ impl PostgreSQL {
         )
     }
     pub fn open(&self) -> Result<postgres::Connection> {
-        info!("open database {}", self.url());
+        log::info!("open database {}", self.url());
         let con = try!(postgres::Connection::connect(
             format!(
                 "postgres://{}:{}@{}:{}/{}",
@@ -201,7 +202,7 @@ impl Redis {
         format!("redis://{}:{}/{}", self.host, self.port, self.db)
     }
     pub fn open(&self) -> Result<redis::Client> {
-        info!("open {}", self.url());
+        log::info!("open {}", self.url());
         let con = try!(redis::Client::open(redis::ConnectionInfo {
             addr: Box::new(redis::ConnectionAddr::Tcp(self.host.to_string(), self.port)),
             db: self.db,
@@ -263,7 +264,7 @@ impl RabbitMQ {
         )
     }
     pub fn open(&self) -> Result<amqp::Session> {
-        info!("open rabbitmq {}", self.url());
+        log::info!("open rabbitmq {}", self.url());
         let url = format!(
             "amqp://{}:{}@{}:{}/{}",
             self.user,

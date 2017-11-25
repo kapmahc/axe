@@ -1,4 +1,5 @@
 use clap::{App, Arg, ArgMatches, SubCommand};
+use log;
 
 pub mod app;
 pub mod config;
@@ -79,7 +80,7 @@ pub fn run() {
 
     match _main(&matches) {
         Ok(_) => {}
-        Err(e) => error!("{}", e),
+        Err(e) => log::error!("{}", e),
     }
 }
 

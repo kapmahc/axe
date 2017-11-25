@@ -1,11 +1,13 @@
 #![feature(plugin)]
+#![feature(use_extern_macros)]
 #![plugin(rocket_codegen)]
-extern crate rocket;
 
+
+extern crate rocket;
 extern crate amqp;
 extern crate base64;
 extern crate clap;
-#[macro_use]
+#[macro_use(log)]
 extern crate log;
 extern crate postgres;
 extern crate rand;

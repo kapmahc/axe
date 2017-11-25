@@ -8,6 +8,7 @@ use time;
 use rocket;
 use mustache;
 use postgres;
+use log;
 use redis::{self, Commands};
 use super::errors::{Error, Result};
 use super::config;
@@ -66,7 +67,7 @@ impl App {
                             match mig.find('-') {
                                 None => (),
                                 Some(idx) => {
-                                    info!("Find migration {}", mig);
+                                    log::info!("Find migration {}", mig);
                                     let version = &mig[..idx];
                                     let version = try!(version.parse::<i64>());
                                     let name = &mig[idx + 1..];
@@ -89,7 +90,7 @@ impl App {
                                             &[&version, &name],
                                         ));
                                     } else {
-                                        info!("ingnore")
+                                        log::info!("ingnore")
                                     }
                                 }
                             };
@@ -112,7 +113,7 @@ impl App {
         {
             let version: i64 = row.get(0);
             let name: String = row.get(1);
-            info!("Rollback {} {}", version, name);
+            log::info!("Rollback {} {}", version, name);
             let root = self.get_database_migrations_root();
             let mut file = try!(File::open(
                 &root.join(format!("{}-{}", version, name)).join("down.sql"),
@@ -180,7 +181,7 @@ impl App {
         let cfg = try!(config::Config::load(&self.name));
         let scheme = if ssl { "https" } else { "http" };
 
-        info!(
+        log::info!(
             "generate file {:?} for {}://{}",
             file.as_os_str(),
             scheme,
@@ -238,9 +239,11 @@ impl App {
                 .finalize()
         );
         let err = rocket::custom(cfg, false)
+            .manage(nut::middlewares::Status::new())
             .mount("/", nut::routes())
             .mount("/forum", forum::routes())
             .mount("/survey", survey::routes())
+            .catch(errors![nut::not_found])
             .launch();
         return Err(Error::from(err));
     }
@@ -248,7 +251,7 @@ impl App {
     // ------------
 
     fn create_empty_file(&self, name: PathBuf) -> Result<()> {
-        info!("generate file {:?}", name.as_os_str());
+        log::info!("generate file {:?}", name.as_os_str());
         match name.parent() {
             None => {}
             Some(d) => try!(create_dir_all(d)),
