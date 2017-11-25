@@ -11,6 +11,7 @@ use postgres;
 use redis::{self, Commands};
 use super::errors::{Error, Result};
 use super::config;
+use super::router;
 
 pub struct App {
     name: String,
@@ -40,11 +41,6 @@ impl App {
         let con = try!(try!(try!(config::Config::load(&self.name)).redis.open()).get_connection());
         let keys: Vec<String> = try!(con.keys(format!("{}*", config::CACHE_PREFIX)));
         let _: () = try!(con.del(keys));
-        // let mut cmd = &redis::cmd("KEYS");
-        // for k in keys {
-        //     cmd = cmd.arg(k);
-        // }
-        // try!(cmd.query(&con));
         return Ok(());
     }
 
@@ -239,8 +235,7 @@ impl App {
             rocket::config::ConfigBuilder::from(try!(config::Config::load(&self.name)))
                 .finalize()
         );
-        let app = rocket::custom(cfg, false);
-        // TODO init router
+        let app = router::mount(cfg);
         return Err(Error::from(app.launch()));
     }
 
