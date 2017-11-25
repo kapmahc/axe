@@ -16,9 +16,9 @@ use super::utils;
 pub struct Config {
     env: String,
     workers: u16,
-    database: PostgreSQL,
-    redis: Redis,
-    rabbitmq: RabbitMQ,
+    pub(crate) database: PostgreSQL,
+    pub(crate) redis: Redis,
+    pub(crate) rabbitmq: RabbitMQ,
     pub(crate) http: HTTP,
 }
 

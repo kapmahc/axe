@@ -1,11 +1,13 @@
-use std::fs::{File, create_dir_all, OpenOptions};
+use std::fs::{read_dir, File, create_dir_all, OpenOptions};
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Path, PathBuf};
 use std::io::Read;
 use std::env;
+use std::result;
 use time;
 use rocket;
 use mustache;
+use postgres;
 use super::errors::{Error, Result};
 use super::config;
 
@@ -19,17 +21,141 @@ impl App {
         App { name: name }
     }
 
+    // ---------- cache --------
+
+    pub fn cache_list(&self) -> Result<()> {
+        info!("todo");
+        return Ok(());
+    }
+
+    pub fn cache_clear(&self) -> Result<()> {
+        info!("todo");
+        return Ok(());
+    }
+
+    // ---------- database --------
+
     pub fn database_migrate(&self) -> Result<()> {
+        let root = self.get_database_migrations_root();
+        let con = try!(self.get_database_connenction());
+        let db = try!(con.transaction());
+        let mut files = try!(try!(read_dir(&root)).collect::<result::Result<Vec<_>, _>>());
+        files.sort_by_key(|d| d.path());
+        for entry in files {
+            let mig = entry.path();
+            match mig.file_name() {
+                None => (),
+                Some(name) => {
+                    match name.to_str() {
+                        None => (),
+                        Some(mig) => {
+                            match mig.find('-') {
+                                None => (),
+                                Some(idx) => {
+                                    info!("Find migration {}", mig);
+                                    let version = &mig[..idx];
+                                    let version = try!(version.parse::<i64>());
+                                    let name = &mig[idx + 1..];
+                                    let count: i64 = try!(db.query(
+                                        "SELECT COUNT(*) FROM schema_migrations
+                                        WHERE version = $1 AND name = $2",
+                                        &[&version, &name],
+                                    )).get(0)
+                                        .get(0);
+                                    if count == 0 {
+                                        let mut file =
+                                            try!(File::open(&root.join(mig).join("up.sql")));
+                                        let mut buf = String::new();
+                                        try!(file.read_to_string(&mut buf));
+                                        try!(db.batch_execute(&buf));
+                                        try!(db.execute(
+                                            "INSERT INTO
+                                            schema_migrations(version, name)
+                                            VALUES($1, $2)",
+                                            &[&version, &name],
+                                        ));
+                                    } else {
+                                        info!("ingnore")
+                                    }
+                                }
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        try!(db.commit());
         return Ok(());
     }
 
     pub fn database_rollback(&self) -> Result<()> {
+        let con = try!(self.get_database_connenction());
+        let db = try!(con.transaction());
+        for row in &try!(db.query(
+            "SELECT version, name FROM schema_migrations ORDER BY id DESC LIMIT 1",
+            &[],
+        ))
+        {
+            let version: i64 = row.get(0);
+            let name: String = row.get(1);
+            info!("Rollback {} {}", version, name);
+            let root = self.get_database_migrations_root();
+            let mut file = try!(File::open(
+                &root.join(format!("{}-{}", version, name)).join("down.sql"),
+            ));
+            let mut buf = String::new();
+            try!(file.read_to_string(&mut buf));
+            try!(db.batch_execute(&buf));
+            try!(db.execute(
+                "DELETE FROM schema_migrations WHERE version = $1 AND name = $2",
+                &[&version, &name],
+            ));
+        }
+        try!(db.commit());
         return Ok(());
     }
 
-    pub fn database_version(&self) -> Result<()> {
+    pub fn database_show(&self) -> Result<()> {
+        let db = try!(self.get_database_connenction());
+        macro_rules! fmt {() => ("{:<16}{:<24}{}")};
+        println!(fmt!(), "VERSION", "NAME", "CREATED AT");
+        for row in &try!(db.query(
+            "SELECT version, name, created_at FROM schema_migrations",
+            &[],
+        ))
+        {
+            let version: i64 = row.get(0);
+            let name: String = row.get(1);
+            let created_at: time::Timespec = row.get(2);
+            println!(fmt!(), version, name, time::at(created_at).rfc822());
+        }
         return Ok(());
     }
+
+    fn get_database_migrations_root(&self) -> PathBuf {
+        return Path::new("db").join("migrations");
+    }
+
+    fn get_database_connenction(&self) -> Result<postgres::Connection> {
+        let db = try!(try!(config::Config::load(&self.name)).database.open());
+        try!(db.execute(
+            "CREATE TABLE IF NOT EXISTS schema_migrations (
+                    id SERIAL PRIMARY KEY,
+                    version BIGINT NOT NULL,
+                    name VARCHAR(255) NOT NULL,
+                    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now()
+                  )",
+            &[],
+        ));
+        try!(db.execute(
+            "CREATE UNIQUE INDEX IF NOT EXISTS idx_schema_migrations_version_name
+                ON schema_migrations(version, name)",
+            &[],
+        ));
+        return Ok(db);
+    }
+
+    // ------- generate --------
 
     pub fn generate_nginx_conf(&self, ssl: bool) -> Result<()> {
         let file = Path::new("tmp").join("nginx.conf");
@@ -90,6 +216,8 @@ impl App {
         Ok(())
     }
 
+    // --------- start server --------
+
     pub fn start_server(&self) -> Result<()> {
         let cfg = try!(
             rocket::config::ConfigBuilder::from(try!(config::Config::load(&self.name)))
@@ -100,6 +228,7 @@ impl App {
         return Err(Error::from(app.launch()));
     }
 
+    // ------------
 
     fn create_empty_file(&self, name: PathBuf) -> Result<()> {
         info!("generate file {:?}", name.as_os_str());

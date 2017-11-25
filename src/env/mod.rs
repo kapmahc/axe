@@ -18,10 +18,6 @@ pub fn run() {
                 .default_value("config.toml")
                 .takes_value(true),
         )
-        .subcommand(SubCommand::with_name("cache").about("Cache operations"))
-        .subcommand(SubCommand::with_name("database").about(
-            "Database operations",
-        ))
         .subcommand(
             SubCommand::with_name("generate")
                 .about("Generate files")
@@ -58,6 +54,27 @@ pub fn run() {
                         )),
                 ),
         )
+        .subcommand(
+            SubCommand::with_name("database")
+                .about("Database operations")
+                .subcommand(SubCommand::with_name("migrate").about(
+                    "Migrate the database to latest version.",
+                ))
+                .subcommand(SubCommand::with_name("rollback").about(
+                    "Rollback the database to last version.",
+                ))
+                .subcommand(SubCommand::with_name("show").about(
+                    "Show the database current version.",
+                )),
+        )
+        .subcommand(
+            SubCommand::with_name("cache")
+                .about("Cache operations")
+                .subcommand(SubCommand::with_name("list").about("List all cache keys."))
+                .subcommand(SubCommand::with_name("clear").about(
+                    "Clear all cache items.",
+                )),
+        )
         .get_matches();
 
     match _main(&matches) {
@@ -93,16 +110,22 @@ fn _main<'a>(matches: &'a ArgMatches) -> errors::Result<()> {
 
             if let Some(matches) = matches.subcommand_matches("database") {
                 if let Some(_) = matches.subcommand_matches("migrate") {
-                    let c = config::Config::new();
-                    return c.write(cfg.to_string());
+                    return app.database_migrate();
                 }
-                if let Some(matches) = matches.subcommand_matches("migrate") {
-                    let name = format!("{}.yaml", matches.value_of("name").unwrap());
-                    return app.generate_locale(name);
+                if let Some(_) = matches.subcommand_matches("rollback") {
+                    return app.database_rollback();
                 }
-                if let Some(matches) = matches.subcommand_matches("version") {
-                    let name = matches.value_of("name").unwrap();
-                    return app.generate_migration(name.to_string());
+                if let Some(_) = matches.subcommand_matches("show") {
+                    return app.database_show();
+                }
+                return Ok(());
+            }
+            if let Some(matches) = matches.subcommand_matches("cache") {
+                if let Some(_) = matches.subcommand_matches("list") {
+                    return app.database_migrate();
+                }
+                if let Some(_) = matches.subcommand_matches("clear") {
+                    return app.database_rollback();
                 }
                 return Ok(());
             }
