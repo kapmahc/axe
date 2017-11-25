@@ -28,6 +28,7 @@ A complete open source e-commerce solution by Rust.
 - language-babel
 - language-rust
 - autocomplete-racer
+- language-mustache
 
 ## Notes
 

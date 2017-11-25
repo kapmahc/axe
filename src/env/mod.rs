@@ -18,14 +18,10 @@ pub fn run() {
                 .default_value("config.toml")
                 .takes_value(true),
         )
-        // .arg(
-        //     Arg::with_name("verbose")
-        //         .short("v")
-        //         .long("verbose")
-        //         .help("Enable verbose output"),
-        // )
         .subcommand(SubCommand::with_name("cache").about("Cache operations"))
-        .subcommand(SubCommand::with_name("database").about("Database operations"))
+        .subcommand(SubCommand::with_name("database").about(
+            "Database operations",
+        ))
         .subcommand(
             SubCommand::with_name("generate")
                 .about("Generate files")
@@ -57,12 +53,9 @@ pub fn run() {
                 .subcommand(
                     SubCommand::with_name("nginx")
                         .about("Nginx config file.")
-                        .arg(
-                            Arg::with_name("https")
-                                .short("s")
-                                .long("https")
-                                .help("HTTPS?"),
-                        ),
+                        .arg(Arg::with_name("https").short("s").long("https").help(
+                            "HTTPS?",
+                        )),
                 ),
         )
         .get_matches();
@@ -92,10 +85,24 @@ fn _main<'a>(matches: &'a ArgMatches) -> errors::Result<()> {
                     return app.generate_migration(name.to_string());
                 }
                 if let Some(matches) = matches.subcommand_matches("nginx") {
-                    let name = "nginx.conf";
                     let ssl = matches.is_present("https");
-                    info!("generate file {} {}", name, ssl);
-                    return Ok(());
+                    return app.generate_nginx_conf(ssl);
+                }
+                return Ok(());
+            }
+
+            if let Some(matches) = matches.subcommand_matches("database") {
+                if let Some(_) = matches.subcommand_matches("migrate") {
+                    let c = config::Config::new();
+                    return c.write(cfg.to_string());
+                }
+                if let Some(matches) = matches.subcommand_matches("migrate") {
+                    let name = format!("{}.yaml", matches.value_of("name").unwrap());
+                    return app.generate_locale(name);
+                }
+                if let Some(matches) = matches.subcommand_matches("version") {
+                    let name = matches.value_of("name").unwrap();
+                    return app.generate_migration(name.to_string());
                 }
                 return Ok(());
             }

@@ -9,6 +9,7 @@ use redis;
 use base64;
 use amqp;
 use rocket;
+use mustache;
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -24,6 +25,8 @@ pub enum Error {
     Postgres(postgres::Error),
     RocketConfig(rocket::config::ConfigError),
     RocketLaunchError(rocket::error::LaunchError),
+    MustacheError(mustache::Error),
+    MustacheEncoderError(mustache::encoder::Error),
 }
 
 impl fmt::Display for Error {
@@ -39,6 +42,8 @@ impl fmt::Display for Error {
             Error::Postgres(ref err) => err.fmt(f),
             Error::RocketConfig(ref err) => err.fmt(f),
             Error::RocketLaunchError(ref err) => err.fmt(f),
+            Error::MustacheError(ref err) => err.fmt(f),
+            Error::MustacheEncoderError(ref err) => err.fmt(f),
         }
     }
 }
@@ -56,6 +61,8 @@ impl error::Error for Error {
             Error::Postgres(ref err) => err.description(),
             Error::RocketConfig(ref err) => err.description(),
             Error::RocketLaunchError(ref err) => err.description(),
+            Error::MustacheError(ref err) => err.description(),
+            Error::MustacheEncoderError(ref err) => err.description(),
         }
     }
 
@@ -71,6 +78,8 @@ impl error::Error for Error {
             Error::Postgres(ref err) => Some(err),
             Error::RocketConfig(ref err) => Some(err),
             Error::RocketLaunchError(ref err) => Some(err),
+            Error::MustacheError(ref err) => Some(err),
+            Error::MustacheEncoderError(ref err) => Some(err),
         }
     }
 }
@@ -133,5 +142,17 @@ impl From<rocket::config::ConfigError> for Error {
 impl From<rocket::error::LaunchError> for Error {
     fn from(err: rocket::error::LaunchError) -> Error {
         Error::RocketLaunchError(err)
+    }
+}
+
+impl From<mustache::Error> for Error {
+    fn from(err: mustache::Error) -> Error {
+        Error::MustacheError(err)
+    }
+}
+
+impl From<mustache::encoder::Error> for Error {
+    fn from(err: mustache::encoder::Error) -> Error {
+        Error::MustacheEncoderError(err)
     }
 }

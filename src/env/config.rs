@@ -1,6 +1,6 @@
-use std::io::{BufWriter, Write};
+use std::io::{BufWriter, Write, Read};
 use std::os::unix::fs::OpenOptionsExt;
-use std::fs::OpenOptions;
+use std::fs::{File, OpenOptions};
 use std::boxed::Box;
 use std::path::Path;
 use postgres;
@@ -19,7 +19,7 @@ pub struct Config {
     database: PostgreSQL,
     redis: Redis,
     rabbitmq: RabbitMQ,
-    http: HTTP,
+    pub(crate) http: HTTP,
 }
 
 
@@ -62,9 +62,18 @@ impl From<Config> for config::ConfigBuilder {
 }
 
 impl Config {
+    pub fn load(name: &str) -> Result<Config> {
+        info!("read config from file {:?}", name);
+        let mut file = try!(File::open(&name));
+        let mut data = String::new();
+        try!(file.read_to_string(&mut data));
+        let cfg = try!(toml::from_str(&data));
+        return Ok(cfg);
+    }
+
     pub fn new() -> Config {
         return Config {
-            env: "development".to_string(), // Environment::Development.to_string(),
+            env: "development".to_string(),
             workers: 6,
             database: PostgreSQL::new(),
             redis: Redis::new(),
@@ -267,22 +276,21 @@ impl RabbitMQ {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HTTP {
-    port: u16,
-    name: String,
-    theme: String,
+    pub(crate) port: u16,
+    pub(crate) name: String,
+    pub(crate) theme: String,
     secret: String,
     limits: u64,
 }
 
 impl HTTP {
     pub fn new() -> HTTP {
-        let name = env!("CARGO_PKG_NAME");
         HTTP {
             port: 8080,
             // a 256-bit base64 encoded string (44 characters)
             secret: utils::random(256 / 8),
             theme: "moon".to_string(),
-            name: name.to_string(),
+            name: "www.change-me.com".to_string(),
             limits: 20,
         }
     }
