@@ -15,6 +15,7 @@ use super::utils;
 pub const CACHE_PREFIX: &'static str = "cache://";
 pub const TASK_PREFIX: &'static str = "task://";
 
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
     env: String,
@@ -97,10 +98,6 @@ impl Config {
         try!(wrt.write_all(&try!(toml::to_vec(self))));
         Ok(())
     }
-    // pub fn read() -> Result<Config> {
-    //     let cfg: Config = try!(toml::from_str(""));
-    //     Ok(cfg)
-    // }
 }
 
 
@@ -147,24 +144,20 @@ impl PostgreSQL {
     }
     pub fn url(&self) -> String {
         format!(
-            "postgres://{}@{}:{}/{}",
+            "postgres://{}:{}@{}:{}/{}",
             self.user,
+            self.password,
             self.host,
             self.port,
             self.name
         )
     }
+
+
     pub fn open(&self) -> Result<postgres::Connection> {
         log::info!("open database {}", self.url());
         let con = try!(postgres::Connection::connect(
-            format!(
-                "postgres://{}:{}@{}:{}/{}",
-                self.user,
-                self.password,
-                self.host,
-                self.port,
-                self.name
-            ),
+            self.url(),
             postgres::TlsMode::None,
         ));
         return Ok(con);

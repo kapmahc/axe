@@ -1,5 +1,6 @@
 use std::sync::atomic::AtomicUsize;
 
+
 #[derive(Debug)]
 pub struct Status {
     hit_count: AtomicUsize,

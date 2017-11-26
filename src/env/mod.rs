@@ -8,6 +8,7 @@ pub mod utils;
 pub mod cache;
 pub mod i18n;
 pub mod jobber;
+pub mod database;
 
 pub fn run() {
     let matches = App::new(env!("CARGO_PKG_DESCRIPTION"))

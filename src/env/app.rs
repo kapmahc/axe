@@ -10,10 +10,8 @@ use log;
 use redis::{self, Commands};
 use diesel::{migrations, pg, Connection};
 use super::errors::{Error, Result};
-use super::config;
-use super::super::nut;
-use super::super::forum;
-use super::super::survey;
+use super::{config, database};
+use super::super::{nut, forum, survey};
 
 pub struct App {
     name: String,
@@ -91,37 +89,15 @@ impl App {
 
         }
 
-
-
-
         return Ok(());
     }
 
-    // fn get_database_migrations_root(&self) -> PathBuf {
-    //     return Path::new("db").join("migrations");
-    // }
 
     fn get_database_connenction(&self) -> Result<pg::PgConnection> {
         let db = try!(pg::PgConnection::establish(
             &try!(config::Config::load(&self.name)).database.url(),
         ));
         return Ok(db);
-        // let db = try!(try!(config::Config::load(&self.name)).database.open());
-        // try!(db.execute(
-        //     "CREATE TABLE IF NOT EXISTS schema_migrations (
-        //             id SERIAL PRIMARY KEY,
-        //             version BIGINT NOT NULL,
-        //             name VARCHAR(255) NOT NULL,
-        //             created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now()
-        //           )",
-        //     &[],
-        // ));
-        // try!(db.execute(
-        //     "CREATE UNIQUE INDEX IF NOT EXISTS idx_schema_migrations_version_name
-        //         ON schema_migrations(version, name)",
-        //     &[],
-        // ));
-        // return Ok(db);
     }
 
     // ------- generate --------
@@ -190,12 +166,14 @@ impl App {
     // --------- start server --------
 
     pub fn start_server(&self) -> Result<()> {
-        let cfg = try!(
-            rocket::config::ConfigBuilder::from(try!(config::Config::load(&self.name)))
-                .finalize()
-        );
-        let err = rocket::custom(cfg, false)
-            .manage(nut::middlewares::Status::new())
+        let cfg = try!(config::Config::load(&self.name));
+        let db = try!(database::open(cfg.database.url()));
+
+        let err = rocket::custom(
+            try!(rocket::config::ConfigBuilder::from(cfg).finalize()),
+            false,
+        )//.manage(nut::middlewares::Status::new())
+            .manage(db)
             .mount("/", nut::routes())
             .mount("/forum", forum::routes())
             .mount("/survey", survey::routes())

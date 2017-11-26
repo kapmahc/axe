@@ -12,6 +12,7 @@ use amqp;
 use rocket;
 use mustache;
 use diesel;
+use r2d2;
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -33,6 +34,7 @@ pub enum Error {
     DieselMigrationError(diesel::migrations::MigrationError),
     DieselRunMigrationsError(diesel::migrations::RunMigrationsError),
     DieselConnectionError(diesel::ConnectionError),
+    R2d2InitializationError(r2d2::InitializationError),
 }
 
 impl fmt::Display for Error {
@@ -54,6 +56,7 @@ impl fmt::Display for Error {
             Error::DieselMigrationError(ref err) => err.fmt(f),
             Error::DieselRunMigrationsError(ref err) => err.fmt(f),
             Error::DieselConnectionError(ref err) => err.fmt(f),
+            Error::R2d2InitializationError(ref err) => err.fmt(f),
         }
     }
 }
@@ -77,6 +80,7 @@ impl error::Error for Error {
             Error::DieselMigrationError(ref err) => err.description(),
             Error::DieselRunMigrationsError(ref err) => err.description(),
             Error::DieselConnectionError(ref err) => err.description(),
+            Error::R2d2InitializationError(ref err) => err.description(),
         }
     }
 
@@ -98,6 +102,7 @@ impl error::Error for Error {
             Error::DieselMigrationError(ref err) => Some(err),
             Error::DieselRunMigrationsError(ref err) => Some(err),
             Error::DieselConnectionError(ref err) => Some(err),
+            Error::R2d2InitializationError(ref err) => Some(err),
         }
     }
 }
@@ -196,5 +201,11 @@ impl From<diesel::migrations::RunMigrationsError> for Error {
 impl From<diesel::ConnectionError> for Error {
     fn from(err: diesel::ConnectionError) -> Error {
         Error::DieselConnectionError(err)
+    }
+}
+
+impl From<r2d2::InitializationError> for Error {
+    fn from(err: r2d2::InitializationError) -> Error {
+        Error::R2d2InitializationError(err)
     }
 }

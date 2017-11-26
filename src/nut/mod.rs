@@ -1,11 +1,13 @@
 pub mod users;
 pub mod admin;
 pub mod middlewares;
+pub mod models;
 
 use rocket::{Route, Request};
+use super::env::database::Db;
 
 #[get("/")]
-pub fn home() -> &'static str {
+pub fn home(_db: Db) -> &'static str {
     "home"
 }
 

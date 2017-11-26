@@ -21,6 +21,10 @@ extern crate mustache;
 extern crate rustc_serialize;
 #[macro_use]
 extern crate diesel;
+#[macro_use]
+extern crate diesel_codegen;
+extern crate r2d2_diesel;
+extern crate r2d2;
 
 pub mod env;
 pub mod nut;
