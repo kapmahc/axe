@@ -10,7 +10,7 @@ pub fn home() -> &'static str {
 }
 
 #[error(404)]
-fn not_found(req: &Request) -> &'static str {
+fn not_found(_req: &Request) -> &'static str {
     "not found"
 }
 

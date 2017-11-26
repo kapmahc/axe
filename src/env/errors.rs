@@ -11,6 +11,7 @@ use base64;
 use amqp;
 use rocket;
 use mustache;
+use diesel;
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -29,6 +30,9 @@ pub enum Error {
     RocketLaunchError(rocket::error::LaunchError),
     MustacheError(mustache::Error),
     MustacheEncoderError(mustache::encoder::Error),
+    DieselMigrationError(diesel::migrations::MigrationError),
+    DieselRunMigrationsError(diesel::migrations::RunMigrationsError),
+    DieselConnectionError(diesel::ConnectionError),
 }
 
 impl fmt::Display for Error {
@@ -47,6 +51,9 @@ impl fmt::Display for Error {
             Error::RocketLaunchError(ref err) => err.fmt(f),
             Error::MustacheError(ref err) => err.fmt(f),
             Error::MustacheEncoderError(ref err) => err.fmt(f),
+            Error::DieselMigrationError(ref err) => err.fmt(f),
+            Error::DieselRunMigrationsError(ref err) => err.fmt(f),
+            Error::DieselConnectionError(ref err) => err.fmt(f),
         }
     }
 }
@@ -67,6 +74,9 @@ impl error::Error for Error {
             Error::RocketLaunchError(ref err) => err.description(),
             Error::MustacheError(ref err) => err.description(),
             Error::MustacheEncoderError(ref err) => err.description(),
+            Error::DieselMigrationError(ref err) => err.description(),
+            Error::DieselRunMigrationsError(ref err) => err.description(),
+            Error::DieselConnectionError(ref err) => err.description(),
         }
     }
 
@@ -85,6 +95,9 @@ impl error::Error for Error {
             Error::RocketLaunchError(ref err) => Some(err),
             Error::MustacheError(ref err) => Some(err),
             Error::MustacheEncoderError(ref err) => Some(err),
+            Error::DieselMigrationError(ref err) => Some(err),
+            Error::DieselRunMigrationsError(ref err) => Some(err),
+            Error::DieselConnectionError(ref err) => Some(err),
         }
     }
 }
@@ -165,5 +178,23 @@ impl From<mustache::Error> for Error {
 impl From<mustache::encoder::Error> for Error {
     fn from(err: mustache::encoder::Error) -> Error {
         Error::MustacheEncoderError(err)
+    }
+}
+
+impl From<diesel::migrations::MigrationError> for Error {
+    fn from(err: diesel::migrations::MigrationError) -> Error {
+        Error::DieselMigrationError(err)
+    }
+}
+
+impl From<diesel::migrations::RunMigrationsError> for Error {
+    fn from(err: diesel::migrations::RunMigrationsError) -> Error {
+        Error::DieselRunMigrationsError(err)
+    }
+}
+
+impl From<diesel::ConnectionError> for Error {
+    fn from(err: diesel::ConnectionError) -> Error {
+        Error::DieselConnectionError(err)
     }
 }

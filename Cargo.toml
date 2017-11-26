@@ -26,6 +26,15 @@ serde_json = "1.0"
 # serde_xml = "1.0"
 # serde_toml = "1.0"
 # serde_yaml = "1.0"
+dotenv = "0.10.*"
+
+[dependencies.diesel]
+version = "0.16.0"
+features = ["postgres"]
+
+[dependencies.diesel_codegen]
+version = "0.16.0"
+features = ["postgres"]
 
 [dependencies.postgres]
 version = "0.15"

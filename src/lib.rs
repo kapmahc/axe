@@ -19,7 +19,8 @@ extern crate toml;
 extern crate time;
 extern crate mustache;
 extern crate rustc_serialize;
-
+#[macro_use]
+extern crate diesel;
 
 pub mod env;
 pub mod nut;
