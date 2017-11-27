@@ -1,9 +1,9 @@
-#![feature(plugin)]
-#![feature(use_extern_macros)]
+#![feature(plugin, custom_derive, use_extern_macros)]
 #![plugin(rocket_codegen)]
 
 
 extern crate rocket;
+extern crate url;
 extern crate amqp;
 extern crate base64;
 extern crate clap;

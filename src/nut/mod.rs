@@ -3,11 +3,14 @@ pub mod admin;
 pub mod middlewares;
 pub mod models;
 
+use log;
 use rocket::{Route, Request};
 use super::env::database::Db;
+use super::env::i18n;
 
 #[get("/")]
-pub fn home(_db: Db) -> &'static str {
+pub fn home(_db: Db, lng: i18n::Locale) -> &'static str {
+    log::info!("{:?}", lng);
     "home"
 }
 
