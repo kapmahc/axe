@@ -2,3 +2,23 @@ logging:
   level: INFO
   loggers:
     com.github.kapmahc: DEBUG
+
+database:
+  driverClass: org.postgresql.Driver
+  user: postgres
+  password:
+  url: jdbc:postgresql://localhost/axe_dev
+  properties:
+    charSet: UTF-8
+  maxWaitForConnection: 1s
+  validationQuery: SELECT 1
+  validationQueryTimeout: 3s
+  minSize: 8
+  maxSize: 32
+  checkConnectionWhileIdle: false
+  evictionInterval: 10s
+  minIdleTime: 1 minute
+
+#views:
+#  .mustache:
+#    cache: false

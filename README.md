@@ -6,11 +6,11 @@ A complete open source e-commerce solution.
 
 ```
   mvn package
-  java -jar target/axe-*.jar db status config.yml
-  java -jar target/axe-*.jar db migrate config.yml  
-  java -jar target/axe-*.jar db rollback config.yml
-  java -jar target/axe-*.jar server config.yml
-  java -jar target/axe-*.jar check config.yml
+  java -jar target/axe-1.0.0-SNAPSHOT.jar db status config.yml
+  java -jar target/axe-1.0.0-SNAPSHOT.jar db migrate config.yml  
+  java -jar target/axe-1.0.0-SNAPSHOT.jar db rollback -c 1 config.yml
+  java -jar target/axe-1.0.0-SNAPSHOT.jar server config.yml
+  java -jar target/axe-1.0.0-SNAPSHOT.jar check config.yml
 ```
 
 ## Notes
@@ -66,3 +66,4 @@ A complete open source e-commerce solution.
 - [bootstrap](http://getbootstrap.com/docs/4.0/getting-started/introduction/)
 - [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
 - [For gmail smtp](http://stackoverflow.com/questions/20337040/gmail-smtp-debug-error-please-log-in-via-your-web-browser)
+- [taag](http://patorjk.com/software/taag/)

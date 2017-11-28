@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-nut" author="Jeremy">
+        <createTable tableName="locales">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="lang" type="varchar(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="locales" indexName="idx_locales_lang">
+            <column name="lang"/>
+        </createIndex>
+        <createIndex tableName="locales" indexName="idx_locales_code">
+            <column name="code"/>
+        </createIndex>
+        <createIndex tableName="locales" indexName="idx_locales_lang_code" unique="true">
+            <column name="lang"/>
+            <column name="code"/>
+        </createIndex>
+
+        <createTable tableName="settings">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="key" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="bytea">
+                <constraints nullable="false"/>
+            </column>
+            <column name="encode" type="bool">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="settings" indexName="idx_settings_key" unique="true">
+            <column name="key"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
