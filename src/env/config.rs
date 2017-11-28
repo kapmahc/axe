@@ -43,7 +43,10 @@ impl From<Config> for config::ConfigBuilder {
             config::LoggingLevel::Debug
         };
 
-        let views = match Path::new("theme").join(c.http.theme).join("views").to_str() {
+        let views = match Path::new("themes")
+            .join(c.http.theme)
+            .join("views")
+            .to_str() {
             Some(v) => v.to_string(),
             None => "views".to_string(),
         };

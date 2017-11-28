@@ -17,3 +17,10 @@ pub fn get_sign_up() -> &'static str {
 pub fn post_sign_up() -> &'static str {
     "sign up"
 }
+
+
+
+#[get("/users/confirm")]
+pub fn get_confirm() -> &'static str {
+    "confirm"
+}

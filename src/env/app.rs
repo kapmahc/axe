@@ -9,6 +9,7 @@ use mustache;
 use log;
 use redis::{self, Commands};
 use diesel::{migrations, pg, Connection};
+use rocket_contrib::Template;
 use super::errors::{Error, Result};
 use super::{config, database};
 use super::super::{nut, forum, survey};
@@ -177,6 +178,7 @@ impl App {
             .mount("/", nut::routes())
             .mount("/forum", forum::routes())
             .mount("/survey", survey::routes())
+            .attach(Template::fairing())
             .catch(errors![nut::not_found])
             .launch();
         return Err(Error::from(err));
