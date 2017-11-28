@@ -1,13 +1,16 @@
 
-# Java
-
+# Maven
+/target
+/dependency-reduced-pom.xml
 
 # Javascript
 /node_modules/
 
-# Build
+# Intelij Idea
+/.idea
+*.iml
 
-# Editor
+# Vim
 .*.swp
 .*.un~
 

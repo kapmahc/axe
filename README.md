@@ -1,34 +1,17 @@
 # AXE
 
-A complete open source e-commerce solution by Rust.
+A complete open source e-commerce solution.
 
 ## Usage
 
-- Install rust
-
-  ```
-  curl https://sh.rustup.rs -sSf | sh
-  rustup default nightly
-  ```
-
-- Build
-
-  ```
-  git clone https://github.com/kapmahc/axe.git
-  cd axe
-  make init
-  make
-  ```
-
-## Atom plugins
-
-- git-plus
-- file-icons
-- atom-beautify
-- language-babel
-- language-rust
-- autocomplete-racer
-- language-mustache
+```
+  mvn package
+  java -jar target/axe-*.jar db status config.yml
+  java -jar target/axe-*.jar db migrate config.yml  
+  java -jar target/axe-*.jar db rollback config.yml
+  java -jar target/axe-*.jar server config.yml
+  java -jar target/axe-*.jar check config.yml
+```
 
 ## Notes
 
@@ -79,10 +62,7 @@ A complete open source e-commerce solution by Rust.
 
 ## Documents
 
-- [rust book](https://doc.rust-lang.org/book/second-edition/)
-- [rocket](https://github.com/SergioBenitez/Rocket)
-- [serde](https://serde.rs/)
-- [crates.io](https://crates.io/)
+- [dropwizard](http://www.dropwizard.io/)
 - [bootstrap](http://getbootstrap.com/docs/4.0/getting-started/introduction/)
 - [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
 - [For gmail smtp](http://stackoverflow.com/questions/20337040/gmail-smtp-debug-error-please-log-in-via-your-web-browser)
