@@ -54,7 +54,15 @@ type I18n struct {
 }
 
 // Middleware locale middleware
-func (p *I18n) Middleware(tags ...language.Tag) gin.HandlerFunc {
+func (p *I18n) Middleware(langs ...string) (gin.HandlerFunc, error) {
+	var tags []language.Tag
+	for _, l := range langs {
+		t, e := language.Parse(l)
+		if e != nil {
+			return nil, e
+		}
+		tags = append(tags, t)
+	}
 	matcher := language.NewMatcher(tags)
 	return func(c *gin.Context) {
 		lang, written := p.detectLocale(c.Request, LOCALE)
@@ -66,7 +74,7 @@ func (p *I18n) Middleware(tags ...language.Tag) gin.HandlerFunc {
 		if written {
 			c.SetCookie(LOCALE, lang, math.MaxInt32, "/", "", c.Request.TLS != nil, false)
 		}
-	}
+	}, nil
 }
 
 func (p *I18n) detectLocale(r *http.Request, k string) (string, bool) {

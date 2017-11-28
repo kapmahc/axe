@@ -1,25 +1,25 @@
 package nut
 
 import (
+	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
 )
 
-func (p *HomePlugin) getHome(c *web.Context) {
-	lang := c.Locale()
+func (p *HomePlugin) getHome(c *gin.Context) {
+	lang := c.MustGet(web.LOCALE).(string)
 	theme := c.Query("theme")
 	if theme == "" {
 		if err := p.Settings.Get("site.home.theme", &theme); err != nil {
 			theme = "off-canvas"
 		}
 	}
-	web.HTML(web.APPLICATION, "nut/home/"+theme, func(_ string, _ *web.Context) (web.H, error) {
-		return web.H{
-			web.TITLE: p.I18n.T(lang, "nut.home.title"),
-		}, nil
-	})(c)
+	c.HTML(http.StatusOK, "nut/home/"+theme, gin.H{
+		TITLE: p.I18n.T(lang, "nut.home.title"),
+	})
 }
 
 type fmInstall struct {
@@ -31,11 +31,11 @@ type fmInstall struct {
 	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
-func (p *HomePlugin) getInstall(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.install.title")}, nil
+func (p *HomePlugin) getInstall(l string, c *gin.Context) (gin.H, error) {
+	return gin.H{TITLE: p.I18n.T(l, "nut.install.title")}, nil
 }
 
-func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) {
+func (p *HomePlugin) postInstall(l string, c *gin.Context) (interface{}, error) {
 	var fm fmInstall
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -85,11 +85,11 @@ func (p *HomePlugin) postInstall(l string, c *web.Context) (interface{}, error) 
 	}); err != nil {
 		return nil, err
 	}
-	return web.H{web.MESSAGE: p.I18n.T(l, "nut.install.success")}, nil
+	return gin.H{MESSAGE: p.I18n.T(l, "nut.install.success")}, nil
 }
 
-func (p *HomePlugin) newLeaveWord(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.leave-words.new.title")}, nil
+func (p *HomePlugin) newLeaveWord(l string, c *gin.Context) (gin.H, error) {
+	return gin.H{TITLE: p.I18n.T(l, "nut.leave-words.new.title")}, nil
 }
 
 type fmLeaveWord struct {
@@ -97,7 +97,7 @@ type fmLeaveWord struct {
 	Type string `form:"type" validate:"required"`
 }
 
-func (p *HomePlugin) createLeaveWord(l string, c *web.Context) (interface{}, error) {
+func (p *HomePlugin) createLeaveWord(l string, c *gin.Context) (interface{}, error) {
 	var fm fmLeaveWord
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -110,5 +110,5 @@ func (p *HomePlugin) createLeaveWord(l string, c *web.Context) (interface{}, err
 	}); err != nil {
 		return nil, err
 	}
-	return web.H{}, nil
+	return gin.H{}, nil
 }

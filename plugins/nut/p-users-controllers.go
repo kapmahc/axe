@@ -5,12 +5,13 @@ import (
 	"time"
 
 	"github.com/SermoDigital/jose/jws"
+	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 )
 
-func (p *UsersPlugin) deleteSignOut(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) deleteSignOut(l string, c *gin.Context) (interface{}, error) {
 	user, err := p.Layout.CurrentUser(c)
 	if err != nil {
 		return nil, err
@@ -24,11 +25,11 @@ func (p *UsersPlugin) deleteSignOut(l string, c *web.Context) (interface{}, erro
 	ss.Values = make(map[interface{}]interface{})
 	c.Save(ss)
 
-	return web.H{}, nil
+	return gin.H{}, nil
 }
 
-func (p *UsersPlugin) getChangePassword(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.users.change-password.title")}, nil
+func (p *UsersPlugin) getChangePassword(l string, c *gin.Context) (gin.H, error) {
+	return gin.H{TITLE: p.I18n.T(l, "nut.users.change-password.title")}, nil
 }
 
 type fmUsersChangePassword struct {
@@ -37,7 +38,7 @@ type fmUsersChangePassword struct {
 	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=NewPassword"`
 }
 
-func (p *UsersPlugin) postChangePassword(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postChangePassword(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersChangePassword
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -57,18 +58,18 @@ func (p *UsersPlugin) postChangePassword(l string, c *web.Context) (interface{},
 		}
 		return p.Dao.AddLog(tx, user.ID, c.ClientIP(), l, "nut.logs.change-password")
 	})
-	return web.H{}, err
+	return gin.H{}, err
 }
 
-func (p *UsersPlugin) getProfile(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.users.profile.title")}, nil
+func (p *UsersPlugin) getProfile(l string, c *gin.Context) (gin.H, error) {
+	return gin.H{TITLE: p.I18n.T(l, "nut.users.profile.title")}, nil
 }
 
 type fmUsersProfile struct {
 	Name string `form:"name" validate:"required"`
 }
 
-func (p *UsersPlugin) postProfile(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postProfile(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersProfile
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -80,10 +81,10 @@ func (p *UsersPlugin) postProfile(l string, c *web.Context) (interface{}, error)
 	user.Name = fm.Name
 	user.UpdatedAt = time.Now()
 	_, err = p.DB.Model(user).Column("name", "updated_at").Update()
-	return web.H{}, err
+	return gin.H{}, err
 }
 
-func (p *UsersPlugin) getLogs(l string, c *web.Context) (web.H, error) {
+func (p *UsersPlugin) getLogs(l string, c *gin.Context) (gin.H, error) {
 	user, err := p.Layout.CurrentUser(c)
 	if err != nil {
 		return nil, err
@@ -96,11 +97,11 @@ func (p *UsersPlugin) getLogs(l string, c *web.Context) (web.H, error) {
 		Select(); err != nil {
 		return nil, err
 	}
-	return web.H{"items": items}, nil
+	return gin.H{"items": items}, nil
 }
 
-func (p *UsersPlugin) getSignIn(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.users.sign-in.title")}, nil
+func (p *UsersPlugin) getSignIn(l string, c *gin.Context) (gin.H, error) {
+	return gin.H{TITLE: p.I18n.T(l, "nut.users.sign-in.title")}, nil
 }
 
 type fmUsersSignIn struct {
@@ -108,7 +109,7 @@ type fmUsersSignIn struct {
 	Password string `form:"password" validate:"required"`
 }
 
-func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postSignIn(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersSignIn
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -120,17 +121,17 @@ func (p *UsersPlugin) postSignIn(l string, c *web.Context) (interface{}, error) 
 		if err != nil {
 			return err
 		}
-		ss.Values["currentUser"] = web.H{"uid": user.UID, "name": user.Name}
+		ss.Values["currentUser"] = gin.H{"uid": user.UID, "name": user.Name}
 		return nil
 	}); err != nil {
 		return nil, err
 	}
 	c.Save(ss)
-	return web.H{}, nil
+	return gin.H{}, nil
 }
 
-func (p *UsersPlugin) getSignUp(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.users.sign-up.title")}, nil
+func (p *UsersPlugin) getSignUp(l string, c *gin.Context) (gin.H, error) {
+	return gin.H{TITLE: p.I18n.T(l, "nut.users.sign-up.title")}, nil
 }
 
 type fmUsersSignUp struct {
@@ -140,7 +141,7 @@ type fmUsersSignUp struct {
 	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
-func (p *UsersPlugin) postSignUp(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postSignUp(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersSignUp
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -163,23 +164,23 @@ func (p *UsersPlugin) postSignUp(l string, c *web.Context) (interface{}, error) 
 		return nil, err
 	}
 
-	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.confirm.notice")}, nil
+	return gin.H{web.MESSAGE: p.I18n.T(l, "nut.users.confirm.notice")}, nil
 }
 
 type fmUsersEmail struct {
 	Email string `form:"email" validate:"email"`
 }
 
-func (p *UsersPlugin) getEmailForm(act string) web.HTMLHandlerFunc {
-	return func(l string, c *web.Context) (web.H, error) {
-		return web.H{
-			"action":  act,
-			web.TITLE: p.I18n.T(l, "nut.users."+act+".title"),
+func (p *UsersPlugin) getEmailForm(act string) gin.HTMLHandlerFunc {
+	return func(l string, c *gin.Context) (gin.H, error) {
+		return gin.H{
+			"action": act,
+			TITLE:    p.I18n.T(l, "nut.users."+act+".title"),
 		}, nil
 	}
 }
 
-func (p *UsersPlugin) getConfirmToken(l string, c *web.Context) error {
+func (p *UsersPlugin) getConfirmToken(l string, c *gin.Context) error {
 	cm, err := p.Jwt.Validate([]byte(c.Params["token"]))
 	if err != nil {
 		return err
@@ -219,7 +220,7 @@ func (p *UsersPlugin) getConfirmToken(l string, c *web.Context) error {
 	return nil
 }
 
-func (p *UsersPlugin) postConfirm(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postConfirm(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -239,10 +240,10 @@ func (p *UsersPlugin) postConfirm(l string, c *web.Context) (interface{}, error)
 		log.Error(err)
 	}
 
-	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.confirm.notice")}, nil
+	return gin.H{web.MESSAGE: p.I18n.T(l, "nut.users.confirm.notice")}, nil
 }
 
-func (p *UsersPlugin) getUnlockToken(l string, c *web.Context) error {
+func (p *UsersPlugin) getUnlockToken(l string, c *gin.Context) error {
 	cm, err := p.Jwt.Validate([]byte(c.Params["token"]))
 	if err != nil {
 		return err
@@ -281,7 +282,7 @@ func (p *UsersPlugin) getUnlockToken(l string, c *web.Context) error {
 	return nil
 }
 
-func (p *UsersPlugin) postUnlock(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postUnlock(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -301,10 +302,10 @@ func (p *UsersPlugin) postUnlock(l string, c *web.Context) (interface{}, error) 
 		log.Error(err)
 	}
 
-	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.unlock.notice")}, nil
+	return gin.H{web.MESSAGE: p.I18n.T(l, "nut.users.unlock.notice")}, nil
 }
 
-func (p *UsersPlugin) postForgotPassword(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postForgotPassword(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersEmail
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -322,11 +323,11 @@ func (p *UsersPlugin) postForgotPassword(l string, c *web.Context) (interface{},
 		log.Error(err)
 	}
 
-	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.forgot-password.notice")}, nil
+	return gin.H{web.MESSAGE: p.I18n.T(l, "nut.users.forgot-password.notice")}, nil
 }
 
-func (p *UsersPlugin) getResetPassword(l string, c *web.Context) (web.H, error) {
-	return web.H{web.TITLE: p.I18n.T(l, "nut.users.reset-password.title")}, nil
+func (p *UsersPlugin) getResetPassword(l string, c *gin.Context) (gin.H, error) {
+	return gin.H{TITLE: p.I18n.T(l, "nut.users.reset-password.title")}, nil
 }
 
 type fmUsersResetPassword struct {
@@ -334,7 +335,7 @@ type fmUsersResetPassword struct {
 	PasswordConfirmation string `form:"passwordConfirmation" validate:"eqfield=Password"`
 }
 
-func (p *UsersPlugin) postResetPassword(l string, c *web.Context) (interface{}, error) {
+func (p *UsersPlugin) postResetPassword(l string, c *gin.Context) (interface{}, error) {
 	var fm fmUsersResetPassword
 	if err := c.Bind(&fm); err != nil {
 		return nil, err
@@ -370,7 +371,7 @@ func (p *UsersPlugin) postResetPassword(l string, c *web.Context) (interface{}, 
 	}); err != nil {
 		return nil, err
 	}
-	return web.H{web.MESSAGE: p.I18n.T(l, "nut.users.reset-password.success")}, nil
+	return gin.H{web.MESSAGE: p.I18n.T(l, "nut.users.reset-password.success")}, nil
 }
 
 const (
@@ -382,7 +383,7 @@ const (
 	SendEmailJob = "send.email"
 )
 
-func (p *UsersPlugin) sendEmail(c *web.Context, lang string, user *User, act string) error {
+func (p *UsersPlugin) sendEmail(c *gin.Context, lang string, user *User, act string) error {
 
 	cm := jws.Claims{}
 	cm.Set("act", act)

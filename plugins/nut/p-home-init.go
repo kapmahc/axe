@@ -4,16 +4,19 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"path"
 	"time"
 
 	"github.com/SermoDigital/jose/crypto"
 	"github.com/facebookgo/inject"
 	"github.com/garyburd/redigo/redis"
+	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
+	"github.com/gorilla/sessions"
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"golang.org/x/text/language"
+	"github.com/unrolled/render"
 )
 
 func (p *HomePlugin) openDB() (*pg.DB, error) {
@@ -60,8 +63,7 @@ func (p *HomePlugin) openJobber() (*web.Jobber, error) {
 	), args["queue"].(string))
 }
 
-func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n) (*web.Router, error) {
-
+func (p *HomePlugin) openRender(theme string, langs ...string) *render.Render {
 	helpers := template.FuncMap{
 		"fmt": fmt.Sprintf,
 		"dtf": func(t time.Time) string {
@@ -96,7 +98,7 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n) (*web.
 				}
 				return favicon
 			case "languages":
-				return Languages()
+				return langs
 			default:
 				return k
 			}
@@ -126,7 +128,7 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n) (*web.
 		},
 		"links": func(lng, loc string) ([]Link, error) {
 			var items []Link
-			if err := db.Model(&items).Column("id", "label", "href", "loc", "sort_order").
+			if err := p.DB.Model(&items).Column("id", "label", "href", "loc", "sort_order").
 				Where("lang = ? AND loc = ?", lng, loc).
 				Order("sort_order ASC").
 				Select(); err != nil {
@@ -136,7 +138,7 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n) (*web.
 		},
 		"cards": func(lng, loc string) ([]Card, error) {
 			var items []Card
-			if err := db.Model(&items).Column("id", "title", "summary", "type", "action", "logo", "href", "loc", "sort_order").
+			if err := p.DB.Model(&items).Column("id", "title", "summary", "type", "action", "logo", "href", "loc", "sort_order").
 				Where("lang = ? AND loc = ?", lng, loc).
 				Order("sort_order ASC").
 				Select(); err != nil {
@@ -152,18 +154,27 @@ func (p *HomePlugin) openRouter(secret []byte, db *pg.DB, i18n *web.I18n) (*web.
 		},
 	}
 
-	theme := viper.GetString("server.theme")
+	return render.New(render.Options{
+		Directory:  path.Join("themes", theme, "views"),
+		Extensions: []string{".html"},
+		Funcs:      []template.FuncMap{helpers},
+	})
+}
 
-	var langs []language.Tag
-	for _, l := range Languages() {
-		t, e := language.Parse(l)
-		if e != nil {
-			return nil, e
-		}
-		langs = append(langs, t)
+func (p *HomePlugin) openRouter(theme string, langs ...string) (*gin.Engine, error) {
+	rt := gin.Default()
+	i18m, err := p.I18n.Middleware()
+	if err != nil {
+		return nil, err
 	}
-
-	return web.NewRouter(viper.GetBool("server.secure"), secret, theme, helpers, language.NewMatcher(langs)), nil
+	rt.Use(i18m)
+	for k, v := range map[string]string{
+		"3rd":    "node_modules",
+		"assets": path.Join("themes", theme, "assets"),
+	} {
+		rt.Static("/"+k+"/", v)
+	}
+	return rt, nil
 }
 
 func (p *HomePlugin) openRedis() *redis.Pool {
@@ -197,6 +208,8 @@ func (p *HomePlugin) openRedis() *redis.Pool {
 
 // Init init beans
 func (p *HomePlugin) Init(g *inject.Graph) error {
+	langs := viper.GetStringSlice("languages")
+	theme := viper.GetString("server.theme")
 
 	db, err := p.openDB()
 	if err != nil {
@@ -222,7 +235,7 @@ func (p *HomePlugin) Init(g *inject.Graph) error {
 	}
 	redis := p.openRedis()
 
-	rt, err := p.openRouter(secret, db, i18n)
+	rt, err := p.openRouter(theme, langs...)
 	if err != nil {
 		return err
 	}
@@ -243,5 +256,7 @@ func (p *HomePlugin) Init(g *inject.Graph) error {
 		&inject.Object{Value: web.NewSettings(db, security)},
 		&inject.Object{Value: web.NewJwt(secret, crypto.SigningMethodHS512)},
 		&inject.Object{Value: rt},
+		&inject.Object{Value: p.openRender(theme, langs...)},
+		&inject.Object{Value: sessions.NewCookieStore(secret)},
 	)
 }

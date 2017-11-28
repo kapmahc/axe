@@ -1,18 +1,21 @@
 package nut
 
 import (
+	"context"
 	"crypto/x509/pkix"
 	"fmt"
 	"html/template"
+	"net/http"
 	"os"
+	"os/signal"
 	"path"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/go-pg/migrations"
 	"github.com/go-pg/pg"
+	"github.com/gorilla/csrf"
 	"github.com/kapmahc/axe/web"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -198,7 +201,7 @@ func (p *HomePlugin) Shell() []cli.Command {
 					}
 				}()
 				// -------
-				return p.Router.Start(viper.GetInt("server.port"), viper.GetString("env") == web.PRODUCTION)
+				return p.startServer(viper.GetInt("server.port"), viper.GetString("env") == web.PRODUCTION)
 			}),
 		},
 		{
@@ -208,10 +211,9 @@ func (p *HomePlugin) Shell() []cli.Command {
 			Action: web.InjectAction(func(_ *cli.Context) error {
 				tpl := "%-16s %s\n"
 				fmt.Printf(tpl, "METHODS", "PATH")
-				return p.Router.Walk(func(pattern string, methods ...string) error {
-					fmt.Printf(tpl, strings.Join(methods, ","), pattern)
-					return nil
-				})
+				for _, rt := range p.Router.Routes() {
+					fmt.Printf(tpl, rt.Method, rt.Path)
+				}
 			}),
 		},
 	}
@@ -433,4 +435,53 @@ func (p *HomePlugin) connectDatabase(_ *cli.Context) error {
 		"-U", args["user"],
 		args["dbname"],
 	)
+}
+
+func (p *HomePlugin) startServer(port int, grace bool) error {
+	secure := viper.GetBool("server.ssl")
+	secret, err := web.SECRET()
+	if err != nil {
+		return err
+	}
+	log.Infof(
+		"application starting on http://localhost:%d",
+		port,
+	)
+
+	srv := &http.Server{
+		Addr: fmt.Sprintf(":%d", port),
+		Handler: csrf.Protect(
+			secret,
+			csrf.Path("/"),
+			csrf.Secure(secure),
+			csrf.CookieName("csrf"),
+			csrf.RequestHeader("Authenticity-Token"),
+			csrf.FieldName("authenticity_token"),
+		)(p.Router),
+	}
+	if !grace {
+		return srv.ListenAndServe()
+	}
+
+	go func() {
+		// service connections
+		if err := srv.ListenAndServe(); err != nil {
+			log.Error(err)
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 5 seconds.
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	log.Warn("shutdown server ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		return err
+	}
+	log.Warn("server exiting")
+	return nil
 }

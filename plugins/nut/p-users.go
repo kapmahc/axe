@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/facebookgo/inject"
+	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 	"github.com/kapmahc/axe/web"
 	"github.com/urfave/cli"
@@ -17,11 +18,11 @@ type UsersPlugin struct {
 	Jobber   *web.Jobber   `inject:""`
 	Settings *web.Settings `inject:""`
 	Security *web.Security `inject:""`
-	Router   *web.Router   `inject:""`
+	Router   *gin.Engine   `inject:""`
 	Jwt      *web.Jwt      `inject:""`
 	DB       *pg.DB        `inject:""`
 	Dao      *Dao          `inject:""`
-	Layout   *Layout       `inject:""`
+	Layout   *gin.Engine   `inject:""`
 }
 
 // Init init beans
