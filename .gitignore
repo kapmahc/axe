@@ -1,0 +1,15 @@
+
+# Java
+
+
+# Javascript
+/node_modules/
+
+# Build
+
+# Editor
+.*.swp
+.*.un~
+
+# Test
+/tmp
