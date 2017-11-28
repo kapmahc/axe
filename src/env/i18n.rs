@@ -1,17 +1,15 @@
 use std::collections::HashMap;
 use log;
 use url::Url;
-use rocket::request::{self, FromRequest, Form, LenientForm};
-use rocket::{Request, State, Outcome, Data};
-use rocket::http::Cookies;
+use time::Duration;
+use rocket::request::{self, FromRequest};
+use rocket::{Request, Outcome};
+use rocket::http::Cookie;
+
 
 #[derive(Debug)]
 pub struct Locale(String);
 
-#[derive(FromForm)]
-struct LocaleForm {
-    locale: Option<String>,
-}
 
 impl<'a, 'r> FromRequest<'a, 'r> for Locale {
     type Error = ();
@@ -22,6 +20,13 @@ impl<'a, 'r> FromRequest<'a, 'r> for Locale {
         if let Ok(u) = Url::parse(&format!("http://localhost{}", req.uri().as_str())) {
             let params: HashMap<_, _> = u.query_pairs().into_owned().collect();
             if let Some(lng) = params.get(key) {
+                req.cookies().add(
+                    Cookie::build(key, lng.to_string())
+                        .path("/")
+                        .http_only(false)
+                        .max_age(Duration::weeks(10))
+                        .finish(),
+                );
                 return Outcome::Success(Locale(lng.to_string()));
             }
         }
@@ -38,10 +43,5 @@ impl<'a, 'r> FromRequest<'a, 'r> for Locale {
         }
         log::warn!("fail to detect language");
         return Outcome::Success(Locale("en-US".to_string()));
-        // let pool = request.guard::<State<Pool>>()?;
-        // match pool.get() {
-        //     Ok(conn) => Outcome::Success(Db(conn)),
-        //     Err(_) => Outcome::Failure((Status::ServiceUnavailable, ())),
-        // }
     }
 }
