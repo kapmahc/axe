@@ -6,14 +6,22 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"math"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/go-ini/ini"
 	"github.com/go-pg/pg"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/text/language"
+)
+
+const (
+	// LOCALE locale key
+	LOCALE = "lcoale"
 )
 
 // NewI18n create i18n
@@ -43,6 +51,37 @@ type Locale struct {
 type I18n struct {
 	db    *pg.DB
 	items map[string]string
+}
+
+// Middleware locale middleware
+func (p *I18n) Middleware(tags ...language.Tag) gin.HandlerFunc {
+	matcher := language.NewMatcher(tags)
+	return func(c *gin.Context) {
+		lang, written := p.detectLocale(c.Request, LOCALE)
+		tag, _, _ := matcher.Match(language.Make(lang))
+		if lang != tag.String() {
+			written = true
+			lang = tag.String()
+		}
+		if written {
+			c.SetCookie(LOCALE, lang, math.MaxInt32, "/", "", c.Request.TLS != nil, false)
+		}
+	}
+}
+
+func (p *I18n) detectLocale(r *http.Request, k string) (string, bool) {
+	// 1. Check URL arguments.
+	if lang := r.URL.Query().Get(k); lang != "" {
+		return lang, true
+	}
+
+	// 2. Get language information from cookies.
+	if ck, er := r.Cookie(k); er == nil {
+		return ck.Value, false
+	}
+
+	// 3. Get language information from 'Accept-Language'.
+	return r.Header.Get("Accept-Language"), true
 }
 
 // Languages language tags

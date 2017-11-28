@@ -24,6 +24,18 @@ make
 
 ## Notes
 
+- Generate a random key
+
+  ```
+  openssl rand -base64 32
+  ```
+
+- ~/.npmrc
+
+  ```
+  prefix=${HOME}/.npm-packages
+  ```
+
 - Create database
 
 ```
@@ -90,3 +102,5 @@ GRANT ALL PRIVILEGES ON DATABASE db-name TO user-name;
 - [AdminLTE](https://github.com/almasaeed2010/AdminLTE)
 
 - [smver](http://semver.org/)
+
+- [banner.txt](http://patorjk.com/software/taag/)

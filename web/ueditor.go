@@ -6,22 +6,23 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
 // UEditorWriter ueditor's file writer
-type UEditorWriter func(c *Context, name string, buf []byte, size int64) (url string, err error)
+type UEditorWriter func(c *gin.Context, name string, buf []byte, size int64) (url string, err error)
 
 // UEditorManager ueditor's file manager
-type UEditorManager func(c *Context) (urls []string, err error)
+type UEditorManager func(c *gin.Context) (urls []string, err error)
 
 // UEditor ueditor
 type UEditor struct {
 }
 
 // Upload upload handler
-func (p *UEditor) Upload(wrt UEditorWriter, images UEditorManager, files UEditorManager) HandlerFunc {
-	return func(c *Context) {
+func (p *UEditor) Upload(wrt UEditorWriter, images UEditorManager, files UEditorManager) gin.HandlerFunc {
+	return func(c *gin.Context) {
 		switch c.Query("action") {
 		case "config":
 			p.config(c)
@@ -45,7 +46,7 @@ func (p *UEditor) Upload(wrt UEditorWriter, images UEditorManager, files UEditor
 	}
 }
 
-func (p *UEditor) scrawl(c *Context, f UEditorWriter) {
+func (p *UEditor) scrawl(c *gin.Context, f UEditorWriter) {
 	if err := c.Request.ParseForm(); err != nil {
 		p.fail(c, err)
 	}
@@ -69,27 +70,27 @@ func (p *UEditor) scrawl(c *Context, f UEditorWriter) {
 	p.file(c, name, url)
 }
 
-func (p *UEditor) file(c *Context, n, u string) {
-	p.success(c, H{
+func (p *UEditor) file(c *gin.Context, n, u string) {
+	p.success(c, gin.H{
 		"url":      u,
 		"title":    "",
 		"original": n,
 	})
 }
 
-func (p *UEditor) success(c *Context, d H) {
+func (p *UEditor) success(c *gin.Context, d gin.H) {
 	d["state"] = "SUCCESS"
 	c.JSON(http.StatusOK, d)
 }
 
-func (p *UEditor) fail(c *Context, e error) {
+func (p *UEditor) fail(c *gin.Context, e error) {
 	log.Error(e)
-	c.JSON(http.StatusOK, H{
+	c.JSON(http.StatusOK, gin.H{
 		"state": "FAILED",
 	})
 }
 
-func (p *UEditor) upload(c *Context, name string, fn UEditorWriter) {
+func (p *UEditor) upload(c *gin.Context, name string, fn UEditorWriter) {
 	fd, fh, err := c.Request.FormFile(name)
 	if err != nil {
 		p.fail(c, err)
@@ -109,18 +110,18 @@ func (p *UEditor) upload(c *Context, name string, fn UEditorWriter) {
 	p.file(c, name, url)
 }
 
-func (p *UEditor) manager(c *Context, f UEditorManager) {
+func (p *UEditor) manager(c *gin.Context, f UEditorManager) {
 	items, err := f(c)
 	if err != nil {
 		p.fail(c, err)
 		return
 	}
-	var list []H
+	var list []gin.H
 
 	for _, it := range items {
-		list = append(list, H{"url": it})
+		list = append(list, gin.H{"url": it})
 	}
-	p.success(c, H{
+	p.success(c, gin.H{
 		"list":  list,
 		"start": 0,
 		"total": len(list),
@@ -128,13 +129,13 @@ func (p *UEditor) manager(c *Context, f UEditorManager) {
 
 }
 
-func (p *UEditor) catchImage(c *Context) {
+func (p *UEditor) catchImage(c *gin.Context) {
 	// TODO
 }
 
-func (p *UEditor) config(c *Context) {
+func (p *UEditor) config(c *gin.Context) {
 	/* 前后端通信相关的配置,注释只允许使用多行方式 */
-	cfg := H{
+	cfg := gin.H{
 		/* 上传图片配置项 */
 		"imageActionName":     "uploadimage",                                     /* 执行上传图片的action名称 */
 		"imageFieldName":      "upfile",                                          /* 提交的图片表单名称 */
